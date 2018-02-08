@@ -29,53 +29,44 @@ savefits_dir = home + "/Desktop/FIGS/new_codes/bc03_fits_files_for_refining_reds
 lsfdir = home + "/Desktop/FIGS/new_codes/pears_lsfs/"
 figs_dir = home + "/Desktop/FIGS/"
 
-def sqr(i):
-    return i*i
+def nsum(n, const):
+    nsum = 0
+    
+    for i in range(1, n+1):
+        nsum = nsum + i + const
 
-def do_model_modifications(model_index_number, lsf, resampling_lam_grid, model_comp_spec, model_lam_grid_z):
+    return nsum
 
-    return current_modified_model
-
-def call_func():
-
-    #bc03_spec_hdulist = fits.open(figs_dir + 'all_comp_spectra_bc03_ssp_and_csp_nolsf_noresample.fits')
-
-    return result
-
-def do_basic_test():
+def do_basic_test(num_cores):
+    """
+    One caveat: The computation done within the function to be parallelized has to 
+    be intensive enough that it justifies parallelization. 
+    """
 
     total_num = int(1e4)
-    num_cores = multiprocessing.cpu_count()
-
-    # Start time
-    start = time.time()
+    constant = 10
 
     #### ----------------------------- Parallel for loop ----------------------------- ####
-    a = Parallel(n_jobs=1)(delayed(sqr)(i) for i in range(total_num))
+    # Start time
+    start = time.time()
+    a = Parallel(n_jobs=num_cores) (delayed(nsum)(i, constant) for i in range(total_num))
 
     # total time up to now
-    time_after_par_forloop = time.time()
-    print "Total time taken up to now --", time.time() - start, "seconds."
+    print "Total time taken up to now --", time.time() - start, "seconds. With", num_cores, "CPUs."
 
-    #### ----------------------------- Classical for loop ----------------------------- ####
+    #### ----------------------------- Classical for loop ---------------------------- ####
+    time_after_par_forloop = time.time()
     res = []
     for j in range(total_num):
-        res.append(sqr(j))
+        res.append(nsum(j, constant))
 
     # total time for this for loop
-    print "Total time taken up to now --", time.time() - time_after_par_forloop, "seconds."
-
-    # ----------------------------- check if arrays are equal ----------------------------- # 
-    a = np.asarray(a)
-    res = np.asarray(res)
-
-    if np.array_equal(a, res):
-        print True
+    print "Total time taken up to now --", time.time() - time_after_par_forloop, "seconds. One one CPU."
 
     return None
 
 if __name__ == '__main__':
 
-    do_basic_test()
+    do_basic_test(3)
 
     sys.exit(0)
