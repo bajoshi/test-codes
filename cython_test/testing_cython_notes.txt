@@ -1,0 +1,57 @@
+bhavins-mbp:cython_test bhavinjoshi$ ipython
+Python 2.7.14 |Anaconda custom (x86_64)| (default, Oct  5 2017, 02:28:52) 
+Type "copyright", "credits" or "license" for more information.
+
+IPython 5.4.1 -- An enhanced Interactive Python.
+?         -> Introduction and overview of IPython's features.
+%quickref -> Quick reference.
+help      -> Python's own help system.
+object?   -> Details about 'object', use 'object??' for extra details.
+
+In [1]: import numpy as np
+
+In [2]: import convolve_py
+
+In [3]: convolve_py.naive_convolve(np.array([[1, 1, 1]], dtype=np.int), np.array([[1],[2],[1]], dtype=np.int))
+Out[3]: 
+array([[1, 1, 1],
+       [2, 2, 2],
+       [1, 1, 1]])
+
+In [4]: import convolve1
+
+In [5]: convolve1.naive_convolve(np.array([[1, 1, 1]], dtype=np.int), np.array([[1],[2],[1]], dtype=np.int))
+Out[5]: 
+array([[1, 1, 1],
+       [2, 2, 2],
+       [1, 1, 1]])
+
+In [6]: N = 100
+
+In [7]: f = np.arange(N*N, dtype=np.int).reshape((N,N))
+
+In [8]: g = np.arange(81, dtype=np.int).reshape((9,9))
+
+In [9]: %timeit -n2 -r3 convolve_py.naive_convolve(f, g)
+2 loops, best of 3: 1.02 s per loop
+
+In [10]: %timeit -n2 -r3 convolve1.naive_convolve(f, g)
+2 loops, best of 3: 384 ms per loop
+
+In [11]: import convolve2
+
+In [12]: %timeit -n2 -r3 convolve2.naive_convolve(f, g)
+2 loops, best of 3: 351 ms per loop
+
+In [13]: %timeit -n2 -r3 convolve2.naive_convolve(f, g)
+2 loops, best of 3: 350 ms per loop
+
+In [14]: import convolve3
+
+In [15]: %timeit -n2 -r3 convolve3.naive_convolve(f, g)
+2 loops, best of 3: 1.96 ms per loop
+
+In [16]: %timeit -n2 -r3 convolve3.naive_convolve(f, g)
+2 loops, best of 3: 1.88 ms per loop
+
+In [17]: exit

@@ -1,6 +1,6 @@
 from __future__ import division
 
-cimport numpy as np
+import numpy as np
 
 """
 This example came from the cython tutorial on the official website.
