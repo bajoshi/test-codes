@@ -1,3 +1,4 @@
+#cython: boundscheck=False, nonecheck=False
 from __future__ import division
 
 from scipy.signal import fftconvolve
@@ -119,14 +120,18 @@ def do_model_modifications(np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
     cdef double lam_step
     cdef list indices = []
     #cdef np.ndarray[long, ndim=2] indices
+
+    # Views 
+    cdef DTYPE_t [:, :] model_comp_spec_view = model_comp_spec
+    cdef DTYPE_t [:] resampling_lam_grid_view = resampling_lam_grid
     
     for i in xrange(1,resampling_lam_grid_length-1):
 
-        lam_step_high = resampling_lam_grid[i+1] - resampling_lam_grid[i]
-        lam_step_low = resampling_lam_grid[i] - resampling_lam_grid[i-1]
+        lam_step_high = resampling_lam_grid_view[i+1] - resampling_lam_grid_view[i]
+        lam_step_low = resampling_lam_grid_view[i] - resampling_lam_grid_view[i-1]
 
-        indices.append(np.where((model_lam_grid_z >= resampling_lam_grid[i] - lam_step_low) & \
-            (model_lam_grid_z < resampling_lam_grid[i] + lam_step_high))[0])
+        indices.append(np.where((model_lam_grid_z >= resampling_lam_grid_view[i] - lam_step_low) & \
+            (model_lam_grid_z < resampling_lam_grid_view[i] + lam_step_high))[0])
 
     for k in xrange(total_models):
 
@@ -142,7 +147,7 @@ def do_model_modifications(np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
         #interppoints = np.linspace(start=0, stop=lsf_length, num=lsf_length*10, dtype=DTYPE)
         # just making the lsf sampling grid longer # i.e. sampled at more points 
         #broad_lsf = np.interp(interppoints, xp=np.arange(lsf_length), fp=lsf)
-        temp_broadlsf_model = fftconvolve(model_comp_spec[k], lsf)
+        temp_broadlsf_model = fftconvolve(model_comp_spec_view[k], lsf)
 
         #ax2.plot(model_lam_grid_z, temp_broadlsf_model)
         #ax2.set_xlim(5000, 10500)
@@ -151,15 +156,15 @@ def do_model_modifications(np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
         resampled_flam_broadlsf = np.zeros(resampling_lam_grid_length, dtype=DTYPE)
 
         ### Zeroth element
-        lam_step = resampling_lam_grid[1] - resampling_lam_grid[0]
-        idx = np.where((model_lam_grid_z >= resampling_lam_grid[0] - lam_step) & \
-            (model_lam_grid_z < resampling_lam_grid[0] + lam_step))[0]
+        lam_step = resampling_lam_grid_view[1] - resampling_lam_grid_view[0]
+        idx = np.where((model_lam_grid_z >= resampling_lam_grid_view[0] - lam_step) & \
+            (model_lam_grid_z < resampling_lam_grid_view[0] + lam_step))[0]
         resampled_flam_broadlsf[0] = simple_mean(temp_broadlsf_model[idx])
 
         ### Last element
-        lam_step = resampling_lam_grid[-1] - resampling_lam_grid[-2]
-        idx = np.where((model_lam_grid_z >= resampling_lam_grid[-1] - lam_step) & \
-            (model_lam_grid_z < resampling_lam_grid[-1] + lam_step))[0]
+        lam_step = resampling_lam_grid_view[-1] - resampling_lam_grid_view[-2]
+        idx = np.where((model_lam_grid_z >= resampling_lam_grid_view[-1] - lam_step) & \
+            (model_lam_grid_z < resampling_lam_grid_view[-1] + lam_step))[0]
         resampled_flam_broadlsf[-1] = simple_mean(temp_broadlsf_model[idx])
 
         ### all elements in between
