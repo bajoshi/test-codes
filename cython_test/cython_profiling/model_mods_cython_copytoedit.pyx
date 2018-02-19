@@ -44,6 +44,7 @@ def do_model_modifications(np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
     # Can len() be redefined as a C function to be faster?
     cdef int resampling_lam_grid_length = len(resampling_lam_grid)
     cdef int lsf_length = len(lsf)
+    cdef int model_lam_grid_length = len(model_lam_grid)
 
     # assert types
     assert model_lam_grid.dtype == DTYPE and resampling_lam_grid.dtype == DTYPE
@@ -57,17 +58,33 @@ def do_model_modifications(np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
     #z = np.float64(z)
     #print type(z)
 
+    # Views 
+    cdef DTYPE_t [:, :] model_comp_spec_view = model_comp_spec
+    cdef DTYPE_t [:] resampling_lam_grid_view = resampling_lam_grid
+
     # create empty array in which final modified models will be stored
     cdef np.ndarray[DTYPE_t, ndim=2] model_comp_spec_modified = \
-    np.empty((total_models, resampling_lam_grid_length), dtype=DTYPE)
+    np.zeros((total_models, resampling_lam_grid_length), dtype=DTYPE)
 
-    # redshift lambda grid for model 
+    # redshift lambda grid for model
     # this is the lambda grid at the model's native resolution
-    cdef DTYPE_t redshift_factor = 1.0 + z
-    cdef np.ndarray[DTYPE_t, ndim=1] model_lam_grid_z = model_lam_grid * redshift_factor
+    cdef float redshift_factor = 1.0 + z
+    cdef np.ndarray[DTYPE_t, ndim=1] model_lam_grid_z = np.zeros(model_lam_grid_length)
+
+    #cdef int w
+    #for w in range(model_lam_grid_length):
+    #    model_lam_grid_z_view[w] = model_lam_grid_view[w] * redshift_factor
+    model_lam_grid_z = model_lam_grid * redshift_factor
 
     # redshift flux
-    model_comp_spec = model_comp_spec / redshift_factor
+    cdef int u
+    cdef int v
+    for u in range(model_comp_spec_view.shape[0]):
+        for v in range(model_comp_spec_view.shape[1]):
+            model_comp_spec_view[u,v] /= redshift_factor
+    # using /= instead of using the longer form is faster
+    # i.e. the longer form --> var = var / denominator copies the 'var' I think
+    # the short hand modifies it in place which is why it is faster
 
     # ---------------- Mask potential emission lines ----------------- #
     """
@@ -120,10 +137,6 @@ def do_model_modifications(np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
     cdef double lam_step
     cdef list indices = []
     #cdef np.ndarray[long, ndim=2] indices
-
-    # Views 
-    cdef DTYPE_t [:, :] model_comp_spec_view = model_comp_spec
-    cdef DTYPE_t [:] resampling_lam_grid_view = resampling_lam_grid
     
     for i in xrange(1,resampling_lam_grid_length-1):
 
@@ -136,7 +149,7 @@ def do_model_modifications(np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
     for k in xrange(total_models):
 
         #fig, (ax1, ax2, ax3) = plt.subplots(1, 3)
-        #ax1.plot(model_lam_grid_z, model_comp_spec[k])
+        #ax1.plot(model_lam_grid_z_view, model_comp_spec[k])
         #ax1.set_xlim(5000, 10500)
 
         #model_comp_spec[k] = convolve_fft(model_comp_spec[k], lsf)#, boundary='extend')
@@ -149,7 +162,7 @@ def do_model_modifications(np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
         #broad_lsf = np.interp(interppoints, xp=np.arange(lsf_length), fp=lsf)
         temp_broadlsf_model = fftconvolve(model_comp_spec_view[k], lsf)
 
-        #ax2.plot(model_lam_grid_z, temp_broadlsf_model)
+        #ax2.plot(model_lam_grid_z_view, temp_broadlsf_model)
         #ax2.set_xlim(5000, 10500)
 
         # resample to object resolution
