@@ -31,7 +31,7 @@ cdef double simple_mean(np.ndarray[DTYPE_t, ndim=1] a):
     return s / arr_elem
 
 @cython.profile(False)
-cdef np.ndarray[long, ndim=1] simple_where(np.ndarray[DTYPE_t, ndim=1] a, low_val, high_val):
+cdef list simple_where(np.ndarray[DTYPE_t, ndim=1] a, low_val, high_val):
     """
     This simple where function will work only on 1D arrays.
     An analogous function can be constructed for multi-D arrays
@@ -45,12 +45,13 @@ cdef np.ndarray[long, ndim=1] simple_where(np.ndarray[DTYPE_t, ndim=1] a, low_va
     cdef int i
     #cdef np.ndarray[long, ndim=1] where_indices = np.zeros()
     cdef list where_indices = []
+    cdef DTYPE_t [:] a_view = a
 
     for i in range(a_length):
-        if (a[i] >= low_val) and (a[i] < high_val):
+        if (a_view[i] >= low_val) and (a_view[i] < high_val):
             where_indices.append(i)
 
-    return np.asarray(where_indices)
+    return where_indices
 
 def do_model_modifications(np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
     np.ndarray[DTYPE_t, ndim=2] model_comp_spec, np.ndarray[DTYPE_t, ndim=1] resampling_lam_grid, \
