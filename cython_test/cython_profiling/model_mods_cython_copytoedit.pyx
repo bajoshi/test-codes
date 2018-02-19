@@ -129,23 +129,35 @@ def do_model_modifications(np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
     cdef np.ndarray[DTYPE_t, ndim=1] interppoints
     cdef np.ndarray[DTYPE_t, ndim=1] broad_lsf
     cdef np.ndarray[DTYPE_t, ndim=1] temp_broadlsf_model
-    cdef np.ndarray[DTYPE_t, ndim=1] resampled_flam_broadlsf
+    #cdef np.ndarray[DTYPE_t, ndim=1] resampled_flam_broadlsf
     cdef np.ndarray[long, ndim=1] new_ind
     cdef np.ndarray[long, ndim=1] idx
-    cdef double lam_step_low
-    cdef double lam_step_high
+    #cdef double lam_step_low
+    #cdef double lam_step_high
     cdef double lam_step
     cdef list indices = []
-    #cdef np.ndarray[long, ndim=2] indices
     
+    # --------------- Get indices for resampling --------------- #
+    ### Zeroth element
+    lam_step = resampling_lam_grid_view[1] - resampling_lam_grid_view[0]
+    indices.append(np.where((model_lam_grid_z >= resampling_lam_grid_view[0] - lam_step) & \
+        (model_lam_grid_z < resampling_lam_grid_view[0] + lam_step))[0])
+
+    ### all elements in between
     for i in xrange(1,resampling_lam_grid_length-1):
 
-        lam_step_high = resampling_lam_grid_view[i+1] - resampling_lam_grid_view[i]
-        lam_step_low = resampling_lam_grid_view[i] - resampling_lam_grid_view[i-1]
+        #lam_step_high = resampling_lam_grid_view[i+1] - resampling_lam_grid_view[i]
+        #lam_step_low = resampling_lam_grid_view[i] - resampling_lam_grid_view[i-1]
 
-        indices.append(np.where((model_lam_grid_z >= resampling_lam_grid_view[i] - lam_step_low) & \
-            (model_lam_grid_z < resampling_lam_grid_view[i] + lam_step_high))[0])
+        indices.append(np.where((model_lam_grid_z >= resampling_lam_grid_view[i-1]) & \
+            (model_lam_grid_z < resampling_lam_grid_view[i+1]))[0])
 
+    ### Last element
+    lam_step = resampling_lam_grid_view[-1] - resampling_lam_grid_view[-2]
+    indices.append(np.where((model_lam_grid_z >= resampling_lam_grid_view[-1] - lam_step) & \
+        (model_lam_grid_z < resampling_lam_grid_view[-1] + lam_step))[0])
+
+    # --------------- Now loop over all models --------------- #
     for k in xrange(total_models):
 
         #fig, (ax1, ax2, ax3) = plt.subplots(1, 3)
@@ -166,28 +178,16 @@ def do_model_modifications(np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
         #ax2.set_xlim(5000, 10500)
 
         # resample to object resolution
-        resampled_flam_broadlsf = np.zeros(resampling_lam_grid_length, dtype=DTYPE)
-
-        ### Zeroth element
-        lam_step = resampling_lam_grid_view[1] - resampling_lam_grid_view[0]
-        idx = np.where((model_lam_grid_z >= resampling_lam_grid_view[0] - lam_step) & \
-            (model_lam_grid_z < resampling_lam_grid_view[0] + lam_step))[0]
-        resampled_flam_broadlsf[0] = simple_mean(temp_broadlsf_model[idx])
-
-        ### Last element
-        lam_step = resampling_lam_grid_view[-1] - resampling_lam_grid_view[-2]
-        idx = np.where((model_lam_grid_z >= resampling_lam_grid_view[-1] - lam_step) & \
-            (model_lam_grid_z < resampling_lam_grid_view[-1] + lam_step))[0]
-        resampled_flam_broadlsf[-1] = simple_mean(temp_broadlsf_model[idx])
+        #resampled_flam_broadlsf = np.zeros(resampling_lam_grid_length, dtype=DTYPE)
 
         ### all elements in between
-        resampled_flam_broadlsf[1:resampling_lam_grid_length-1] = \
-        [simple_mean(temp_broadlsf_model[indices[i-1]]) for i in xrange(1,resampling_lam_grid_length-1)]
+        model_comp_spec_modified[k] = \
+        [simple_mean(temp_broadlsf_model[indices[i]]) for i in xrange(resampling_lam_grid_length)]
         # I use i-1 in indices because the xrange starts from 1
 
         # Now mask the flux at these wavelengths using the mask generated before the for loop
         #model_comp_spec_modified[k] = ma.array(resampled_flam_broadlsf, mask=line_mask)
-        model_comp_spec_modified[k] = resampled_flam_broadlsf
+        #model_comp_spec_modified[k] = resampled_flam_broadlsf
 
         #ax3.plot(resampling_lam_grid, resampled_flam_broadlsf)
         #ax3.set_xlim(5000, 10500)
