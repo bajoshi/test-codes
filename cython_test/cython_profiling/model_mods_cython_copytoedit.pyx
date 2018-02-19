@@ -6,7 +6,7 @@ import numpy as np
 #import numpy.ma as ma
 
 cimport numpy as np
-#cimport cython
+cimport cython
 
 #from astropy.convolution import convolve_fft
 #import matplotlib.pyplot as plt
@@ -21,6 +21,7 @@ DTYPE = np.float64
 
 ctypedef np.float64_t DTYPE_t
 
+@cython.profile(False)
 cdef double simple_mean(np.ndarray[DTYPE_t, ndim=1] a):
     cdef double s = 0 
     cdef int j
@@ -28,6 +29,28 @@ cdef double simple_mean(np.ndarray[DTYPE_t, ndim=1] a):
     for j in xrange(0,arr_elem):
         s += a[j]
     return s / arr_elem
+
+@cython.profile(False)
+cdef np.ndarray[long, ndim=1] simple_where(np.ndarray[DTYPE_t, ndim=1] a, low_val, high_val):
+    """
+    This simple where function will work only on 1D arrays.
+    An analogous function can be constructed for multi-D arrays
+    but its not needed here.
+
+    The structure of this function is optimized to be used
+    in this program.
+    """
+
+    cdef int a_length = len(a)
+    cdef int i
+    #cdef np.ndarray[long, ndim=1] where_indices = np.zeros()
+    cdef list where_indices = []
+
+    for i in range(a_length):
+        if (a[i] >= low_val) and (a[i] < high_val):
+            where_indices.append(i)
+
+    return np.asarray(where_indices)
 
 def do_model_modifications(np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
     np.ndarray[DTYPE_t, ndim=2] model_comp_spec, np.ndarray[DTYPE_t, ndim=1] resampling_lam_grid, \
@@ -58,13 +81,14 @@ def do_model_modifications(np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
     #z = np.float64(z)
     #print type(z)
 
-    # Views 
-    cdef DTYPE_t [:, :] model_comp_spec_view = model_comp_spec
-    cdef DTYPE_t [:] resampling_lam_grid_view = resampling_lam_grid
-
     # create empty array in which final modified models will be stored
     cdef np.ndarray[DTYPE_t, ndim=2] model_comp_spec_modified = \
     np.zeros((total_models, resampling_lam_grid_length), dtype=DTYPE)
+
+    # Views 
+    cdef DTYPE_t [:, :] model_comp_spec_view = model_comp_spec
+    cdef DTYPE_t [:] resampling_lam_grid_view = resampling_lam_grid
+    #cdef DTYPE_t [:, :] model_comp_spec_modified_view = model_comp_spec_modified
 
     # redshift lambda grid for model
     # this is the lambda grid at the model's native resolution
@@ -75,6 +99,7 @@ def do_model_modifications(np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
     #for w in range(model_lam_grid_length):
     #    model_lam_grid_z_view[w] = model_lam_grid_view[w] * redshift_factor
     model_lam_grid_z = model_lam_grid * redshift_factor
+    #cdef DTYPE_t [:] model_lam_grid_z_view = model_lam_grid_z
 
     # redshift flux
     cdef int u
@@ -142,20 +167,24 @@ def do_model_modifications(np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
     lam_step = resampling_lam_grid_view[1] - resampling_lam_grid_view[0]
     indices.append(np.where((model_lam_grid_z >= resampling_lam_grid_view[0] - lam_step) & \
         (model_lam_grid_z < resampling_lam_grid_view[0] + lam_step))[0])
+    #indices.append(simple_where(model_lam_grid_z, resampling_lam_grid_view[0] - lam_step, \
+    #    resampling_lam_grid_view[0] + lam_step))
 
     ### all elements in between
     for i in xrange(1,resampling_lam_grid_length-1):
 
         #lam_step_high = resampling_lam_grid_view[i+1] - resampling_lam_grid_view[i]
         #lam_step_low = resampling_lam_grid_view[i] - resampling_lam_grid_view[i-1]
-
         indices.append(np.where((model_lam_grid_z >= resampling_lam_grid_view[i-1]) & \
             (model_lam_grid_z < resampling_lam_grid_view[i+1]))[0])
+        #indices.append(simple_where(model_lam_grid_z, resampling_lam_grid_view[i-1], resampling_lam_grid_view[i+1]))
 
     ### Last element
     lam_step = resampling_lam_grid_view[-1] - resampling_lam_grid_view[-2]
     indices.append(np.where((model_lam_grid_z >= resampling_lam_grid_view[-1] - lam_step) & \
         (model_lam_grid_z < resampling_lam_grid_view[-1] + lam_step))[0])
+    #indices.append(simple_where(model_lam_grid_z, resampling_lam_grid_view[-1] - lam_step, \
+    #    resampling_lam_grid_view[-1] + lam_step))
 
     # --------------- Now loop over all models --------------- #
     for k in xrange(total_models):
