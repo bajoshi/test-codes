@@ -1,5 +1,7 @@
 #cython: boundscheck=False, nonecheck=False
+#cython: profile=True
 from __future__ import division
+# Tunring on cdivision seems to make no difference to the speed as of now
 
 from scipy.signal import fftconvolve
 import numpy as np
@@ -39,6 +41,9 @@ cdef list simple_where(np.ndarray[DTYPE_t, ndim=1] a, low_val, high_val):
 
     The structure of this function is optimized to be used
     in this program.
+
+    For now it seems to not make any difference to the speed 
+    of the code.
     """
 
     cdef int a_length = len(a)
@@ -202,7 +207,39 @@ def do_model_modifications(np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
         #interppoints = np.linspace(start=0, stop=lsf_length, num=lsf_length*10, dtype=DTYPE)
         # just making the lsf sampling grid longer # i.e. sampled at more points 
         #broad_lsf = np.interp(interppoints, xp=np.arange(lsf_length), fp=lsf)
-        temp_broadlsf_model = fftconvolve(model_comp_spec_view[k], lsf)
+
+        """
+        Perhaps you could also chop the model to a smaller wavelength range (chop NOT resample)
+        like 1000A to 10000A (models are in rest frame of course) to make the convolution 
+        input array smaller and therefore get a speed up.
+
+        #print lsf_length
+        #print len(model_comp_spec[0, :])
+        #print len(model_comp_spec[:, 0])
+        #print np.argmin(abs(model_lam_grid - 1000))
+        #print np.argmin(abs(model_lam_grid - 10000))
+        #import sys
+        #sys.exit(0)
+
+        This 3D casting is currently not giving me the expected 10x speed up within the 
+        fftconvolve. Need to check.
+        Also need to type the extra variables introduced here.
+        """
+        # This idea came from Stack Overflow:
+        # https://stackoverflow.com/questions/32028979/speed-up-for-loop-in-convolution-for-numpy-3d-array
+        # make the kernel and data 3d that does convolution in z axis only
+        """
+        kernel_3d = np.zeros(shape=(1,1, lsf_length))
+        kernel_3d[0, 0, :] = lsf
+
+        data_3d = np.zeros(shape=(1,1, model_lam_grid_length)) 
+        data_3d[0, 0, :] = model_comp_spec_view[k]
+
+        temp = fftconvolve(data_3d, kernel_3d, mode='same')
+        temp_broadlsf_model = temp[0, 0, :]
+        """
+
+        temp_broadlsf_model = fftconvolve(model_comp_spec_view[k], lsf, mode='same')
 
         #ax2.plot(model_lam_grid_z_view, temp_broadlsf_model)
         #ax2.set_xlim(5000, 10500)

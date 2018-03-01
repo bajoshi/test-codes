@@ -2,10 +2,7 @@
 # encoding: utf-8
 # filename: profile.py
 
-import pstats, cProfile
-
-#import pyximport
-#pyximport.install()
+import line_profiler
 
 import numpy as np
 
@@ -35,7 +32,7 @@ import grid_coadd as gd
 import refine_redshifts_dn4000 as old_ref
 
 if __name__ == '__main__':
-    
+
     obj_id = 91095
     obj_field = 'GOODS-S'
     obj_photoz = 0.97
@@ -69,23 +66,15 @@ if __name__ == '__main__':
     example_filename_lamgrid = 'bc2003_hr_m22_tauV20_csp_tau50000_salp_lamgrid.npy'
     bc03_galaxev_dir = home + '/Documents/GALAXEV_BC03/'
     model_lam_grid = np.load(bc03_galaxev_dir + example_filename_lamgrid)
-    #print model_lam_grid.dtype
-    #model_lam_grid = model_lam_grid.byteswap().newbyteorder()
-    #print model_lam_grid.dtype
     model_lam_grid = model_lam_grid.astype(np.float64)
-    #print model_lam_grid.dtype
-    #sys.exit(0)
     
     model_comp_spec = np.zeros((total_models, len(model_lam_grid)), dtype=np.float64)
     for j in range(total_models):
         model_comp_spec[j] = bc03_all_spec_hdulist[j+1].data
     
     print "All models read."
-    
-    # Run profiling
-    cProfile.runctx("model_mods_cython_copytoedit.do_model_modifications(model_lam_grid, model_comp_spec, \
-        resampling_lam_grid, total_models, lsf, obj_photoz)", \
-        globals(), locals(), "Profile.prof")
-    
-    s = pstats.Stats("Profile.prof")
-    s.strip_dirs().sort_stats("time").print_stats()
+
+    profile = line_profiler.LineProfiler(model_mods_cython_copytoedit.do_model_modifications)
+    profile.runcall(model_mods_cython_copytoedit.do_model_modifications, model_lam_grid, model_comp_spec, \
+        resampling_lam_grid, total_models, lsf, obj_photoz)
+    profile.print_stats()
