@@ -21,11 +21,20 @@ cdef DTYPE_t simple_mean(np.ndarray[DTYPE_t, ndim=1] a):
     return s / arr_elem
 
 @cython.profile(False)
-cdef np.ndarray[DTYPE_t, ndim=1] simple_fftconvolve(np.ndarray[DTYPE_t, ndim=1] arr, np.ndarray[DTYPE_t, ndim=1] kernel):
+cdef np.ndarray[DTYPE_t, ndim=1] simple_1d_fftconvolve(np.ndarray[DTYPE_t, ndim=1] arr, np.ndarray[DTYPE_t, ndim=1] kernel):
 
+    # Define lengths
     cdef long arr_length = len(arr)
     cdef long kernel_length = len(kernel)
-    cdef np.ndarray[DTYPE_t, ndim=1] conv_arr = np.zeros((arr_length + kernel_length - 1), dtype=DTYPE)
+    cdef long output_len = arr_length + kernel_length - 1
+
+    # Define and initialize output array
+    cdef np.ndarray[DTYPE_t, ndim=1] conv_arr = np.zeros(output_len, dtype=DTYPE)
+
+    # First get the discrete fourier transform of the kernel
+    cdef np.ndarray[np.complex128, ndim=1] kernel_fft = np.fft.rfft(kernel)
+    
+
 
     return conv_arr
 
