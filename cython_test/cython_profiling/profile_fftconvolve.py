@@ -58,6 +58,9 @@ if __name__ == '__main__':
 
         conv_model_scipy = fftconvolve(model_comp_spec[k], lsf)
 
+        print conv_model[:50]
+        print conv_model_scipy[:50]
+
         print len(model_lam_grid),
         print len(conv_model),
         print len(conv_model_scipy),
