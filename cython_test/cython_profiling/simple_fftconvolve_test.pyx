@@ -15,7 +15,7 @@ ctypedef np.complex128_t DTYPE_tc
 def simple_1d_fftconvolve(np.ndarray[DTYPE_t, ndim=1] arr, np.ndarray[DTYPE_t, ndim=1] kernel):
 
     # Define and type lengths
-    cdef int arr_length = 6900  #len(arr)
+    cdef int arr_length = len(arr)
     cdef int kernel_length = len(kernel)
     cdef int output_len = arr_length + kernel_length - 1
 
@@ -25,7 +25,7 @@ def simple_1d_fftconvolve(np.ndarray[DTYPE_t, ndim=1] arr, np.ndarray[DTYPE_t, n
     # Make 10 segments each of length 690
     cdef int total_segments = 10
     cdef int segment_length = 690
-    cdef int segment_fft_length = 690 + kernel_length - 1
+    cdef int segment_fft_length = segment_length + kernel_length - 1
     cdef int segment_pad_len = segment_fft_length - segment_length
     cdef int kernel_pad_length = segment_fft_length - kernel_length
 
@@ -81,7 +81,7 @@ def simple_1d_fftconvolve(np.ndarray[DTYPE_t, ndim=1] arr, np.ndarray[DTYPE_t, n
 
         # Save the convolution to the final array and 
         # Save the overlap
-        conv_arr[i*segment_length : (i+1)*segment_length] = conv_seg[0:segment_length]
+        conv_arr[i*segment_length : (i+1)*segment_length] += conv_seg[0:segment_length]
         overlap = conv_seg[segment_length:]
 
         # Now add the overlap to the previous segment

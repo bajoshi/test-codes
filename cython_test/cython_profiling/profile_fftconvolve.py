@@ -55,24 +55,12 @@ if __name__ == '__main__':
     for k in range(total_models):
 
         conv_model = simple_fftconvolve_test.simple_1d_fftconvolve(model_comp_spec[k], lsf)
-
         conv_model_scipy = fftconvolve(model_comp_spec[k], lsf)
 
-        print conv_model[:50]
-        print conv_model_scipy[:50]
+        if not np.allclose(conv_model, conv_model_scipy):
+            print "At model:", i
+            print "The two convolutions do not give the same answer. Exiting."
+            sys.exit(0)
 
-        print len(model_lam_grid),
-        print len(conv_model),
-        print len(conv_model_scipy),
-        print np.allclose(conv_model, conv_model_scipy)
-
-        # PLot to compare
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
-
-        ax.plot(model_lam_grid, conv_model, color='b')
-        ax.plot(model_lam_grid, conv_model_scipy, color='r')
-
-        plt.show()
-
-        sys.exit(0)
+    print "Did not break inside loop. All done."
+    sys.exit(0)
