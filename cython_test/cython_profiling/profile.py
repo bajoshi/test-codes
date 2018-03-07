@@ -2,9 +2,12 @@
 # encoding: utf-8
 # filename: profile.py
 
-import line_profiler
-
 import numpy as np
+from astropy.io import fits
+from astropy.modeling import models, fitting
+from astropy.convolution import convolve, Gaussian1DKernel
+from scipy.integrate import simps
+from scipy.signal import fftconvolve
 
 import model_mods_cython_copytoedit
 
@@ -23,9 +26,13 @@ z = 0.98
 # that its working with the fake data
 import sys
 import os
-from astropy.io import fits
+import line_profiler
+
+import matplotlib.pyplot as plt
+
 home = os.getenv('HOME')
 figs_dir = home + '/Desktop/FIGS/'
+
 sys.path.append(figs_dir + 'stacking-analysis-pears/codes/')
 sys.path.append(figs_dir + 'massive-galaxies/codes/')
 import grid_coadd as gd
@@ -47,8 +54,65 @@ if __name__ == '__main__':
     
     lsf_filename = home + "/Desktop/FIGS/new_codes/pears_lsfs/south_lsfs/" + "s" + \
     str(obj_id) + "_" + pa_chosen.replace('PA', 'pa') + "_lsf.txt"
-    lsf = np.loadtxt(lsf_filename)
+    lsf = np.genfromtxt(lsf_filename)
     
+    # ------------------------ Broader LSF --------------------- #
+    # using a broader lsf just to see if that can do better
+    #interppoints = np.linspace(start=0, stop=lsf_length, num=lsf_length*5, dtype=DTYPE)
+    # just making the lsf sampling grid longer # i.e. sampled at more points 
+    #broad_lsf = np.interp(interppoints, xp=np.arange(lsf_length), fp=lsf)
+    """
+    This isn't really making the LSF broader. It is simply adding more points.
+    It does give the desired result of smoothing out the model some more but perhaps
+    this isn't the right way. You can make the LSF actually broader but
+    keep the same number of points.
+
+    What I'm doing below is: 
+    1. Fit a gaussian to the LSF and find its std. dev.
+    2. Use the fact the (sigma_b)^2 = (sigma_lsf)^2 + (sigma_kernel)^2
+    where sigma_b is the std.dev. of the broadened lsf
+    sigma_lsf is the std. dev. of the LSF (from guassian fitting above)
+    sigma_kernel is the std.dev. of the kernel used to broaden the LSF.
+    3. I want the LSF to be broadened by a factor of 1.5x 
+    This is because of the mismatch between the pixel scale the LSF
+    was measured on vs the pixel scale the grism spectra were drizzled and
+    coadded to. It seems liek the LSF pixel scale is 0.033"/pixel and 
+    the grism pix scale is 0.05"/pixel from the aXedrizzle conf file.
+    So I get 0.05 / 0.033 ~ 1.5x LSF broadening factor.
+    """
+    # fit
+    lsf_length = len(lsf)
+    gauss_init = models.Gaussian1D(amplitude=np.max(lsf), mean=lsf_length/2, stddev=lsf_length/4)
+    fit_gauss = fitting.LevMarLSQFitter()
+    x_arr = np.arange(lsf_length)
+    g = fit_gauss(gauss_init, x_arr, lsf)
+    # get broaden kernel std.dev. and create a gaussian to broaden
+    kernel_std = 1.118 * g.parameters[2]
+    broaden_kernel = Gaussian1DKernel(kernel_std)
+    # broaden LSF
+    broad_lsf = fftconvolve(lsf, broaden_kernel, mode='same')
+
+    # Code block useful for debugging. Do not remove.
+    """
+    print g.parameters
+    print kernel_std
+    print simps(broad_lsf)
+    # plot fit and broadened lsf to check
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    ax.plot(x_arr, lsf, color='b')
+    ax.plot(x_arr, g(x_arr), color='r')
+    ax.plot(x_arr, broad_lsf, color='g')
+
+    plt.show()
+    plt.clf()
+    plt.cla()
+    plt.close()
+    sys.exit(0)
+    """
+    
+    # -------------------------------- 
     # extend lam_grid to be able to move the lam_grid later 
     avg_dlam = old_ref.get_avg_dlam(lam_obs)
     
@@ -76,5 +140,5 @@ if __name__ == '__main__':
 
     profile = line_profiler.LineProfiler(model_mods_cython_copytoedit.do_model_modifications)
     profile.runcall(model_mods_cython_copytoedit.do_model_modifications, model_lam_grid, model_comp_spec, \
-        resampling_lam_grid, total_models, lsf, obj_photoz)
+        resampling_lam_grid, total_models, broad_lsf, obj_photoz)
     profile.print_stats()

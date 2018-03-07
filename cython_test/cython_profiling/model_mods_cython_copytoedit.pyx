@@ -4,12 +4,14 @@ from __future__ import division
 
 from scipy.signal import fftconvolve
 import numpy as np
-
 cimport numpy as np
+
 cimport cython
 
 DTYPE = np.float64
+DTYPE_c = np.complex128
 ctypedef np.float64_t DTYPE_t
+ctypedef np.complex128_t DTYPE_tc
 
 @cython.profile(False)
 cdef DTYPE_t simple_mean(np.ndarray[DTYPE_t, ndim=1] a):
@@ -24,7 +26,7 @@ cdef DTYPE_t simple_mean(np.ndarray[DTYPE_t, ndim=1] a):
 cdef np.ndarray[DTYPE_t, ndim=1] simple_1d_fftconvolve(np.ndarray[DTYPE_t, ndim=1] arr, np.ndarray[DTYPE_t, ndim=1] kernel):
 
     # Define and type lengths
-    cdef int arr_length = len(arr)
+    cdef int arr_length = 6900 #len(arr)
     cdef int kernel_length = len(kernel)
     cdef int output_len = arr_length + kernel_length - 1
 
@@ -32,8 +34,8 @@ cdef np.ndarray[DTYPE_t, ndim=1] simple_1d_fftconvolve(np.ndarray[DTYPE_t, ndim=
     # you know that the model array always has length 6900 # so you can eliminate that length operation above as well
     # you also only need to do this once per galaxy NOT once per model and also NOT once per redshift
     # Make 10 segments each of length 690
-    cdef int total_segments = 10
-    cdef int segment_length = 690
+    cdef int total_segments = 4
+    cdef int segment_length = 1725
     cdef int segment_fft_length = segment_length + kernel_length - 1
     cdef int segment_pad_len = segment_fft_length - segment_length
     cdef int kernel_pad_length = segment_fft_length - kernel_length
@@ -158,11 +160,6 @@ def do_model_modifications(np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
     # --------------- Now loop over all models --------------- #
     for k in xrange(total_models):
 
-        # using a broader lsf just to see if that can do better
-        interppoints = np.linspace(start=0, stop=lsf_length, num=lsf_length*5, dtype=DTYPE)
-        # just making the lsf sampling grid longer # i.e. sampled at more points 
-        broad_lsf = np.interp(interppoints, xp=np.arange(lsf_length), fp=lsf)
-
         """
         Perhaps you could also chop the model to a smaller wavelength range (chop NOT resample)
         like 1000A to 10000A (models are in rest frame of course) to make the convolution 
@@ -175,28 +172,12 @@ def do_model_modifications(np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
         #print np.argmin(abs(model_lam_grid - 10000))
         #import sys
         #sys.exit(0)
-
-        This 3D casting is currently not giving me the expected 10x speed up within the 
-        fftconvolve. Need to check.
-        Also need to type the extra variables introduced here.
-        """
-        # This idea came from Stack Overflow:
-        # https://stackoverflow.com/questions/32028979/speed-up-for-loop-in-convolution-for-numpy-3d-array
-        # make the kernel and data 3d that does convolution in z axis only
-        """
-        kernel_3d = np.zeros(shape=(1,1, lsf_length))
-        kernel_3d[0, 0, :] = lsf
-
-        data_3d = np.zeros(shape=(1,1, model_lam_grid_length)) 
-        data_3d[0, 0, :] = model_comp_spec_view[k]
-
-        temp = fftconvolve(data_3d, kernel_3d, mode='same')
-        temp_broadlsf_model = temp[0, 0, :]
         """
 
-        temp_broadlsf_model = simple_1d_fftconvolve(model_comp_spec_redshifted[k], broad_lsf, mode='same')
-
+        temp_broadlsf_model = fftconvolve(model_comp_spec_redshifted[k], lsf, mode = 'same')
         model_comp_spec_modified[k] = [simple_mean(temp_broadlsf_model[indices[q]]) for q in xrange(resampling_lam_grid_length)]
+        # Do interpolation instead of resampling??
+        # This is to remove the dependence on resampling bin edges
 
     return model_comp_spec_modified
 

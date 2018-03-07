@@ -1,11 +1,11 @@
 from __future__ import division
 
 import numpy as np
-from scipy.signal import fftconvolve
 from astropy.io import fits
 
 import os
 import sys
+import line_profiler
 
 import matplotlib.pyplot as plt
 
@@ -28,7 +28,7 @@ if __name__ == '__main__':
     bc03_all_spec_hdulist = fits.open(figs_dir + 'all_comp_spectra_bc03_ssp_and_csp_nolsf_noresample.fits')
     total_models = 34542
     
-    # arrange the model spectra to be compared in a properly shaped numpy array for faster computation
+    ## arrange the model spectra to be compared in a properly shaped numpy array for faster computation
     example_filename_lamgrid = 'bc2003_hr_m22_tauV20_csp_tau50000_salp_lamgrid.npy'
     bc03_galaxev_dir = home + '/Documents/GALAXEV_BC03/'
     model_lam_grid = np.load(bc03_galaxev_dir + example_filename_lamgrid)
@@ -49,18 +49,18 @@ if __name__ == '__main__':
 
     lsf_filename = lsfdir + "south_lsfs/" + "s" + str(current_id) + "_" + pa_chosen.replace('PA', 'pa') + "_lsf.txt"
     lsf = np.genfromtxt(lsf_filename)
+    #print len(lsf)
+    #print np.argmin(abs(model_lam_grid - 1000))
+    #print np.argmin(abs(model_lam_grid - 10000))
+    #sys.exit(0)
 
-    # Now check the FFT convolution of these models your way and the Scipy way
-    # They should be the same
-    for k in range(total_models):
+    profile = line_profiler.LineProfiler(simple_fftconvolve_test.simple_1d_fftconvolve)
+    profile.runcall(simple_fftconvolve_test.simple_1d_fftconvolve, model_comp_spec[0], lsf)
+    profile.print_stats()
 
-        conv_model = simple_fftconvolve_test.simple_1d_fftconvolve(model_comp_spec[k], lsf)
-        conv_model_scipy = fftconvolve(model_comp_spec[k], lsf)
-
-        if not np.allclose(conv_model, conv_model_scipy):
-            print "At model:", i
-            print "The two convolutions do not give the same answer. Exiting."
-            sys.exit(0)
+    #profile = line_profiler.LineProfiler(simple_fftconvolve_test.simple_1d_fftconvolve)
+    #profile.runcall(simple_fftconvolve_test.simple_1d_fftconvolve, model_comp_spec[0], lsf)
+    #profile.print_stats()
 
     print "Did not break inside loop. All done."
     sys.exit(0)

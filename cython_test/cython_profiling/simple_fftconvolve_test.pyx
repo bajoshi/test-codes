@@ -1,7 +1,12 @@
+#cython: profile=True
 from __future__ import division
-# Tunring on cdivision seems to make no difference to the speed as of now
+
 import numpy as np
 cimport numpy as np
+
+from scipy.signal import fftconvolve
+
+import sys
 
 DTYPE = np.float64
 DTYPE_c = np.complex128
@@ -15,16 +20,15 @@ ctypedef np.complex128_t DTYPE_tc
 def simple_1d_fftconvolve(np.ndarray[DTYPE_t, ndim=1] arr, np.ndarray[DTYPE_t, ndim=1] kernel):
 
     # Define and type lengths
-    cdef int arr_length = len(arr)
+    cdef int arr_length = 6900
     cdef int kernel_length = len(kernel)
     cdef int output_len = arr_length + kernel_length - 1
 
     # Figure out the length of the output segments
     # you know that the model array always has length 6900 # so you can eliminate that length operation above as well
     # you also only need to do this once per galaxy NOT once per model and also NOT once per redshift
-    # Make 10 segments each of length 690
-    cdef int total_segments = 10
-    cdef int segment_length = 690
+    cdef int total_segments = 4
+    cdef int segment_length = 1725
     cdef int segment_fft_length = segment_length + kernel_length - 1
     cdef int segment_pad_len = segment_fft_length - segment_length
     cdef int kernel_pad_length = segment_fft_length - kernel_length
@@ -37,7 +41,7 @@ def simple_1d_fftconvolve(np.ndarray[DTYPE_t, ndim=1] arr, np.ndarray[DTYPE_t, n
 
     # First get the discrete fourier transform of the kernel
     # make sure that its padded
-    cdef np.ndarray[DTYPE_tc, ndim=1] kernel_fft = np.fft.fft(kernel_padded)
+    cdef np.ndarray[DTYPE_tc, ndim=1] kernel_fft = np.fft.fft(kernel_padded) 
     # Divide into real and imag parts
     cdef np.ndarray[DTYPE_t, ndim=1] kernel_fft_real = kernel_fft.real
     cdef np.ndarray[DTYPE_t, ndim=1] kernel_fft_imag = kernel_fft.imag
@@ -88,6 +92,28 @@ def simple_1d_fftconvolve(np.ndarray[DTYPE_t, ndim=1] arr, np.ndarray[DTYPE_t, n
         conv_arr[(i+1)*segment_length:(i+1)*segment_length+overlap_length] += overlap
 
     return conv_arr
+
+def run_fftconvolve(np.ndarray[DTYPE_t, ndim=2] model_comp_spec, np.ndarray[DTYPE_t, ndim=1] lsf):
+
+    cdef int total_models = 34542
+    cdef int k
+
+    cdef np.ndarray[DTYPE_t, ndim=1] conv_model
+    cdef np.ndarray[DTYPE_t, ndim=1] conv_model_scipy
+
+    # Now check the FFT convolution of these models your way and the Scipy way
+    # They should be the same
+    for k in range(total_models):
+
+        conv_model = simple_1d_fftconvolve(model_comp_spec[k], lsf)
+        conv_model_scipy = fftconvolve(model_comp_spec[k], lsf)
+
+        if not np.allclose(conv_model, conv_model_scipy):
+            print "At model:", k
+            print "The two convolutions do not give the same answer. Exiting."
+            sys.exit(0)
+
+    return None
 
 if __name__ == '__main__':
 
