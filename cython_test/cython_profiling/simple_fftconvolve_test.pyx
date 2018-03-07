@@ -3,75 +3,94 @@ from __future__ import division
 import numpy as np
 cimport numpy as np
 
-from scipy.signal import fftconvolve
+DTYPE = np.float64
+DTYPE_c = np.complex128
+ctypedef np.float64_t DTYPE_t
+ctypedef np.complex128_t DTYPE_tc
 
-home = os.getenv('HOME')
-pears_datadir = home + '/Documents/PEARS/data_spectra_only/'
-stacking_analysis_dir = home + "/Desktop/FIGS/stacking-analysis-pears/"
-massive_galaxies_dir = home + "/Desktop/FIGS/massive-galaxies/"
-savefits_dir = home + "/Desktop/FIGS/new_codes/bc03_fits_files_for_refining_redshifts/"
-lsfdir = home + "/Desktop/FIGS/new_codes/pears_lsfs/"
-figs_dir = home + "/Desktop/FIGS/"
+#cdef fft_prep():
+#    return 
 
-cdef np.ndarray[DTYPE_t, ndim=1] simple_1d_fftconvolve(np.ndarray[DTYPE_t, ndim=1] arr, np.ndarray[DTYPE_t, ndim=1] kernel):
+#cdef np.ndarray[DTYPE_t, ndim=1] simple_1d_fftconvolve(np.ndarray[DTYPE_t, ndim=1] arr, np.ndarray[DTYPE_t, ndim=1] kernel):
+def simple_1d_fftconvolve(np.ndarray[DTYPE_t, ndim=1] arr, np.ndarray[DTYPE_t, ndim=1] kernel):
 
-    # Define lengths
-    cdef long arr_length = len(arr)
-    cdef long kernel_length = len(kernel)
-    cdef long output_len = arr_length + kernel_length - 1
+    # Define and type lengths
+    cdef int arr_length = 6900  #len(arr)
+    cdef int kernel_length = len(kernel)
+    cdef int output_len = arr_length + kernel_length - 1
+
+    # Figure out the length of the output segments
+    # you know that the model array always has length 6900 # so you can eliminate that length operation above as well
+    # you also only need to do this once per galaxy NOT once per model and also NOT once per redshift
+    # Make 10 segments each of length 690
+    cdef int total_segments = 10
+    cdef int segment_length = 690
+    cdef int segment_fft_length = 690 + kernel_length - 1
+    cdef int segment_pad_len = segment_fft_length - segment_length
+    cdef int kernel_pad_length = segment_fft_length - kernel_length
+
+    # now pad the kernel with zeros
+    cdef np.ndarray[DTYPE_t, ndim=1] kernel_padded = np.append(kernel, np.zeros(kernel_pad_length))
 
     # Define and initialize output array
     cdef np.ndarray[DTYPE_t, ndim=1] conv_arr = np.zeros(output_len, dtype=DTYPE)
 
     # First get the discrete fourier transform of the kernel
-    cdef np.ndarray[np.complex128, ndim=1] kernel_fft = np.fft.rfft(kernel)
-    
+    # make sure that its padded
+    cdef np.ndarray[DTYPE_tc, ndim=1] kernel_fft = np.fft.fft(kernel_padded)
+    # Divide into real and imag parts
+    cdef np.ndarray[DTYPE_t, ndim=1] kernel_fft_real = kernel_fft.real
+    cdef np.ndarray[DTYPE_t, ndim=1] kernel_fft_imag = kernel_fft.imag
 
+    # Loop through segments
+    # Type intermediate products generated in the loop
+    cdef np.ndarray[DTYPE_t, ndim=1] current_seg
+    cdef np.ndarray[DTYPE_tc, ndim=1] current_seg_fft
+    cdef np.ndarray[DTYPE_t, ndim=1] current_seg_fft_real
+    cdef np.ndarray[DTYPE_t, ndim=1] current_seg_fft_imag
+    cdef np.ndarray[DTYPE_t, ndim=1] inv_fft_real
+    cdef np.ndarray[DTYPE_t, ndim=1] inv_fft_imag
+    cdef np.ndarray[DTYPE_tc, ndim=1] inv_fft_array
+    cdef np.ndarray[DTYPE_t, ndim=1] conv_seg
+    cdef int overlap_length = kernel_length - 1
+    cdef np.ndarray[DTYPE_t, ndim=1] overlap = np.zeros(overlap_length)
+
+    cdef int i
+    for i in range(total_segments):
+
+        # Get the segment to be convolved
+        current_seg = arr[i*segment_length : (i+1)*segment_length]
+
+        # Now pad the slice with zeros
+        current_seg = np.append(current_seg, np.zeros(segment_pad_len))
+
+        # get the fft of the slice
+        current_seg_fft = np.fft.fft(current_seg)
+        current_seg_fft_real = current_seg_fft.real
+        current_seg_fft_imag = current_seg_fft.imag
+
+        # get the real and imag parts of the inverse fft
+        inv_fft_real = current_seg_fft_real*kernel_fft_real - current_seg_fft_imag*kernel_fft_imag
+        inv_fft_imag = current_seg_fft_real*kernel_fft_imag + current_seg_fft_imag*kernel_fft_real
+
+        inv_fft_array = np.array(inv_fft_real + inv_fft_imag*1j, dtype=DTYPE_c)
+
+        # Now get the inverse fft and take the magnitudes of the complex numbers in the array
+        # this is because the input is real so the convolved output must also be real
+        conv_seg = np.absolute(np.fft.ifft(inv_fft_array))
+
+        # Save the convolution to the final array and 
+        # Save the overlap
+        conv_arr[i*segment_length : (i+1)*segment_length] = conv_seg[0:segment_length]
+        overlap = conv_seg[segment_length:]
+
+        # Now add the overlap to the previous segment
+        conv_arr[(i+1)*segment_length:(i+1)*segment_length+overlap_length] += overlap
 
     return conv_arr
 
 if __name__ == '__main__':
 
-    # read in entire model set
-    bc03_all_spec_hdulist = fits.open(figs_dir + 'all_comp_spectra_bc03_ssp_and_csp_nolsf_noresample.fits')
-    total_models = 34542
-    
-    # arrange the model spectra to be compared in a properly shaped numpy array for faster computation
-    example_filename_lamgrid = 'bc2003_hr_m22_tauV20_csp_tau50000_salp_lamgrid.npy'
-    bc03_galaxev_dir = home + '/Documents/GALAXEV_BC03/'
-    model_lam_grid = np.load(bc03_galaxev_dir + example_filename_lamgrid)
-    model_lam_grid = model_lam_grid.astype(np.float64)
-    
-    model_comp_spec = np.zeros((total_models, len(model_lam_grid)), dtype=np.float64)
-    for j in range(total_models):
-        model_comp_spec[j] = bc03_all_spec_hdulist[j+1].data
-    
-    print "All models read."
-
-    # Read in LSF
-    lsf_filename = lsfdir + "south_lsfs/" + "s" + str(current_id) + "_" + pa_chosen.replace('PA', 'pa') + "_lsf.txt"
-    lsf = np.genfromtxt(lsf_filename)
-
-    # Now check the FFT convolution of these models your way and the Scipy way
-    # They should be the same
-    for k in range(total_models):
-
-        conv_model = simple_1d_fftconvolve(model_comp_spec[k], lsf)
-
-        conv_model_scipy = fftconvolve(model_comp_spec[k], lsf, mode='same')
-
-        print len(model_lam_grid)
-        print len(conv_model)
-        print len(conv_model_scipy)
-
-        # PLot to compare
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
-
-        ax.plot(model_lam_grid, conv_model, color='b')
-        ax.plot(model_lam_grid, conv_model_scipy, color='r')
-
-        plt.show()
-
-        sys.exit(0)
-
+    print "Use only as module. Exiting."
+    import sys
+    sys.exit(0)
