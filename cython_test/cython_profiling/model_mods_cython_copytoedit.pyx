@@ -111,10 +111,10 @@ def do_model_modifications(np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
     # 3. resample the models
 
     # assert types
-    assert model_lam_grid.dtype == DTYPE and resampling_lam_grid.dtype == DTYPE
-    assert model_comp_spec.dtype == DTYPE and lsf.dtype == DTYPE
-    assert type(total_models) is int
-    assert type(z) is float
+    #assert model_lam_grid.dtype == DTYPE and resampling_lam_grid.dtype == DTYPE
+    #assert model_comp_spec.dtype == DTYPE and lsf.dtype == DTYPE
+    #assert type(total_models) is int
+    #assert type(z) is float
 
     # Cython type declarations for the variables
     # hardcoded lengths
@@ -159,7 +159,6 @@ def do_model_modifications(np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
 
     # --------------- Now loop over all models --------------- #
     for k in xrange(total_models):
-
         """
         Perhaps you could also chop the model to a smaller wavelength range (chop NOT resample)
         like 1000A to 10000A (models are in rest frame of course) to make the convolution 
