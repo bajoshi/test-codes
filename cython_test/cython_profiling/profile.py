@@ -86,7 +86,7 @@ if __name__ == '__main__':
     fit_gauss = fitting.LevMarLSQFitter()
     x_arr = np.arange(lsf_length)
     g = fit_gauss(gauss_init, x_arr, lsf)
-    # get broaden kernel std.dev. and create a gaussian to broaden
+    # get fit std.dev. and create a gaussian kernel with which to broaden
     kernel_std = 1.118 * g.parameters[2]
     broaden_kernel = Gaussian1DKernel(kernel_std)
     # broaden LSF
