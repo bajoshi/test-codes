@@ -22,7 +22,7 @@ cdef DTYPE_t simple_mean(np.ndarray[DTYPE_t, ndim=1] a):
         s += a[j]
     return s / arr_elem
 
-def redshift_and_resample(model_comp_spec_lsfconv, z, total_models, model_lam_grid, resampling_lam_grid, resampling_lam_grid_length):
+def redshift_and_resample(model_comp_spec_lsfconv, float z, int total_models, model_lam_grid, resampling_lam_grid, int resampling_lam_grid_length):
 
     cdef float redshift_factor
     cdef int i
