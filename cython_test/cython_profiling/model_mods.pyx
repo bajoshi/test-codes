@@ -2,7 +2,6 @@
 from __future__ import division
 # Tunring on cdivision seems to make no difference to the speed as of now
 
-from scipy.signal import fftconvolve
 import numpy as np
 cimport numpy as np
 
@@ -14,7 +13,7 @@ ctypedef np.float64_t DTYPE_t
 ctypedef np.complex128_t DTYPE_tc
 
 @cython.profile(False)
-cdef DTYPE_t simple_mean(np.ndarray[DTYPE_t, ndim=1] a):
+cdef float simple_mean(np.ndarray[DTYPE_t, ndim=1] a):
     cdef DTYPE_t s = 0 
     cdef int j
     cdef int arr_elem = len(a)
@@ -28,6 +27,8 @@ def redshift_and_resample(model_comp_spec_lsfconv, float z, int total_models, mo
     cdef int i
     cdef int k
     cdef int q
+    cdef list indices
+    cdef float lam_step
 
     # --------------- Redshift model --------------- #
     redshift_factor = 1.0 + z
@@ -57,6 +58,6 @@ def redshift_and_resample(model_comp_spec_lsfconv, float z, int total_models, mo
     # ---------- Run for loop to resample ---------- #
     for k in range(total_models):
         for q in range(resampling_lam_grid_length):
-            model_comp_spec_modified[k] = np.mean(model_comp_spec_redshifted[k][indices[q]])
+            model_comp_spec_modified[k, q] = np.mean(model_comp_spec_redshifted[k][indices[q]])
 
     return model_comp_spec_modified
