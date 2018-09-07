@@ -8,20 +8,20 @@ cimport numpy as np
 cimport cython
 
 DTYPE = np.float64
-DTYPE_c = np.complex128
 ctypedef np.float64_t DTYPE_t
-ctypedef np.complex128_t DTYPE_tc
 
 @cython.profile(False)
 cdef float simple_mean(np.ndarray[DTYPE_t, ndim=1] a):
-    cdef DTYPE_t s = 0 
+    cdef float s = 0 
     cdef int j
     cdef int arr_elem = len(a)
     for j in xrange(0,arr_elem):
         s += a[j]
     return s / arr_elem
 
-def redshift_and_resample(model_comp_spec_lsfconv, float z, int total_models, model_lam_grid, resampling_lam_grid, int resampling_lam_grid_length):
+@cython.profile(False)
+def redshift_and_resample(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfconv, float z, int total_models, np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
+    np.ndarray[DTYPE_t, ndim=1] resampling_lam_grid, int resampling_lam_grid_length):
 
     cdef float redshift_factor
     cdef int i
@@ -29,6 +29,10 @@ def redshift_and_resample(model_comp_spec_lsfconv, float z, int total_models, mo
     cdef int q
     cdef list indices
     cdef float lam_step
+
+    cdef np.ndarray[DTYPE_t, ndim=1] model_lam_grid_z
+    cdef np.ndarray[DTYPE_t, ndim=2] model_comp_spec_redshifted
+    cdef np.ndarray[DTYPE_t, ndim=2] model_comp_spec_modified
 
     # --------------- Redshift model --------------- #
     redshift_factor = 1.0 + z
@@ -57,7 +61,10 @@ def redshift_and_resample(model_comp_spec_lsfconv, float z, int total_models, mo
 
     # ---------- Run for loop to resample ---------- #
     for k in range(total_models):
-        for q in range(resampling_lam_grid_length):
-            model_comp_spec_modified[k, q] = np.mean(model_comp_spec_redshifted[k][indices[q]])
+        model_comp_spec_modified[k] = [simple_mean(model_comp_spec_redshifted[k][indices[q]]) for q in range(resampling_lam_grid_length)]
+        # Using simple_mean here instead of np.mean gives a BIG improvement (~3x)
+        # np.mean probably does all kinds of checks before it computes the actual
+        # mean. It also probably works with different datatypes. Since we know that in
+        # our case we will always use floats we can easily use this simple_mean function.
 
     return model_comp_spec_modified
