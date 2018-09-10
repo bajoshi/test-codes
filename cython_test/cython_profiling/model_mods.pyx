@@ -4,6 +4,7 @@ from __future__ import division
 
 import numpy as np
 cimport numpy as np
+from scipy.interpolate import griddata
 
 cimport cython
 
@@ -20,7 +21,8 @@ cdef float simple_mean(np.ndarray[DTYPE_t, ndim=1] a):
     return s / arr_elem
 
 @cython.profile(False)
-def redshift_and_resample(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfconv, float z, int total_models, np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
+def redshift_and_resample(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfconv, float z, int total_models, \
+    np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
     np.ndarray[DTYPE_t, ndim=1] resampling_lam_grid, int resampling_lam_grid_length):
 
     cdef float redshift_factor
@@ -30,14 +32,13 @@ def redshift_and_resample(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfconv, f
     cdef list indices
     cdef float lam_step
 
-    cdef np.ndarray[DTYPE_t, ndim=1] model_lam_grid_z
-    cdef np.ndarray[DTYPE_t, ndim=2] model_comp_spec_redshifted
     cdef np.ndarray[DTYPE_t, ndim=2] model_comp_spec_modified
+    cdef list resampling_lam_grid_weighted
 
     # --------------- Redshift model --------------- #
     redshift_factor = 1.0 + z
-    model_lam_grid_z = model_lam_grid * redshift_factor
-    model_comp_spec_redshifted = model_comp_spec_lsfconv / redshift_factor
+    model_lam_grid *= redshift_factor
+    model_comp_spec_lsfconv /= redshift_factor
 
     # --------------- Do resampling --------------- #
     # Define array to save modified models
@@ -45,26 +46,36 @@ def redshift_and_resample(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfconv, f
 
     # --------------- Get indices for resampling --------------- #
     # These indices are going to be different each time depending on the redshfit.
-    # i.e. Since it uses the redshifted model_lam_grid_z to get indices.
+    # i.e. Since it uses the redshifted model_lam_grid to get indices.
     indices = []
     ### Zeroth element
     lam_step = resampling_lam_grid[1] - resampling_lam_grid[0]
-    indices.append(np.where((model_lam_grid_z >= resampling_lam_grid[0] - lam_step) & (model_lam_grid_z < resampling_lam_grid[0] + lam_step))[0])
+    indices.append(np.where((model_lam_grid >= resampling_lam_grid[0] - lam_step) & (model_lam_grid < resampling_lam_grid[0] + lam_step))[0])
 
     ### all elements in between
     for i in range(1, resampling_lam_grid_length - 1):
-        indices.append(np.where((model_lam_grid_z >= resampling_lam_grid[i-1]) & (model_lam_grid_z < resampling_lam_grid[i+1]))[0])
+        indices.append(np.where((model_lam_grid >= resampling_lam_grid[i-1]) & (model_lam_grid < resampling_lam_grid[i+1]))[0])
 
     ### Last element
     lam_step = resampling_lam_grid[-1] - resampling_lam_grid[-2]
-    indices.append(np.where((model_lam_grid_z >= resampling_lam_grid[-1] - lam_step) & (model_lam_grid_z < resampling_lam_grid[-1] + lam_step))[0])
+    indices.append(np.where((model_lam_grid >= resampling_lam_grid[-1] - lam_step) & (model_lam_grid < resampling_lam_grid[-1] + lam_step))[0])
 
     # ---------- Run for loop to resample ---------- #
     for k in range(total_models):
-        model_comp_spec_modified[k] = [simple_mean(model_comp_spec_redshifted[k][indices[q]]) for q in range(resampling_lam_grid_length)]
-        # Using simple_mean here instead of np.mean gives a BIG improvement (~3x)
-        # np.mean probably does all kinds of checks before it computes the actual
-        # mean. It also probably works with different datatypes. Since we know that in
-        # our case we will always use floats we can easily use this simple_mean function.
+
+        resampling_lam_grid_weighted = []
+
+        for q in range(resampling_lam_grid_length):
+
+            bin_center = np.sum(model_lam_grid[indices[q]] * model_comp_spec_lsfconv[k][indices[q]]) / np.sum(model_comp_spec_lsfconv[k][indices[q]])
+            resampling_lam_grid_weighted.append(bin_center)
+
+            model_comp_spec_modified[k, q] = simple_mean(model_comp_spec_lsfconv[k][indices[q]])
+            # Using simple_mean here instead of np.mean gives a BIG improvement (~3x)
+            # np.mean probably does all kinds of checks before it computes the actual
+            # mean. It also probably works with different datatypes. Since we know that in
+            # our case we will always use floats we can easily use this simple_mean function.
+
+        resampling_lam_grid_weighted = np.asarray(resampling_lam_grid_weighted)
 
     return model_comp_spec_modified
