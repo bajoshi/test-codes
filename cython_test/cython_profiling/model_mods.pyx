@@ -67,6 +67,10 @@ def redshift_and_resample(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfconv, f
     indices.append(np.where((model_lam_grid_z >= resampling_lam_grid[-1] - lam_step) & (model_lam_grid_z < resampling_lam_grid[-1] + lam_step))[0])
 
     # ---------- Run for loop to resample ---------- #
+    vec_mean = np.mean(model_comp_spec_redshifted[indices])
+    print vec_mean
+    print vec_mean.shape
+
     for k in range(total_models):
 
         model_comp_spec_modified[k] = [simple_mean(model_comp_spec_redshifted[k][indices[q]]) for q in range(resampling_lam_grid_length)]
@@ -74,5 +78,7 @@ def redshift_and_resample(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfconv, f
         # np.mean probably does all kinds of checks before it computes the actual
         # mean. It also probably works with different datatypes. Since we know that in
         # our case we will always use floats we can easily use this simple_mean function.
+
+    print model_comp_spec_modified
 
     return model_comp_spec_modified
