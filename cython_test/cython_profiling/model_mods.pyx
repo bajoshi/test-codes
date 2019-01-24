@@ -82,3 +82,59 @@ def redshift_and_resample(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfconv, f
     model_comp_spec_modified = np.asarray(model_comp_spec_modified_list).T
 
     return model_comp_spec_modified
+
+@cython.profile(False)
+def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfconv, float z, int total_models, \
+    np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
+    np.ndarray[DTYPE_t, ndim=1] resampling_lam_grid, int resampling_lam_grid_length):
+
+    cdef float redshift_factor
+    cdef int i
+    cdef int k
+    cdef int q
+    cdef float lam_step
+
+    """
+    Checks to do:
+    1.  The definitions here say that these arrays are 2 dimensional,
+        however, they say nothing of the shape. Would it go faster if
+        I was able to define and shape to force it?
+    2.  Can the for loop below that does the resampling be parallelized
+        to go faster?
+    """
+
+    cdef np.ndarray[DTYPE_t, ndim=1] idx
+    cdef np.ndarray[DTYPE_t, ndim=1] model_lam_grid_z
+    cdef np.ndarray[DTYPE_t, ndim=2] model_comp_spec_redshifted
+    cdef np.ndarray[DTYPE_t, ndim=2] model_comp_spec_modified
+
+    # --------------- Redshift model --------------- #
+    """
+    Seems like I cannot do these operations in place 
+    to make them go faster because I've defined the 
+    types already above?? Not quite sure... yet.
+    """
+    redshift_factor = 1.0 + z
+    model_lam_grid_z = model_lam_grid * redshift_factor
+    model_comp_spec_redshifted = model_comp_spec_lsfconv / redshift_factor
+
+    # --------------- Do resampling --------------- #
+    # Define array to save modified models
+    model_comp_spec_modified = np.zeros((total_models, resampling_lam_grid_length), dtype=np.float64)
+
+    ### Zeroth element
+    lam_step = resampling_lam_grid[1] - resampling_lam_grid[0]
+    idx = np.where((model_lam_grid_z >= resampling_lam_grid[0] - lam_step) & (model_lam_grid_z < resampling_lam_grid[0] + lam_step))[0]
+    model_comp_spec_modified[:, 0] = np.mean(model_comp_spec_redshifted[:, idx], axis=1)
+
+    ### all elements in between
+    for i in range(1, resampling_lam_grid_length - 1):
+        idx = np.where((model_lam_grid_z >= resampling_lam_grid[i-1]) & (model_lam_grid_z < resampling_lam_grid[i+1]))[0]
+        model_comp_spec_modified[:, i] = np.mean(model_comp_spec_redshifted[:, idx], axis=1)
+
+    ### Last element
+    lam_step = resampling_lam_grid[-1] - resampling_lam_grid[-2]
+    idx = np.where((model_lam_grid_z >= resampling_lam_grid[-1] - lam_step) & (model_lam_grid_z < resampling_lam_grid[-1] + lam_step))[0]
+    model_comp_spec_modified[:, -1] = np.mean(model_comp_spec_redshifted[:, idx], axis=1)
+
+    return model_comp_spec_modified
