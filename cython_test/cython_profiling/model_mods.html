@@ -1601,7 +1601,7 @@ static PyObject *__pyx_pf_10model_mods_2redshift_and_resample_fast(CYTHON_UNUSED
 <pre class="cython line score-0">&#xA0;<span class="">103</span>: <span class="sd">        to go faster?</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">104</span>: <span class="sd">    &quot;&quot;&quot;</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">105</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">106</span>:     <span class="k">cdef</span> <span class="kt">np</span>.<span class="kt">ndarray</span>[<span class="nf">int</span><span class="p">,</span> <span class="nf">ndim</span><span class="o">=</span><span class="mf">1</span><span class="p">]</span> <span class="n">idx</span>  <span class="c"># Since the indices are all integers</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">106</span>:     <span class="k">cdef</span> <span class="kt">np</span>.<span class="kt">ndarray</span>[<span class="nf">long</span><span class="p">,</span> <span class="nf">ndim</span><span class="o">=</span><span class="mf">1</span><span class="p">]</span> <span class="n">idx</span>  <span class="c"># Since the indices are all integers</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">107</span>:     <span class="k">cdef</span> <span class="kt">np</span>.<span class="kt">ndarray</span>[<span class="nf">DTYPE_t</span><span class="p">,</span> <span class="nf">ndim</span><span class="o">=</span><span class="mf">1</span><span class="p">]</span> <span class="n">model_lam_grid_z</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">108</span>:     <span class="k">cdef</span> <span class="kt">np</span>.<span class="kt">ndarray</span>[<span class="nf">DTYPE_t</span><span class="p">,</span> <span class="nf">ndim</span><span class="o">=</span><span class="mf">2</span><span class="p">]</span> <span class="n">model_comp_spec_redshifted</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">109</span>:     <span class="k">cdef</span> <span class="kt">np</span>.<span class="kt">ndarray</span>[<span class="nf">DTYPE_t</span><span class="p">,</span> <span class="nf">ndim</span><span class="o">=</span><span class="mf">2</span><span class="p">]</span> <span class="n">model_comp_spec_modified</span></pre>
@@ -1851,10 +1851,10 @@ static PyObject *__pyx_pf_10model_mods_2redshift_and_resample_fast(CYTHON_UNUSED
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     <span class='pyx_c_api'>__Pyx_SafeReleaseBuffer</span>(&amp;__pyx_pybuffernd_idx.rcbuffer-&gt;pybuffer);
-    __pyx_t_4 = <span class='pyx_c_api'>__Pyx_GetBufferAndValidate</span>(&amp;__pyx_pybuffernd_idx.rcbuffer-&gt;pybuffer, (PyObject*)__pyx_t_17, &amp;__Pyx_TypeInfo_int, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack);
+    __pyx_t_4 = <span class='pyx_c_api'>__Pyx_GetBufferAndValidate</span>(&amp;__pyx_pybuffernd_idx.rcbuffer-&gt;pybuffer, (PyObject*)__pyx_t_17, &amp;__Pyx_TypeInfo_long, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack);
     if (unlikely(__pyx_t_4 &lt; 0)) {
       <span class='py_c_api'>PyErr_Fetch</span>(&amp;__pyx_t_7, &amp;__pyx_t_6, &amp;__pyx_t_5);
-      if (unlikely(<span class='pyx_c_api'>__Pyx_GetBufferAndValidate</span>(&amp;__pyx_pybuffernd_idx.rcbuffer-&gt;pybuffer, (PyObject*)__pyx_v_idx, &amp;__Pyx_TypeInfo_int, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
+      if (unlikely(<span class='pyx_c_api'>__Pyx_GetBufferAndValidate</span>(&amp;__pyx_pybuffernd_idx.rcbuffer-&gt;pybuffer, (PyObject*)__pyx_v_idx, &amp;__Pyx_TypeInfo_long, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
         Py_XDECREF(__pyx_t_7); Py_XDECREF(__pyx_t_6); Py_XDECREF(__pyx_t_5);
         <span class='pyx_c_api'>__Pyx_RaiseBufferFallbackError</span>();
       } else {
@@ -2010,10 +2010,10 @@ static PyObject *__pyx_pf_10model_mods_2redshift_and_resample_fast(CYTHON_UNUSED
     {
       __Pyx_BufFmt_StackElem __pyx_stack[1];
       <span class='pyx_c_api'>__Pyx_SafeReleaseBuffer</span>(&amp;__pyx_pybuffernd_idx.rcbuffer-&gt;pybuffer);
-      __pyx_t_20 = <span class='pyx_c_api'>__Pyx_GetBufferAndValidate</span>(&amp;__pyx_pybuffernd_idx.rcbuffer-&gt;pybuffer, (PyObject*)__pyx_t_17, &amp;__Pyx_TypeInfo_int, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack);
+      __pyx_t_20 = <span class='pyx_c_api'>__Pyx_GetBufferAndValidate</span>(&amp;__pyx_pybuffernd_idx.rcbuffer-&gt;pybuffer, (PyObject*)__pyx_t_17, &amp;__Pyx_TypeInfo_long, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack);
       if (unlikely(__pyx_t_20 &lt; 0)) {
         <span class='py_c_api'>PyErr_Fetch</span>(&amp;__pyx_t_5, &amp;__pyx_t_6, &amp;__pyx_t_7);
-        if (unlikely(<span class='pyx_c_api'>__Pyx_GetBufferAndValidate</span>(&amp;__pyx_pybuffernd_idx.rcbuffer-&gt;pybuffer, (PyObject*)__pyx_v_idx, &amp;__Pyx_TypeInfo_int, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
+        if (unlikely(<span class='pyx_c_api'>__Pyx_GetBufferAndValidate</span>(&amp;__pyx_pybuffernd_idx.rcbuffer-&gt;pybuffer, (PyObject*)__pyx_v_idx, &amp;__Pyx_TypeInfo_long, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
           Py_XDECREF(__pyx_t_5); Py_XDECREF(__pyx_t_6); Py_XDECREF(__pyx_t_7);
           <span class='pyx_c_api'>__Pyx_RaiseBufferFallbackError</span>();
         } else {
@@ -2196,10 +2196,10 @@ static PyObject *__pyx_pf_10model_mods_2redshift_and_resample_fast(CYTHON_UNUSED
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     <span class='pyx_c_api'>__Pyx_SafeReleaseBuffer</span>(&amp;__pyx_pybuffernd_idx.rcbuffer-&gt;pybuffer);
-    __pyx_t_4 = <span class='pyx_c_api'>__Pyx_GetBufferAndValidate</span>(&amp;__pyx_pybuffernd_idx.rcbuffer-&gt;pybuffer, (PyObject*)__pyx_t_17, &amp;__Pyx_TypeInfo_int, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack);
+    __pyx_t_4 = <span class='pyx_c_api'>__Pyx_GetBufferAndValidate</span>(&amp;__pyx_pybuffernd_idx.rcbuffer-&gt;pybuffer, (PyObject*)__pyx_t_17, &amp;__Pyx_TypeInfo_long, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack);
     if (unlikely(__pyx_t_4 &lt; 0)) {
       <span class='py_c_api'>PyErr_Fetch</span>(&amp;__pyx_t_7, &amp;__pyx_t_6, &amp;__pyx_t_5);
-      if (unlikely(<span class='pyx_c_api'>__Pyx_GetBufferAndValidate</span>(&amp;__pyx_pybuffernd_idx.rcbuffer-&gt;pybuffer, (PyObject*)__pyx_v_idx, &amp;__Pyx_TypeInfo_int, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
+      if (unlikely(<span class='pyx_c_api'>__Pyx_GetBufferAndValidate</span>(&amp;__pyx_pybuffernd_idx.rcbuffer-&gt;pybuffer, (PyObject*)__pyx_v_idx, &amp;__Pyx_TypeInfo_long, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
         Py_XDECREF(__pyx_t_7); Py_XDECREF(__pyx_t_6); Py_XDECREF(__pyx_t_5);
         <span class='pyx_c_api'>__Pyx_RaiseBufferFallbackError</span>();
       } else {

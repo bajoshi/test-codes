@@ -103,7 +103,7 @@ def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfco
         to go faster?
     """
 
-    cdef np.ndarray[int, ndim=1] idx  # Since the indices are all integers
+    cdef np.ndarray[long, ndim=1] idx  # Since the indices are all integers
     cdef np.ndarray[DTYPE_t, ndim=1] model_lam_grid_z
     cdef np.ndarray[DTYPE_t, ndim=2] model_comp_spec_redshifted
     cdef np.ndarray[DTYPE_t, ndim=2] model_comp_spec_modified
