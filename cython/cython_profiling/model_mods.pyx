@@ -117,11 +117,6 @@ cdef list cy_where_searchrange(np.ndarray[DTYPE_t, ndim=1] a, float low_val, flo
 def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfconv, float z, int total_models, \
     np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
     np.ndarray[DTYPE_t, ndim=1] resampling_lam_grid, int resampling_lam_grid_length):
-
-    cdef float redshift_factor
-    cdef int i
-    cdef float lam_step
-
     """
     Checks to do:
     1.  The definitions here say that these arrays are 2 dimensional,
@@ -130,6 +125,15 @@ def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfco
     2.  Can the for loop below that does the resampling be parallelized
         to go faster?
     """
+
+    cdef float redshift_factor
+    cdef int i
+    cdef int j
+    cdef int k
+    cdef float lam_step
+    cdef float sum_
+    cdef int lam_idx
+    cdef int num_idx
 
     #cdef np.ndarray[long, ndim=1] idx  # Since the indices are all integers
     cdef list idx
@@ -147,8 +151,7 @@ def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfco
     model_lam_grid_z = model_lam_grid * redshift_factor
     model_comp_spec_redshifted = model_comp_spec_lsfconv / redshift_factor
 
-    # Seems like you can't pass the above ndarrays directly since they are buffer arrays
-    # You have to take memoryviews on them and then pass those.
+    # Views for faster access
     cdef np.float64_t [:, :] model_comp_spec_redshifted_view = model_comp_spec_redshifted
     cdef np.float64_t [:] model_lam_grid_z_view = model_lam_grid_z
     cdef np.float64_t [:] resampling_lam_grid_view = resampling_lam_grid
@@ -162,13 +165,30 @@ def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfco
     lam_step = resampling_lam_grid_view[1] - resampling_lam_grid_view[0]
     #idx = np.where((model_lam_grid_z >= resampling_lam_grid[0] - lam_step) & (model_lam_grid_z < resampling_lam_grid[0] + lam_step))[0]
     idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid[0] - lam_step, resampling_lam_grid[0] + lam_step)
-    model_comp_spec_modified_view[:, 0] = np.mean(model_comp_spec_redshifted_view[:, idx], axis=1)
+    num_idx = len(idx)
+    for j in range(total_models):
+
+        sum_ = 0
+        for k in range(num_idx):
+            lam_idx = idx[k]
+            sum_ = sum_ + model_comp_spec_redshifted_view[j, lam_idx]
+
+        model_comp_spec_modified_view[j, 0] = sum_ / num_idx
 
     ### all elements in between
     for i in range(1, resampling_lam_grid_length - 1):
         #idx = np.where((model_lam_grid_z >= resampling_lam_grid[i-1]) & (model_lam_grid_z < resampling_lam_grid[i+1]))[0]
         idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid[i-1], resampling_lam_grid[i+1])
-        model_comp_spec_modified_view[:, i] = np.mean(model_comp_spec_redshifted_view[:, idx], axis=1)
+        #model_comp_spec_modified_view[:, i] = np.mean(model_comp_spec_redshifted_view[:, idx], axis=1)
+        num_idx = len(idx)
+        for p in range(total_models):
+
+            sum_ = 0
+            for q in range(num_idx):
+                lam_idx = idx[q]
+                sum_ = sum_ + model_comp_spec_redshifted_view[p, lam_idx]
+
+            model_comp_spec_modified_view[p, i] = sum_ / num_idx
 
     #model_comp_spec_mod_list = Parallel(n_jobs=3)(delayed(do_resamp)(model_comp_spec_redshifted_view, model_lam_grid_z_view, resampling_lam_grid_view, i) for i in range(1, resampling_lam_grid_length - 1))
     #model_comp_spec_modified[:, 1:-1] = np.asarray(model_comp_spec_mod_list)
@@ -177,6 +197,14 @@ def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfco
     lam_step = resampling_lam_grid_view[-1] - resampling_lam_grid_view[-2]
     #idx = np.where((model_lam_grid_z >= resampling_lam_grid[-1] - lam_step) & (model_lam_grid_z < resampling_lam_grid[-1] + lam_step))[0]
     idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid[-1] - lam_step, resampling_lam_grid[-1] + lam_step)
-    model_comp_spec_modified_view[:, -1] = np.mean(model_comp_spec_redshifted_view[:, idx], axis=1)
+    num_idx = len(idx)
+    for u in range(total_models):
+
+        sum_ = 0
+        for v in range(num_idx):
+            lam_idx = idx[v]
+            sum_ = sum_ + model_comp_spec_redshifted_view[v, lam_idx]
+
+        model_comp_spec_modified_view[v, total_models-1] = sum_ / num_idx
 
     return model_comp_spec_modified

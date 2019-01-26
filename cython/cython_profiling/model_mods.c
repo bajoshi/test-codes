@@ -1707,10 +1707,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
-/* MemviewDtypeToObject.proto */
-static CYTHON_INLINE PyObject *__pyx_memview_get_nn___pyx_t_5numpy_float64_t(const char *itemp);
-static CYTHON_INLINE int __pyx_memview_set_nn___pyx_t_5numpy_float64_t(const char *itemp, PyObject *obj);
-
 /* RealImag.proto */
 #if CYTHON_CCOMPLEX
   #ifdef __cplusplus
@@ -1984,9 +1980,12 @@ static const char __pyx_k_O[] = "O";
 static const char __pyx_k_T[] = "T";
 static const char __pyx_k_c[] = "c";
 static const char __pyx_k_i[] = "i";
+static const char __pyx_k_j[] = "j";
 static const char __pyx_k_k[] = "k";
 static const char __pyx_k_p[] = "p";
 static const char __pyx_k_q[] = "q";
+static const char __pyx_k_u[] = "u";
+static const char __pyx_k_v[] = "v";
 static const char __pyx_k_z[] = "z";
 static const char __pyx_k_id[] = "id";
 static const char __pyx_k_ix[] = "ix";
@@ -1994,6 +1993,7 @@ static const char __pyx_k_np[] = "np";
 static const char __pyx_k_idx[] = "idx";
 static const char __pyx_k_new[] = "__new__";
 static const char __pyx_k_obj[] = "obj";
+static const char __pyx_k_sum[] = "sum_";
 static const char __pyx_k_axis[] = "axis";
 static const char __pyx_k_base[] = "base";
 static const char __pyx_k_dict[] = "__dict__";
@@ -2035,7 +2035,9 @@ static const char __pyx_k_delayed[] = "delayed";
 static const char __pyx_k_float64[] = "float64";
 static const char __pyx_k_fortran[] = "fortran";
 static const char __pyx_k_indices[] = "indices";
+static const char __pyx_k_lam_idx[] = "lam_idx";
 static const char __pyx_k_memview[] = "memview";
+static const char __pyx_k_num_idx[] = "num_idx";
 static const char __pyx_k_Ellipsis[] = "Ellipsis";
 static const char __pyx_k_Parallel[] = "Parallel";
 static const char __pyx_k_getstate[] = "__getstate__";
@@ -2183,8 +2185,10 @@ static PyObject *__pyx_n_s_indices;
 static PyObject *__pyx_n_s_itemsize;
 static PyObject *__pyx_kp_s_itemsize_0_for_cython_array;
 static PyObject *__pyx_n_s_ix;
+static PyObject *__pyx_n_s_j;
 static PyObject *__pyx_n_s_joblib;
 static PyObject *__pyx_n_s_k;
+static PyObject *__pyx_n_s_lam_idx;
 static PyObject *__pyx_n_s_lam_step;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_mean;
@@ -2211,6 +2215,7 @@ static PyObject *__pyx_n_s_ndim;
 static PyObject *__pyx_n_s_new;
 static PyObject *__pyx_kp_s_no_default___reduce___due_to_non;
 static PyObject *__pyx_n_s_np;
+static PyObject *__pyx_n_s_num_idx;
 static PyObject *__pyx_n_s_numpy;
 static PyObject *__pyx_kp_s_numpy_core_multiarray_failed_to;
 static PyObject *__pyx_kp_s_numpy_core_umath_failed_to_impor;
@@ -2251,13 +2256,16 @@ static PyObject *__pyx_kp_s_strided_and_direct_or_indirect;
 static PyObject *__pyx_kp_s_strided_and_indirect;
 static PyObject *__pyx_kp_s_stringsource;
 static PyObject *__pyx_n_s_struct;
+static PyObject *__pyx_n_s_sum;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_total_models;
+static PyObject *__pyx_n_s_u;
 static PyObject *__pyx_kp_s_unable_to_allocate_array_data;
 static PyObject *__pyx_kp_s_unable_to_allocate_shape_and_str;
 static PyObject *__pyx_kp_u_unknown_dtype_code_in_numpy_pxd;
 static PyObject *__pyx_n_s_unpack;
 static PyObject *__pyx_n_s_update;
+static PyObject *__pyx_n_s_v;
 static PyObject *__pyx_n_s_where;
 static PyObject *__pyx_n_s_xrange;
 static PyObject *__pyx_n_s_z;
@@ -3951,7 +3959,8 @@ static PyObject *__pyx_f_10model_mods_cy_where_searchrange(PyArrayObject *__pyx_
 
 /* Python wrapper */
 static PyObject *__pyx_pw_10model_mods_5redshift_and_resample_fast(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_10model_mods_5redshift_and_resample_fast = {"redshift_and_resample_fast", (PyCFunction)__pyx_pw_10model_mods_5redshift_and_resample_fast, METH_VARARGS|METH_KEYWORDS, 0};
+static char __pyx_doc_10model_mods_4redshift_and_resample_fast[] = "\n    Checks to do:\n    1.  The definitions here say that these arrays are 2 dimensional,\n        however, they say nothing of the shape. Would it go faster if\n        I was able to define and shape to force it?\n    2.  Can the for loop below that does the resampling be parallelized\n        to go faster?\n    ";
+static PyMethodDef __pyx_mdef_10model_mods_5redshift_and_resample_fast = {"redshift_and_resample_fast", (PyCFunction)__pyx_pw_10model_mods_5redshift_and_resample_fast, METH_VARARGS|METH_KEYWORDS, __pyx_doc_10model_mods_4redshift_and_resample_fast};
 static PyObject *__pyx_pw_10model_mods_5redshift_and_resample_fast(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_model_comp_spec_lsfconv = 0;
   float __pyx_v_z;
@@ -4065,7 +4074,12 @@ static PyObject *__pyx_pw_10model_mods_5redshift_and_resample_fast(PyObject *__p
 static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_model_comp_spec_lsfconv, float __pyx_v_z, int __pyx_v_total_models, PyArrayObject *__pyx_v_model_lam_grid, PyArrayObject *__pyx_v_resampling_lam_grid, int __pyx_v_resampling_lam_grid_length) {
   float __pyx_v_redshift_factor;
   int __pyx_v_i;
+  int __pyx_v_j;
+  int __pyx_v_k;
   float __pyx_v_lam_step;
+  float __pyx_v_sum_;
+  int __pyx_v_lam_idx;
+  int __pyx_v_num_idx;
   PyObject *__pyx_v_idx = 0;
   PyArrayObject *__pyx_v_model_lam_grid_z = 0;
   PyArrayObject *__pyx_v_model_comp_spec_redshifted = 0;
@@ -4074,6 +4088,10 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
   CYTHON_UNUSED __Pyx_memviewslice __pyx_v_model_lam_grid_z_view = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_resampling_lam_grid_view = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_model_comp_spec_modified_view = { 0, 0, { 0 }, { 0 }, { 0 } };
+  int __pyx_v_p;
+  int __pyx_v_q;
+  CYTHON_UNUSED int __pyx_v_u;
+  int __pyx_v_v;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_model_comp_spec_lsfconv;
   __Pyx_Buffer __pyx_pybuffer_model_comp_spec_lsfconv;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_model_comp_spec_modified;
@@ -4107,17 +4125,30 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
   Py_ssize_t __pyx_t_17;
   Py_ssize_t __pyx_t_18;
   Py_ssize_t __pyx_t_19;
-  __pyx_t_5numpy_float64_t __pyx_t_20;
-  long __pyx_t_21;
-  Py_ssize_t __pyx_t_22;
+  int __pyx_t_20;
+  int __pyx_t_21;
+  int __pyx_t_22;
   int __pyx_t_23;
   Py_ssize_t __pyx_t_24;
-  __Pyx_memviewslice __pyx_t_25 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  Py_ssize_t __pyx_t_25;
   Py_ssize_t __pyx_t_26;
   Py_ssize_t __pyx_t_27;
-  Py_ssize_t __pyx_t_28;
+  long __pyx_t_28;
   Py_ssize_t __pyx_t_29;
-  __Pyx_memviewslice __pyx_t_30 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  Py_ssize_t __pyx_t_30;
+  int __pyx_t_31;
+  Py_ssize_t __pyx_t_32;
+  Py_ssize_t __pyx_t_33;
+  Py_ssize_t __pyx_t_34;
+  Py_ssize_t __pyx_t_35;
+  Py_ssize_t __pyx_t_36;
+  Py_ssize_t __pyx_t_37;
+  Py_ssize_t __pyx_t_38;
+  Py_ssize_t __pyx_t_39;
+  Py_ssize_t __pyx_t_40;
+  Py_ssize_t __pyx_t_41;
+  Py_ssize_t __pyx_t_42;
+  Py_ssize_t __pyx_t_43;
   __Pyx_RefNannySetupContext("redshift_and_resample_fast", 0);
   __pyx_pybuffer_model_lam_grid_z.pybuffer.buf = NULL;
   __pyx_pybuffer_model_lam_grid_z.refcount = 0;
@@ -4159,7 +4190,7 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
   }
   __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides = __pyx_pybuffernd_resampling_lam_grid.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape = __pyx_pybuffernd_resampling_lam_grid.rcbuffer->pybuffer.shape[0];
 
-  /* "model_mods.pyx":146
+  /* "model_mods.pyx":150
  *     types already above?? Not quite sure... yet.
  *     """
  *     redshift_factor = 1.0 + z             # <<<<<<<<<<<<<<
@@ -4168,19 +4199,19 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
  */
   __pyx_v_redshift_factor = (1.0 + __pyx_v_z);
 
-  /* "model_mods.pyx":147
+  /* "model_mods.pyx":151
  *     """
  *     redshift_factor = 1.0 + z
  *     model_lam_grid_z = model_lam_grid * redshift_factor             # <<<<<<<<<<<<<<
  *     model_comp_spec_redshifted = model_comp_spec_lsfconv / redshift_factor
  * 
  */
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_redshift_factor); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 147, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_redshift_factor); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 151, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyNumber_Multiply(((PyObject *)__pyx_v_model_lam_grid), __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 147, __pyx_L1_error)
+  __pyx_t_2 = PyNumber_Multiply(((PyObject *)__pyx_v_model_lam_grid), __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 151, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 147, __pyx_L1_error)
+  if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 151, __pyx_L1_error)
   __pyx_t_3 = ((PyArrayObject *)__pyx_t_2);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
@@ -4196,25 +4227,25 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
       }
     }
     __pyx_pybuffernd_model_lam_grid_z.diminfo[0].strides = __pyx_pybuffernd_model_lam_grid_z.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_model_lam_grid_z.diminfo[0].shape = __pyx_pybuffernd_model_lam_grid_z.rcbuffer->pybuffer.shape[0];
-    if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 147, __pyx_L1_error)
+    if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 151, __pyx_L1_error)
   }
   __pyx_t_3 = 0;
   __pyx_v_model_lam_grid_z = ((PyArrayObject *)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "model_mods.pyx":148
+  /* "model_mods.pyx":152
  *     redshift_factor = 1.0 + z
  *     model_lam_grid_z = model_lam_grid * redshift_factor
  *     model_comp_spec_redshifted = model_comp_spec_lsfconv / redshift_factor             # <<<<<<<<<<<<<<
  * 
- *     # Seems like you can't pass the above ndarrays directly since they are buffer arrays
+ *     # Views for faster access
  */
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_redshift_factor); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_redshift_factor); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 152, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyNumber_Divide(((PyObject *)__pyx_v_model_comp_spec_lsfconv), __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 148, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyNumber_Divide(((PyObject *)__pyx_v_model_comp_spec_lsfconv), __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 152, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 148, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 152, __pyx_L1_error)
   __pyx_t_8 = ((PyArrayObject *)__pyx_t_1);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
@@ -4230,39 +4261,39 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
       }
     }
     __pyx_pybuffernd_model_comp_spec_redshifted.diminfo[0].strides = __pyx_pybuffernd_model_comp_spec_redshifted.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_model_comp_spec_redshifted.diminfo[0].shape = __pyx_pybuffernd_model_comp_spec_redshifted.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_model_comp_spec_redshifted.diminfo[1].strides = __pyx_pybuffernd_model_comp_spec_redshifted.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_model_comp_spec_redshifted.diminfo[1].shape = __pyx_pybuffernd_model_comp_spec_redshifted.rcbuffer->pybuffer.shape[1];
-    if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 152, __pyx_L1_error)
   }
   __pyx_t_8 = 0;
   __pyx_v_model_comp_spec_redshifted = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "model_mods.pyx":152
- *     # Seems like you can't pass the above ndarrays directly since they are buffer arrays
- *     # You have to take memoryviews on them and then pass those.
+  /* "model_mods.pyx":155
+ * 
+ *     # Views for faster access
  *     cdef np.float64_t [:, :] model_comp_spec_redshifted_view = model_comp_spec_redshifted             # <<<<<<<<<<<<<<
  *     cdef np.float64_t [:] model_lam_grid_z_view = model_lam_grid_z
  *     cdef np.float64_t [:] resampling_lam_grid_view = resampling_lam_grid
  */
   __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_dsds_nn___pyx_t_5numpy_float64_t(((PyObject *)__pyx_v_model_comp_spec_redshifted));
-  if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 152, __pyx_L1_error)
+  if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 155, __pyx_L1_error)
   __pyx_v_model_comp_spec_redshifted_view = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "model_mods.pyx":153
- *     # You have to take memoryviews on them and then pass those.
+  /* "model_mods.pyx":156
+ *     # Views for faster access
  *     cdef np.float64_t [:, :] model_comp_spec_redshifted_view = model_comp_spec_redshifted
  *     cdef np.float64_t [:] model_lam_grid_z_view = model_lam_grid_z             # <<<<<<<<<<<<<<
  *     cdef np.float64_t [:] resampling_lam_grid_view = resampling_lam_grid
  * 
  */
   __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_float64_t(((PyObject *)__pyx_v_model_lam_grid_z));
-  if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 153, __pyx_L1_error)
+  if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __pyx_v_model_lam_grid_z_view = __pyx_t_10;
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
 
-  /* "model_mods.pyx":154
+  /* "model_mods.pyx":157
  *     cdef np.float64_t [:, :] model_comp_spec_redshifted_view = model_comp_spec_redshifted
  *     cdef np.float64_t [:] model_lam_grid_z_view = model_lam_grid_z
  *     cdef np.float64_t [:] resampling_lam_grid_view = resampling_lam_grid             # <<<<<<<<<<<<<<
@@ -4270,28 +4301,28 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
  *     # --------------- Do resampling --------------- #
  */
   __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_float64_t(((PyObject *)__pyx_v_resampling_lam_grid));
-  if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 154, __pyx_L1_error)
+  if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 157, __pyx_L1_error)
   __pyx_v_resampling_lam_grid_view = __pyx_t_10;
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
 
-  /* "model_mods.pyx":158
+  /* "model_mods.pyx":161
  *     # --------------- Do resampling --------------- #
  *     # Define array to save modified models
  *     model_comp_spec_modified = np.zeros((total_models, resampling_lam_grid_length), dtype=np.float64)             # <<<<<<<<<<<<<<
  *     cdef np.float64_t [:, :] model_comp_spec_modified_view = model_comp_spec_modified
  * 
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 161, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 161, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_total_models); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_total_models); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 161, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_11 = __Pyx_PyInt_From_int(__pyx_v_resampling_lam_grid_length); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyInt_From_int(__pyx_v_resampling_lam_grid_length); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 161, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
-  __pyx_t_12 = PyTuple_New(2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_12 = PyTuple_New(2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 161, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_1);
@@ -4299,26 +4330,26 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
   PyTuple_SET_ITEM(__pyx_t_12, 1, __pyx_t_11);
   __pyx_t_1 = 0;
   __pyx_t_11 = 0;
-  __pyx_t_11 = PyTuple_New(1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_11 = PyTuple_New(1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 161, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
   __Pyx_GIVEREF(__pyx_t_12);
   PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_12);
   __pyx_t_12 = 0;
-  __pyx_t_12 = PyDict_New(); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_12 = PyDict_New(); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 161, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 161, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_float64); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_float64); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 161, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_13);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_t_12, __pyx_n_s_dtype, __pyx_t_13) < 0) __PYX_ERR(0, 158, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_12, __pyx_n_s_dtype, __pyx_t_13) < 0) __PYX_ERR(0, 161, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-  __pyx_t_13 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_11, __pyx_t_12); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_13 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_11, __pyx_t_12); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 161, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_13);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
   __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-  if (!(likely(((__pyx_t_13) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_13, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 158, __pyx_L1_error)
+  if (!(likely(((__pyx_t_13) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_13, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 161, __pyx_L1_error)
   __pyx_t_14 = ((PyArrayObject *)__pyx_t_13);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
@@ -4334,13 +4365,13 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
       }
     }
     __pyx_pybuffernd_model_comp_spec_modified.diminfo[0].strides = __pyx_pybuffernd_model_comp_spec_modified.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_model_comp_spec_modified.diminfo[0].shape = __pyx_pybuffernd_model_comp_spec_modified.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_model_comp_spec_modified.diminfo[1].strides = __pyx_pybuffernd_model_comp_spec_modified.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_model_comp_spec_modified.diminfo[1].shape = __pyx_pybuffernd_model_comp_spec_modified.rcbuffer->pybuffer.shape[1];
-    if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 158, __pyx_L1_error)
+    if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 161, __pyx_L1_error)
   }
   __pyx_t_14 = 0;
   __pyx_v_model_comp_spec_modified = ((PyArrayObject *)__pyx_t_13);
   __pyx_t_13 = 0;
 
-  /* "model_mods.pyx":159
+  /* "model_mods.pyx":162
  *     # Define array to save modified models
  *     model_comp_spec_modified = np.zeros((total_models, resampling_lam_grid_length), dtype=np.float64)
  *     cdef np.float64_t [:, :] model_comp_spec_modified_view = model_comp_spec_modified             # <<<<<<<<<<<<<<
@@ -4348,12 +4379,12 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
  *     ### Zeroth element
  */
   __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_dsds_nn___pyx_t_5numpy_float64_t(((PyObject *)__pyx_v_model_comp_spec_modified));
-  if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 159, __pyx_L1_error)
+  if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 162, __pyx_L1_error)
   __pyx_v_model_comp_spec_modified_view = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "model_mods.pyx":162
+  /* "model_mods.pyx":165
  * 
  *     ### Zeroth element
  *     lam_step = resampling_lam_grid_view[1] - resampling_lam_grid_view[0]             # <<<<<<<<<<<<<<
@@ -4368,7 +4399,7 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
   } else if (unlikely(__pyx_t_15 >= __pyx_v_resampling_lam_grid_view.shape[0])) __pyx_t_4 = 0;
   if (unlikely(__pyx_t_4 != -1)) {
     __Pyx_RaiseBufferIndexError(__pyx_t_4);
-    __PYX_ERR(0, 162, __pyx_L1_error)
+    __PYX_ERR(0, 165, __pyx_L1_error)
   }
   __pyx_t_16 = 0;
   __pyx_t_4 = -1;
@@ -4378,16 +4409,16 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
   } else if (unlikely(__pyx_t_16 >= __pyx_v_resampling_lam_grid_view.shape[0])) __pyx_t_4 = 0;
   if (unlikely(__pyx_t_4 != -1)) {
     __Pyx_RaiseBufferIndexError(__pyx_t_4);
-    __PYX_ERR(0, 162, __pyx_L1_error)
+    __PYX_ERR(0, 165, __pyx_L1_error)
   }
   __pyx_v_lam_step = ((*((__pyx_t_5numpy_float64_t *) ( /* dim=0 */ (__pyx_v_resampling_lam_grid_view.data + __pyx_t_15 * __pyx_v_resampling_lam_grid_view.strides[0]) ))) - (*((__pyx_t_5numpy_float64_t *) ( /* dim=0 */ (__pyx_v_resampling_lam_grid_view.data + __pyx_t_16 * __pyx_v_resampling_lam_grid_view.strides[0]) ))));
 
-  /* "model_mods.pyx":164
+  /* "model_mods.pyx":167
  *     lam_step = resampling_lam_grid_view[1] - resampling_lam_grid_view[0]
  *     #idx = np.where((model_lam_grid_z >= resampling_lam_grid[0] - lam_step) & (model_lam_grid_z < resampling_lam_grid[0] + lam_step))[0]
  *     idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid[0] - lam_step, resampling_lam_grid[0] + lam_step)             # <<<<<<<<<<<<<<
- *     model_comp_spec_modified_view[:, 0] = np.mean(model_comp_spec_redshifted_view[:, idx], axis=1)
- * 
+ *     num_idx = len(idx)
+ *     for j in range(total_models):
  */
   __pyx_t_17 = 0;
   __pyx_t_4 = -1;
@@ -4397,7 +4428,7 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
   } else if (unlikely(__pyx_t_17 >= __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape)) __pyx_t_4 = 0;
   if (unlikely(__pyx_t_4 != -1)) {
     __Pyx_RaiseBufferIndexError(__pyx_t_4);
-    __PYX_ERR(0, 164, __pyx_L1_error)
+    __PYX_ERR(0, 167, __pyx_L1_error)
   }
   __pyx_t_18 = 0;
   __pyx_t_4 = -1;
@@ -4407,393 +4438,468 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
   } else if (unlikely(__pyx_t_18 >= __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape)) __pyx_t_4 = 0;
   if (unlikely(__pyx_t_4 != -1)) {
     __Pyx_RaiseBufferIndexError(__pyx_t_4);
-    __PYX_ERR(0, 164, __pyx_L1_error)
+    __PYX_ERR(0, 167, __pyx_L1_error)
   }
-  __pyx_t_13 = __pyx_f_10model_mods_cy_where_searchrange(((PyArrayObject *)__pyx_v_model_lam_grid_z), ((*__Pyx_BufPtrStrided1d(__pyx_t_10model_mods_DTYPE_t *, __pyx_pybuffernd_resampling_lam_grid.rcbuffer->pybuffer.buf, __pyx_t_17, __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides)) - __pyx_v_lam_step), ((*__Pyx_BufPtrStrided1d(__pyx_t_10model_mods_DTYPE_t *, __pyx_pybuffernd_resampling_lam_grid.rcbuffer->pybuffer.buf, __pyx_t_18, __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides)) + __pyx_v_lam_step)); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 164, __pyx_L1_error)
+  __pyx_t_13 = __pyx_f_10model_mods_cy_where_searchrange(((PyArrayObject *)__pyx_v_model_lam_grid_z), ((*__Pyx_BufPtrStrided1d(__pyx_t_10model_mods_DTYPE_t *, __pyx_pybuffernd_resampling_lam_grid.rcbuffer->pybuffer.buf, __pyx_t_17, __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides)) - __pyx_v_lam_step), ((*__Pyx_BufPtrStrided1d(__pyx_t_10model_mods_DTYPE_t *, __pyx_pybuffernd_resampling_lam_grid.rcbuffer->pybuffer.buf, __pyx_t_18, __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides)) + __pyx_v_lam_step)); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 167, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_13);
   __pyx_v_idx = ((PyObject*)__pyx_t_13);
   __pyx_t_13 = 0;
 
-  /* "model_mods.pyx":165
+  /* "model_mods.pyx":168
  *     #idx = np.where((model_lam_grid_z >= resampling_lam_grid[0] - lam_step) & (model_lam_grid_z < resampling_lam_grid[0] + lam_step))[0]
  *     idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid[0] - lam_step, resampling_lam_grid[0] + lam_step)
- *     model_comp_spec_modified_view[:, 0] = np.mean(model_comp_spec_redshifted_view[:, idx], axis=1)             # <<<<<<<<<<<<<<
+ *     num_idx = len(idx)             # <<<<<<<<<<<<<<
+ *     for j in range(total_models):
+ * 
+ */
+  if (unlikely(__pyx_v_idx == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+    __PYX_ERR(0, 168, __pyx_L1_error)
+  }
+  __pyx_t_19 = PyList_GET_SIZE(__pyx_v_idx); if (unlikely(__pyx_t_19 == -1)) __PYX_ERR(0, 168, __pyx_L1_error)
+  __pyx_v_num_idx = __pyx_t_19;
+
+  /* "model_mods.pyx":169
+ *     idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid[0] - lam_step, resampling_lam_grid[0] + lam_step)
+ *     num_idx = len(idx)
+ *     for j in range(total_models):             # <<<<<<<<<<<<<<
+ * 
+ *         sum_ = 0
+ */
+  __pyx_t_4 = __pyx_v_total_models;
+  for (__pyx_t_20 = 0; __pyx_t_20 < __pyx_t_4; __pyx_t_20+=1) {
+    __pyx_v_j = __pyx_t_20;
+
+    /* "model_mods.pyx":171
+ *     for j in range(total_models):
+ * 
+ *         sum_ = 0             # <<<<<<<<<<<<<<
+ *         for k in range(num_idx):
+ *             lam_idx = idx[k]
+ */
+    __pyx_v_sum_ = 0.0;
+
+    /* "model_mods.pyx":172
+ * 
+ *         sum_ = 0
+ *         for k in range(num_idx):             # <<<<<<<<<<<<<<
+ *             lam_idx = idx[k]
+ *             sum_ = sum_ + model_comp_spec_redshifted_view[j, lam_idx]
+ */
+    __pyx_t_21 = __pyx_v_num_idx;
+    for (__pyx_t_22 = 0; __pyx_t_22 < __pyx_t_21; __pyx_t_22+=1) {
+      __pyx_v_k = __pyx_t_22;
+
+      /* "model_mods.pyx":173
+ *         sum_ = 0
+ *         for k in range(num_idx):
+ *             lam_idx = idx[k]             # <<<<<<<<<<<<<<
+ *             sum_ = sum_ + model_comp_spec_redshifted_view[j, lam_idx]
+ * 
+ */
+      if (unlikely(__pyx_v_idx == Py_None)) {
+        PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+        __PYX_ERR(0, 173, __pyx_L1_error)
+      }
+      __pyx_t_13 = __Pyx_GetItemInt_List(__pyx_v_idx, __pyx_v_k, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 173, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_13);
+      __pyx_t_23 = __Pyx_PyInt_As_int(__pyx_t_13); if (unlikely((__pyx_t_23 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 173, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
+      __pyx_v_lam_idx = __pyx_t_23;
+
+      /* "model_mods.pyx":174
+ *         for k in range(num_idx):
+ *             lam_idx = idx[k]
+ *             sum_ = sum_ + model_comp_spec_redshifted_view[j, lam_idx]             # <<<<<<<<<<<<<<
+ * 
+ *         model_comp_spec_modified_view[j, 0] = sum_ / num_idx
+ */
+      __pyx_t_24 = __pyx_v_j;
+      __pyx_t_25 = __pyx_v_lam_idx;
+      __pyx_t_23 = -1;
+      if (__pyx_t_24 < 0) {
+        __pyx_t_24 += __pyx_v_model_comp_spec_redshifted_view.shape[0];
+        if (unlikely(__pyx_t_24 < 0)) __pyx_t_23 = 0;
+      } else if (unlikely(__pyx_t_24 >= __pyx_v_model_comp_spec_redshifted_view.shape[0])) __pyx_t_23 = 0;
+      if (__pyx_t_25 < 0) {
+        __pyx_t_25 += __pyx_v_model_comp_spec_redshifted_view.shape[1];
+        if (unlikely(__pyx_t_25 < 0)) __pyx_t_23 = 1;
+      } else if (unlikely(__pyx_t_25 >= __pyx_v_model_comp_spec_redshifted_view.shape[1])) __pyx_t_23 = 1;
+      if (unlikely(__pyx_t_23 != -1)) {
+        __Pyx_RaiseBufferIndexError(__pyx_t_23);
+        __PYX_ERR(0, 174, __pyx_L1_error)
+      }
+      __pyx_v_sum_ = (__pyx_v_sum_ + (*((__pyx_t_5numpy_float64_t *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_model_comp_spec_redshifted_view.data + __pyx_t_24 * __pyx_v_model_comp_spec_redshifted_view.strides[0]) ) + __pyx_t_25 * __pyx_v_model_comp_spec_redshifted_view.strides[1]) ))));
+    }
+
+    /* "model_mods.pyx":176
+ *             sum_ = sum_ + model_comp_spec_redshifted_view[j, lam_idx]
+ * 
+ *         model_comp_spec_modified_view[j, 0] = sum_ / num_idx             # <<<<<<<<<<<<<<
  * 
  *     ### all elements in between
  */
-  __pyx_t_13 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 165, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_13);
-  __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_13, __pyx_n_s_mean); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 165, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_12);
-  __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-  __pyx_t_19 = __Pyx_PyIndex_AsSsize_t(__pyx_v_idx); if (unlikely((__pyx_t_19 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 165, __pyx_L1_error)
-  __pyx_t_10.data = __pyx_v_model_comp_spec_redshifted_view.data;
-  __pyx_t_10.memview = __pyx_v_model_comp_spec_redshifted_view.memview;
-  __PYX_INC_MEMVIEW(&__pyx_t_10, 0);
-  __pyx_t_10.shape[0] = __pyx_v_model_comp_spec_redshifted_view.shape[0];
-__pyx_t_10.strides[0] = __pyx_v_model_comp_spec_redshifted_view.strides[0];
-    __pyx_t_10.suboffsets[0] = -1;
-
-{
-    Py_ssize_t __pyx_tmp_idx = __pyx_t_19;
-    Py_ssize_t __pyx_tmp_shape = __pyx_v_model_comp_spec_redshifted_view.shape[1];
-    Py_ssize_t __pyx_tmp_stride = __pyx_v_model_comp_spec_redshifted_view.strides[1];
-    if (1 && (__pyx_tmp_idx < 0))
-        __pyx_tmp_idx += __pyx_tmp_shape;
-    if (1 && (__pyx_tmp_idx < 0 || __pyx_tmp_idx >= __pyx_tmp_shape)) {
-        PyErr_SetString(PyExc_IndexError, "Index out of bounds (axis 1)");
-        __PYX_ERR(0, 165, __pyx_L1_error)
+    if (unlikely(__pyx_v_num_idx == 0)) {
+      PyErr_SetString(PyExc_ZeroDivisionError, "float division");
+      __PYX_ERR(0, 176, __pyx_L1_error)
     }
-        __pyx_t_10.data += __pyx_tmp_idx * __pyx_tmp_stride;
-}
-
-__pyx_t_13 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __pyx_memview_get_nn___pyx_t_5numpy_float64_t, (int (*)(char *, PyObject *)) __pyx_memview_set_nn___pyx_t_5numpy_float64_t, 0);; if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 165, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_13);
-  __PYX_XDEC_MEMVIEW(&__pyx_t_10, 1);
-  __pyx_t_10.memview = NULL;
-  __pyx_t_10.data = NULL;
-  __pyx_t_11 = PyTuple_New(1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 165, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_11);
-  __Pyx_GIVEREF(__pyx_t_13);
-  PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_13);
-  __pyx_t_13 = 0;
-  __pyx_t_13 = PyDict_New(); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 165, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_13);
-  if (PyDict_SetItem(__pyx_t_13, __pyx_n_s_axis, __pyx_int_1) < 0) __PYX_ERR(0, 165, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_12, __pyx_t_11, __pyx_t_13); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 165, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-  __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-  __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-  __pyx_t_20 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_20 == ((npy_float64)-1)) && PyErr_Occurred())) __PYX_ERR(0, 165, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_10.data = __pyx_v_model_comp_spec_modified_view.data;
-  __pyx_t_10.memview = __pyx_v_model_comp_spec_modified_view.memview;
-  __PYX_INC_MEMVIEW(&__pyx_t_10, 0);
-  __pyx_t_10.shape[0] = __pyx_v_model_comp_spec_modified_view.shape[0];
-__pyx_t_10.strides[0] = __pyx_v_model_comp_spec_modified_view.strides[0];
-    __pyx_t_10.suboffsets[0] = -1;
-
-{
-    Py_ssize_t __pyx_tmp_idx = 0;
-    Py_ssize_t __pyx_tmp_shape = __pyx_v_model_comp_spec_modified_view.shape[1];
-    Py_ssize_t __pyx_tmp_stride = __pyx_v_model_comp_spec_modified_view.strides[1];
-    if (1 && (__pyx_tmp_idx < 0))
-        __pyx_tmp_idx += __pyx_tmp_shape;
-    if (1 && (__pyx_tmp_idx < 0 || __pyx_tmp_idx >= __pyx_tmp_shape)) {
-        PyErr_SetString(PyExc_IndexError, "Index out of bounds (axis 1)");
-        __PYX_ERR(0, 165, __pyx_L1_error)
+    __pyx_t_26 = __pyx_v_j;
+    __pyx_t_27 = 0;
+    __pyx_t_21 = -1;
+    if (__pyx_t_26 < 0) {
+      __pyx_t_26 += __pyx_v_model_comp_spec_modified_view.shape[0];
+      if (unlikely(__pyx_t_26 < 0)) __pyx_t_21 = 0;
+    } else if (unlikely(__pyx_t_26 >= __pyx_v_model_comp_spec_modified_view.shape[0])) __pyx_t_21 = 0;
+    if (__pyx_t_27 < 0) {
+      __pyx_t_27 += __pyx_v_model_comp_spec_modified_view.shape[1];
+      if (unlikely(__pyx_t_27 < 0)) __pyx_t_21 = 1;
+    } else if (unlikely(__pyx_t_27 >= __pyx_v_model_comp_spec_modified_view.shape[1])) __pyx_t_21 = 1;
+    if (unlikely(__pyx_t_21 != -1)) {
+      __Pyx_RaiseBufferIndexError(__pyx_t_21);
+      __PYX_ERR(0, 176, __pyx_L1_error)
     }
-        __pyx_t_10.data += __pyx_tmp_idx * __pyx_tmp_stride;
-}
-
-{
-      __pyx_t_5numpy_float64_t __pyx_temp_scalar = __pyx_t_20;
-      {
-          Py_ssize_t __pyx_temp_extent_0 = __pyx_t_10.shape[0];
-          Py_ssize_t __pyx_temp_stride_0 = __pyx_t_10.strides[0];
-          char *__pyx_temp_pointer_0;
-          Py_ssize_t __pyx_temp_idx_0;
-          __pyx_temp_pointer_0 = __pyx_t_10.data;
-          for (__pyx_temp_idx_0 = 0; __pyx_temp_idx_0 < __pyx_temp_extent_0; __pyx_temp_idx_0++) {
-            *((__pyx_t_5numpy_float64_t *) __pyx_temp_pointer_0) = __pyx_temp_scalar;
-            __pyx_temp_pointer_0 += __pyx_temp_stride_0;
-          }
-      }
+    *((__pyx_t_5numpy_float64_t *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_model_comp_spec_modified_view.data + __pyx_t_26 * __pyx_v_model_comp_spec_modified_view.strides[0]) ) + __pyx_t_27 * __pyx_v_model_comp_spec_modified_view.strides[1]) )) = (__pyx_v_sum_ / ((float)__pyx_v_num_idx));
   }
-  __PYX_XDEC_MEMVIEW(&__pyx_t_10, 1);
-  __pyx_t_10.memview = NULL;
-  __pyx_t_10.data = NULL;
 
-  /* "model_mods.pyx":168
+  /* "model_mods.pyx":179
  * 
  *     ### all elements in between
  *     for i in range(1, resampling_lam_grid_length - 1):             # <<<<<<<<<<<<<<
  *         #idx = np.where((model_lam_grid_z >= resampling_lam_grid[i-1]) & (model_lam_grid_z < resampling_lam_grid[i+1]))[0]
  *         idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid[i-1], resampling_lam_grid[i+1])
  */
-  __pyx_t_21 = (__pyx_v_resampling_lam_grid_length - 1);
-  for (__pyx_t_4 = 1; __pyx_t_4 < __pyx_t_21; __pyx_t_4+=1) {
+  __pyx_t_28 = (__pyx_v_resampling_lam_grid_length - 1);
+  for (__pyx_t_4 = 1; __pyx_t_4 < __pyx_t_28; __pyx_t_4+=1) {
     __pyx_v_i = __pyx_t_4;
 
-    /* "model_mods.pyx":170
+    /* "model_mods.pyx":181
  *     for i in range(1, resampling_lam_grid_length - 1):
  *         #idx = np.where((model_lam_grid_z >= resampling_lam_grid[i-1]) & (model_lam_grid_z < resampling_lam_grid[i+1]))[0]
  *         idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid[i-1], resampling_lam_grid[i+1])             # <<<<<<<<<<<<<<
- *         model_comp_spec_modified_view[:, i] = np.mean(model_comp_spec_redshifted_view[:, idx], axis=1)
+ *         #model_comp_spec_modified_view[:, i] = np.mean(model_comp_spec_redshifted_view[:, idx], axis=1)
+ *         num_idx = len(idx)
+ */
+    __pyx_t_29 = (__pyx_v_i - 1);
+    __pyx_t_20 = -1;
+    if (__pyx_t_29 < 0) {
+      __pyx_t_29 += __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape;
+      if (unlikely(__pyx_t_29 < 0)) __pyx_t_20 = 0;
+    } else if (unlikely(__pyx_t_29 >= __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape)) __pyx_t_20 = 0;
+    if (unlikely(__pyx_t_20 != -1)) {
+      __Pyx_RaiseBufferIndexError(__pyx_t_20);
+      __PYX_ERR(0, 181, __pyx_L1_error)
+    }
+    __pyx_t_30 = (__pyx_v_i + 1);
+    __pyx_t_20 = -1;
+    if (__pyx_t_30 < 0) {
+      __pyx_t_30 += __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape;
+      if (unlikely(__pyx_t_30 < 0)) __pyx_t_20 = 0;
+    } else if (unlikely(__pyx_t_30 >= __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape)) __pyx_t_20 = 0;
+    if (unlikely(__pyx_t_20 != -1)) {
+      __Pyx_RaiseBufferIndexError(__pyx_t_20);
+      __PYX_ERR(0, 181, __pyx_L1_error)
+    }
+    __pyx_t_13 = __pyx_f_10model_mods_cy_where_searchrange(((PyArrayObject *)__pyx_v_model_lam_grid_z), (*__Pyx_BufPtrStrided1d(__pyx_t_10model_mods_DTYPE_t *, __pyx_pybuffernd_resampling_lam_grid.rcbuffer->pybuffer.buf, __pyx_t_29, __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides)), (*__Pyx_BufPtrStrided1d(__pyx_t_10model_mods_DTYPE_t *, __pyx_pybuffernd_resampling_lam_grid.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides))); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 181, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_13);
+    __Pyx_DECREF_SET(__pyx_v_idx, ((PyObject*)__pyx_t_13));
+    __pyx_t_13 = 0;
+
+    /* "model_mods.pyx":183
+ *         idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid[i-1], resampling_lam_grid[i+1])
+ *         #model_comp_spec_modified_view[:, i] = np.mean(model_comp_spec_redshifted_view[:, idx], axis=1)
+ *         num_idx = len(idx)             # <<<<<<<<<<<<<<
+ *         for p in range(total_models):
  * 
  */
-    __pyx_t_22 = (__pyx_v_i - 1);
-    __pyx_t_23 = -1;
-    if (__pyx_t_22 < 0) {
-      __pyx_t_22 += __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape;
-      if (unlikely(__pyx_t_22 < 0)) __pyx_t_23 = 0;
-    } else if (unlikely(__pyx_t_22 >= __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape)) __pyx_t_23 = 0;
-    if (unlikely(__pyx_t_23 != -1)) {
-      __Pyx_RaiseBufferIndexError(__pyx_t_23);
-      __PYX_ERR(0, 170, __pyx_L1_error)
+    if (unlikely(__pyx_v_idx == Py_None)) {
+      PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+      __PYX_ERR(0, 183, __pyx_L1_error)
     }
-    __pyx_t_24 = (__pyx_v_i + 1);
-    __pyx_t_23 = -1;
-    if (__pyx_t_24 < 0) {
-      __pyx_t_24 += __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape;
-      if (unlikely(__pyx_t_24 < 0)) __pyx_t_23 = 0;
-    } else if (unlikely(__pyx_t_24 >= __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape)) __pyx_t_23 = 0;
-    if (unlikely(__pyx_t_23 != -1)) {
-      __Pyx_RaiseBufferIndexError(__pyx_t_23);
-      __PYX_ERR(0, 170, __pyx_L1_error)
-    }
-    __pyx_t_2 = __pyx_f_10model_mods_cy_where_searchrange(((PyArrayObject *)__pyx_v_model_lam_grid_z), (*__Pyx_BufPtrStrided1d(__pyx_t_10model_mods_DTYPE_t *, __pyx_pybuffernd_resampling_lam_grid.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides)), (*__Pyx_BufPtrStrided1d(__pyx_t_10model_mods_DTYPE_t *, __pyx_pybuffernd_resampling_lam_grid.rcbuffer->pybuffer.buf, __pyx_t_24, __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 170, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF_SET(__pyx_v_idx, ((PyObject*)__pyx_t_2));
-    __pyx_t_2 = 0;
+    __pyx_t_19 = PyList_GET_SIZE(__pyx_v_idx); if (unlikely(__pyx_t_19 == -1)) __PYX_ERR(0, 183, __pyx_L1_error)
+    __pyx_v_num_idx = __pyx_t_19;
 
-    /* "model_mods.pyx":171
- *         #idx = np.where((model_lam_grid_z >= resampling_lam_grid[i-1]) & (model_lam_grid_z < resampling_lam_grid[i+1]))[0]
- *         idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid[i-1], resampling_lam_grid[i+1])
- *         model_comp_spec_modified_view[:, i] = np.mean(model_comp_spec_redshifted_view[:, idx], axis=1)             # <<<<<<<<<<<<<<
+    /* "model_mods.pyx":184
+ *         #model_comp_spec_modified_view[:, i] = np.mean(model_comp_spec_redshifted_view[:, idx], axis=1)
+ *         num_idx = len(idx)
+ *         for p in range(total_models):             # <<<<<<<<<<<<<<
+ * 
+ *             sum_ = 0
+ */
+    __pyx_t_20 = __pyx_v_total_models;
+    for (__pyx_t_21 = 0; __pyx_t_21 < __pyx_t_20; __pyx_t_21+=1) {
+      __pyx_v_p = __pyx_t_21;
+
+      /* "model_mods.pyx":186
+ *         for p in range(total_models):
+ * 
+ *             sum_ = 0             # <<<<<<<<<<<<<<
+ *             for q in range(num_idx):
+ *                 lam_idx = idx[q]
+ */
+      __pyx_v_sum_ = 0.0;
+
+      /* "model_mods.pyx":187
+ * 
+ *             sum_ = 0
+ *             for q in range(num_idx):             # <<<<<<<<<<<<<<
+ *                 lam_idx = idx[q]
+ *                 sum_ = sum_ + model_comp_spec_redshifted_view[p, lam_idx]
+ */
+      __pyx_t_22 = __pyx_v_num_idx;
+      for (__pyx_t_23 = 0; __pyx_t_23 < __pyx_t_22; __pyx_t_23+=1) {
+        __pyx_v_q = __pyx_t_23;
+
+        /* "model_mods.pyx":188
+ *             sum_ = 0
+ *             for q in range(num_idx):
+ *                 lam_idx = idx[q]             # <<<<<<<<<<<<<<
+ *                 sum_ = sum_ + model_comp_spec_redshifted_view[p, lam_idx]
+ * 
+ */
+        if (unlikely(__pyx_v_idx == Py_None)) {
+          PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+          __PYX_ERR(0, 188, __pyx_L1_error)
+        }
+        __pyx_t_13 = __Pyx_GetItemInt_List(__pyx_v_idx, __pyx_v_q, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 188, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_13);
+        __pyx_t_31 = __Pyx_PyInt_As_int(__pyx_t_13); if (unlikely((__pyx_t_31 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 188, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
+        __pyx_v_lam_idx = __pyx_t_31;
+
+        /* "model_mods.pyx":189
+ *             for q in range(num_idx):
+ *                 lam_idx = idx[q]
+ *                 sum_ = sum_ + model_comp_spec_redshifted_view[p, lam_idx]             # <<<<<<<<<<<<<<
+ * 
+ *             model_comp_spec_modified_view[p, i] = sum_ / num_idx
+ */
+        __pyx_t_32 = __pyx_v_p;
+        __pyx_t_33 = __pyx_v_lam_idx;
+        __pyx_t_31 = -1;
+        if (__pyx_t_32 < 0) {
+          __pyx_t_32 += __pyx_v_model_comp_spec_redshifted_view.shape[0];
+          if (unlikely(__pyx_t_32 < 0)) __pyx_t_31 = 0;
+        } else if (unlikely(__pyx_t_32 >= __pyx_v_model_comp_spec_redshifted_view.shape[0])) __pyx_t_31 = 0;
+        if (__pyx_t_33 < 0) {
+          __pyx_t_33 += __pyx_v_model_comp_spec_redshifted_view.shape[1];
+          if (unlikely(__pyx_t_33 < 0)) __pyx_t_31 = 1;
+        } else if (unlikely(__pyx_t_33 >= __pyx_v_model_comp_spec_redshifted_view.shape[1])) __pyx_t_31 = 1;
+        if (unlikely(__pyx_t_31 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_31);
+          __PYX_ERR(0, 189, __pyx_L1_error)
+        }
+        __pyx_v_sum_ = (__pyx_v_sum_ + (*((__pyx_t_5numpy_float64_t *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_model_comp_spec_redshifted_view.data + __pyx_t_32 * __pyx_v_model_comp_spec_redshifted_view.strides[0]) ) + __pyx_t_33 * __pyx_v_model_comp_spec_redshifted_view.strides[1]) ))));
+      }
+
+      /* "model_mods.pyx":191
+ *                 sum_ = sum_ + model_comp_spec_redshifted_view[p, lam_idx]
+ * 
+ *             model_comp_spec_modified_view[p, i] = sum_ / num_idx             # <<<<<<<<<<<<<<
  * 
  *     #model_comp_spec_mod_list = Parallel(n_jobs=3)(delayed(do_resamp)(model_comp_spec_redshifted_view, model_lam_grid_z_view, resampling_lam_grid_view, i) for i in range(1, resampling_lam_grid_length - 1))
  */
-    __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 171, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_mean); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 171, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_13);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_19 = __Pyx_PyIndex_AsSsize_t(__pyx_v_idx); if (unlikely((__pyx_t_19 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 171, __pyx_L1_error)
-    __pyx_t_25.data = __pyx_v_model_comp_spec_redshifted_view.data;
-    __pyx_t_25.memview = __pyx_v_model_comp_spec_redshifted_view.memview;
-    __PYX_INC_MEMVIEW(&__pyx_t_25, 0);
-    __pyx_t_25.shape[0] = __pyx_v_model_comp_spec_redshifted_view.shape[0];
-__pyx_t_25.strides[0] = __pyx_v_model_comp_spec_redshifted_view.strides[0];
-    __pyx_t_25.suboffsets[0] = -1;
-
-{
-    Py_ssize_t __pyx_tmp_idx = __pyx_t_19;
-    Py_ssize_t __pyx_tmp_shape = __pyx_v_model_comp_spec_redshifted_view.shape[1];
-    Py_ssize_t __pyx_tmp_stride = __pyx_v_model_comp_spec_redshifted_view.strides[1];
-    if (1 && (__pyx_tmp_idx < 0))
-        __pyx_tmp_idx += __pyx_tmp_shape;
-    if (1 && (__pyx_tmp_idx < 0 || __pyx_tmp_idx >= __pyx_tmp_shape)) {
-        PyErr_SetString(PyExc_IndexError, "Index out of bounds (axis 1)");
-        __PYX_ERR(0, 171, __pyx_L1_error)
+      if (unlikely(__pyx_v_num_idx == 0)) {
+        PyErr_SetString(PyExc_ZeroDivisionError, "float division");
+        __PYX_ERR(0, 191, __pyx_L1_error)
+      }
+      __pyx_t_34 = __pyx_v_p;
+      __pyx_t_35 = __pyx_v_i;
+      __pyx_t_22 = -1;
+      if (__pyx_t_34 < 0) {
+        __pyx_t_34 += __pyx_v_model_comp_spec_modified_view.shape[0];
+        if (unlikely(__pyx_t_34 < 0)) __pyx_t_22 = 0;
+      } else if (unlikely(__pyx_t_34 >= __pyx_v_model_comp_spec_modified_view.shape[0])) __pyx_t_22 = 0;
+      if (__pyx_t_35 < 0) {
+        __pyx_t_35 += __pyx_v_model_comp_spec_modified_view.shape[1];
+        if (unlikely(__pyx_t_35 < 0)) __pyx_t_22 = 1;
+      } else if (unlikely(__pyx_t_35 >= __pyx_v_model_comp_spec_modified_view.shape[1])) __pyx_t_22 = 1;
+      if (unlikely(__pyx_t_22 != -1)) {
+        __Pyx_RaiseBufferIndexError(__pyx_t_22);
+        __PYX_ERR(0, 191, __pyx_L1_error)
+      }
+      *((__pyx_t_5numpy_float64_t *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_model_comp_spec_modified_view.data + __pyx_t_34 * __pyx_v_model_comp_spec_modified_view.strides[0]) ) + __pyx_t_35 * __pyx_v_model_comp_spec_modified_view.strides[1]) )) = (__pyx_v_sum_ / ((float)__pyx_v_num_idx));
     }
-        __pyx_t_25.data += __pyx_tmp_idx * __pyx_tmp_stride;
-}
-
-__pyx_t_2 = __pyx_memoryview_fromslice(__pyx_t_25, 1, (PyObject *(*)(char *)) __pyx_memview_get_nn___pyx_t_5numpy_float64_t, (int (*)(char *, PyObject *)) __pyx_memview_set_nn___pyx_t_5numpy_float64_t, 0);; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 171, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __PYX_XDEC_MEMVIEW(&__pyx_t_25, 1);
-    __pyx_t_25.memview = NULL;
-    __pyx_t_25.data = NULL;
-    __pyx_t_11 = PyTuple_New(1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 171, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_11);
-    __Pyx_GIVEREF(__pyx_t_2);
-    PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_2);
-    __pyx_t_2 = 0;
-    __pyx_t_2 = PyDict_New(); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 171, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_axis, __pyx_int_1) < 0) __PYX_ERR(0, 171, __pyx_L1_error)
-    __pyx_t_12 = __Pyx_PyObject_Call(__pyx_t_13, __pyx_t_11, __pyx_t_2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 171, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_12);
-    __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-    __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_20 = __pyx_PyFloat_AsDouble(__pyx_t_12); if (unlikely((__pyx_t_20 == ((npy_float64)-1)) && PyErr_Occurred())) __PYX_ERR(0, 171, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-    __pyx_t_25.data = __pyx_v_model_comp_spec_modified_view.data;
-    __pyx_t_25.memview = __pyx_v_model_comp_spec_modified_view.memview;
-    __PYX_INC_MEMVIEW(&__pyx_t_25, 0);
-    __pyx_t_25.shape[0] = __pyx_v_model_comp_spec_modified_view.shape[0];
-__pyx_t_25.strides[0] = __pyx_v_model_comp_spec_modified_view.strides[0];
-    __pyx_t_25.suboffsets[0] = -1;
-
-{
-    Py_ssize_t __pyx_tmp_idx = __pyx_v_i;
-    Py_ssize_t __pyx_tmp_shape = __pyx_v_model_comp_spec_modified_view.shape[1];
-    Py_ssize_t __pyx_tmp_stride = __pyx_v_model_comp_spec_modified_view.strides[1];
-    if (1 && (__pyx_tmp_idx < 0))
-        __pyx_tmp_idx += __pyx_tmp_shape;
-    if (1 && (__pyx_tmp_idx < 0 || __pyx_tmp_idx >= __pyx_tmp_shape)) {
-        PyErr_SetString(PyExc_IndexError, "Index out of bounds (axis 1)");
-        __PYX_ERR(0, 171, __pyx_L1_error)
-    }
-        __pyx_t_25.data += __pyx_tmp_idx * __pyx_tmp_stride;
-}
-
-{
-        __pyx_t_5numpy_float64_t __pyx_temp_scalar = __pyx_t_20;
-        {
-            Py_ssize_t __pyx_temp_extent_0 = __pyx_t_25.shape[0];
-            Py_ssize_t __pyx_temp_stride_0 = __pyx_t_25.strides[0];
-            char *__pyx_temp_pointer_0;
-            Py_ssize_t __pyx_temp_idx_0;
-            __pyx_temp_pointer_0 = __pyx_t_25.data;
-            for (__pyx_temp_idx_0 = 0; __pyx_temp_idx_0 < __pyx_temp_extent_0; __pyx_temp_idx_0++) {
-              *((__pyx_t_5numpy_float64_t *) __pyx_temp_pointer_0) = __pyx_temp_scalar;
-              __pyx_temp_pointer_0 += __pyx_temp_stride_0;
-            }
-        }
-    }
-    __PYX_XDEC_MEMVIEW(&__pyx_t_25, 1);
-    __pyx_t_25.memview = NULL;
-    __pyx_t_25.data = NULL;
   }
 
-  /* "model_mods.pyx":177
+  /* "model_mods.pyx":197
  * 
  *     ### Last element
  *     lam_step = resampling_lam_grid_view[-1] - resampling_lam_grid_view[-2]             # <<<<<<<<<<<<<<
  *     #idx = np.where((model_lam_grid_z >= resampling_lam_grid[-1] - lam_step) & (model_lam_grid_z < resampling_lam_grid[-1] + lam_step))[0]
  *     idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid[-1] - lam_step, resampling_lam_grid[-1] + lam_step)
  */
-  __pyx_t_26 = -1L;
+  __pyx_t_36 = -1L;
   __pyx_t_4 = -1;
-  if (__pyx_t_26 < 0) {
-    __pyx_t_26 += __pyx_v_resampling_lam_grid_view.shape[0];
-    if (unlikely(__pyx_t_26 < 0)) __pyx_t_4 = 0;
-  } else if (unlikely(__pyx_t_26 >= __pyx_v_resampling_lam_grid_view.shape[0])) __pyx_t_4 = 0;
+  if (__pyx_t_36 < 0) {
+    __pyx_t_36 += __pyx_v_resampling_lam_grid_view.shape[0];
+    if (unlikely(__pyx_t_36 < 0)) __pyx_t_4 = 0;
+  } else if (unlikely(__pyx_t_36 >= __pyx_v_resampling_lam_grid_view.shape[0])) __pyx_t_4 = 0;
   if (unlikely(__pyx_t_4 != -1)) {
     __Pyx_RaiseBufferIndexError(__pyx_t_4);
-    __PYX_ERR(0, 177, __pyx_L1_error)
+    __PYX_ERR(0, 197, __pyx_L1_error)
   }
-  __pyx_t_27 = -2L;
+  __pyx_t_37 = -2L;
   __pyx_t_4 = -1;
-  if (__pyx_t_27 < 0) {
-    __pyx_t_27 += __pyx_v_resampling_lam_grid_view.shape[0];
-    if (unlikely(__pyx_t_27 < 0)) __pyx_t_4 = 0;
-  } else if (unlikely(__pyx_t_27 >= __pyx_v_resampling_lam_grid_view.shape[0])) __pyx_t_4 = 0;
+  if (__pyx_t_37 < 0) {
+    __pyx_t_37 += __pyx_v_resampling_lam_grid_view.shape[0];
+    if (unlikely(__pyx_t_37 < 0)) __pyx_t_4 = 0;
+  } else if (unlikely(__pyx_t_37 >= __pyx_v_resampling_lam_grid_view.shape[0])) __pyx_t_4 = 0;
   if (unlikely(__pyx_t_4 != -1)) {
     __Pyx_RaiseBufferIndexError(__pyx_t_4);
-    __PYX_ERR(0, 177, __pyx_L1_error)
+    __PYX_ERR(0, 197, __pyx_L1_error)
   }
-  __pyx_v_lam_step = ((*((__pyx_t_5numpy_float64_t *) ( /* dim=0 */ (__pyx_v_resampling_lam_grid_view.data + __pyx_t_26 * __pyx_v_resampling_lam_grid_view.strides[0]) ))) - (*((__pyx_t_5numpy_float64_t *) ( /* dim=0 */ (__pyx_v_resampling_lam_grid_view.data + __pyx_t_27 * __pyx_v_resampling_lam_grid_view.strides[0]) ))));
+  __pyx_v_lam_step = ((*((__pyx_t_5numpy_float64_t *) ( /* dim=0 */ (__pyx_v_resampling_lam_grid_view.data + __pyx_t_36 * __pyx_v_resampling_lam_grid_view.strides[0]) ))) - (*((__pyx_t_5numpy_float64_t *) ( /* dim=0 */ (__pyx_v_resampling_lam_grid_view.data + __pyx_t_37 * __pyx_v_resampling_lam_grid_view.strides[0]) ))));
 
-  /* "model_mods.pyx":179
+  /* "model_mods.pyx":199
  *     lam_step = resampling_lam_grid_view[-1] - resampling_lam_grid_view[-2]
  *     #idx = np.where((model_lam_grid_z >= resampling_lam_grid[-1] - lam_step) & (model_lam_grid_z < resampling_lam_grid[-1] + lam_step))[0]
  *     idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid[-1] - lam_step, resampling_lam_grid[-1] + lam_step)             # <<<<<<<<<<<<<<
- *     model_comp_spec_modified_view[:, -1] = np.mean(model_comp_spec_redshifted_view[:, idx], axis=1)
- * 
+ *     num_idx = len(idx)
+ *     for u in range(total_models):
  */
-  __pyx_t_28 = -1L;
+  __pyx_t_38 = -1L;
   __pyx_t_4 = -1;
-  if (__pyx_t_28 < 0) {
-    __pyx_t_28 += __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape;
-    if (unlikely(__pyx_t_28 < 0)) __pyx_t_4 = 0;
-  } else if (unlikely(__pyx_t_28 >= __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape)) __pyx_t_4 = 0;
+  if (__pyx_t_38 < 0) {
+    __pyx_t_38 += __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape;
+    if (unlikely(__pyx_t_38 < 0)) __pyx_t_4 = 0;
+  } else if (unlikely(__pyx_t_38 >= __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape)) __pyx_t_4 = 0;
   if (unlikely(__pyx_t_4 != -1)) {
     __Pyx_RaiseBufferIndexError(__pyx_t_4);
-    __PYX_ERR(0, 179, __pyx_L1_error)
+    __PYX_ERR(0, 199, __pyx_L1_error)
   }
-  __pyx_t_29 = -1L;
+  __pyx_t_39 = -1L;
   __pyx_t_4 = -1;
-  if (__pyx_t_29 < 0) {
-    __pyx_t_29 += __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape;
-    if (unlikely(__pyx_t_29 < 0)) __pyx_t_4 = 0;
-  } else if (unlikely(__pyx_t_29 >= __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape)) __pyx_t_4 = 0;
+  if (__pyx_t_39 < 0) {
+    __pyx_t_39 += __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape;
+    if (unlikely(__pyx_t_39 < 0)) __pyx_t_4 = 0;
+  } else if (unlikely(__pyx_t_39 >= __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape)) __pyx_t_4 = 0;
   if (unlikely(__pyx_t_4 != -1)) {
     __Pyx_RaiseBufferIndexError(__pyx_t_4);
-    __PYX_ERR(0, 179, __pyx_L1_error)
+    __PYX_ERR(0, 199, __pyx_L1_error)
   }
-  __pyx_t_12 = __pyx_f_10model_mods_cy_where_searchrange(((PyArrayObject *)__pyx_v_model_lam_grid_z), ((*__Pyx_BufPtrStrided1d(__pyx_t_10model_mods_DTYPE_t *, __pyx_pybuffernd_resampling_lam_grid.rcbuffer->pybuffer.buf, __pyx_t_28, __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides)) - __pyx_v_lam_step), ((*__Pyx_BufPtrStrided1d(__pyx_t_10model_mods_DTYPE_t *, __pyx_pybuffernd_resampling_lam_grid.rcbuffer->pybuffer.buf, __pyx_t_29, __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides)) + __pyx_v_lam_step)); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 179, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_12);
-  __Pyx_DECREF_SET(__pyx_v_idx, ((PyObject*)__pyx_t_12));
-  __pyx_t_12 = 0;
+  __pyx_t_13 = __pyx_f_10model_mods_cy_where_searchrange(((PyArrayObject *)__pyx_v_model_lam_grid_z), ((*__Pyx_BufPtrStrided1d(__pyx_t_10model_mods_DTYPE_t *, __pyx_pybuffernd_resampling_lam_grid.rcbuffer->pybuffer.buf, __pyx_t_38, __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides)) - __pyx_v_lam_step), ((*__Pyx_BufPtrStrided1d(__pyx_t_10model_mods_DTYPE_t *, __pyx_pybuffernd_resampling_lam_grid.rcbuffer->pybuffer.buf, __pyx_t_39, __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides)) + __pyx_v_lam_step)); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 199, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_13);
+  __Pyx_DECREF_SET(__pyx_v_idx, ((PyObject*)__pyx_t_13));
+  __pyx_t_13 = 0;
 
-  /* "model_mods.pyx":180
+  /* "model_mods.pyx":200
  *     #idx = np.where((model_lam_grid_z >= resampling_lam_grid[-1] - lam_step) & (model_lam_grid_z < resampling_lam_grid[-1] + lam_step))[0]
  *     idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid[-1] - lam_step, resampling_lam_grid[-1] + lam_step)
- *     model_comp_spec_modified_view[:, -1] = np.mean(model_comp_spec_redshifted_view[:, idx], axis=1)             # <<<<<<<<<<<<<<
+ *     num_idx = len(idx)             # <<<<<<<<<<<<<<
+ *     for u in range(total_models):
+ * 
+ */
+  if (unlikely(__pyx_v_idx == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+    __PYX_ERR(0, 200, __pyx_L1_error)
+  }
+  __pyx_t_19 = PyList_GET_SIZE(__pyx_v_idx); if (unlikely(__pyx_t_19 == -1)) __PYX_ERR(0, 200, __pyx_L1_error)
+  __pyx_v_num_idx = __pyx_t_19;
+
+  /* "model_mods.pyx":201
+ *     idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid[-1] - lam_step, resampling_lam_grid[-1] + lam_step)
+ *     num_idx = len(idx)
+ *     for u in range(total_models):             # <<<<<<<<<<<<<<
+ * 
+ *         sum_ = 0
+ */
+  __pyx_t_4 = __pyx_v_total_models;
+  for (__pyx_t_20 = 0; __pyx_t_20 < __pyx_t_4; __pyx_t_20+=1) {
+    __pyx_v_u = __pyx_t_20;
+
+    /* "model_mods.pyx":203
+ *     for u in range(total_models):
+ * 
+ *         sum_ = 0             # <<<<<<<<<<<<<<
+ *         for v in range(num_idx):
+ *             lam_idx = idx[v]
+ */
+    __pyx_v_sum_ = 0.0;
+
+    /* "model_mods.pyx":204
+ * 
+ *         sum_ = 0
+ *         for v in range(num_idx):             # <<<<<<<<<<<<<<
+ *             lam_idx = idx[v]
+ *             sum_ = sum_ + model_comp_spec_redshifted_view[v, lam_idx]
+ */
+    __pyx_t_21 = __pyx_v_num_idx;
+    for (__pyx_t_22 = 0; __pyx_t_22 < __pyx_t_21; __pyx_t_22+=1) {
+      __pyx_v_v = __pyx_t_22;
+
+      /* "model_mods.pyx":205
+ *         sum_ = 0
+ *         for v in range(num_idx):
+ *             lam_idx = idx[v]             # <<<<<<<<<<<<<<
+ *             sum_ = sum_ + model_comp_spec_redshifted_view[v, lam_idx]
+ * 
+ */
+      if (unlikely(__pyx_v_idx == Py_None)) {
+        PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+        __PYX_ERR(0, 205, __pyx_L1_error)
+      }
+      __pyx_t_13 = __Pyx_GetItemInt_List(__pyx_v_idx, __pyx_v_v, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 205, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_13);
+      __pyx_t_23 = __Pyx_PyInt_As_int(__pyx_t_13); if (unlikely((__pyx_t_23 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 205, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
+      __pyx_v_lam_idx = __pyx_t_23;
+
+      /* "model_mods.pyx":206
+ *         for v in range(num_idx):
+ *             lam_idx = idx[v]
+ *             sum_ = sum_ + model_comp_spec_redshifted_view[v, lam_idx]             # <<<<<<<<<<<<<<
+ * 
+ *         model_comp_spec_modified_view[v, total_models-1] = sum_ / num_idx
+ */
+      __pyx_t_40 = __pyx_v_v;
+      __pyx_t_41 = __pyx_v_lam_idx;
+      __pyx_t_23 = -1;
+      if (__pyx_t_40 < 0) {
+        __pyx_t_40 += __pyx_v_model_comp_spec_redshifted_view.shape[0];
+        if (unlikely(__pyx_t_40 < 0)) __pyx_t_23 = 0;
+      } else if (unlikely(__pyx_t_40 >= __pyx_v_model_comp_spec_redshifted_view.shape[0])) __pyx_t_23 = 0;
+      if (__pyx_t_41 < 0) {
+        __pyx_t_41 += __pyx_v_model_comp_spec_redshifted_view.shape[1];
+        if (unlikely(__pyx_t_41 < 0)) __pyx_t_23 = 1;
+      } else if (unlikely(__pyx_t_41 >= __pyx_v_model_comp_spec_redshifted_view.shape[1])) __pyx_t_23 = 1;
+      if (unlikely(__pyx_t_23 != -1)) {
+        __Pyx_RaiseBufferIndexError(__pyx_t_23);
+        __PYX_ERR(0, 206, __pyx_L1_error)
+      }
+      __pyx_v_sum_ = (__pyx_v_sum_ + (*((__pyx_t_5numpy_float64_t *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_model_comp_spec_redshifted_view.data + __pyx_t_40 * __pyx_v_model_comp_spec_redshifted_view.strides[0]) ) + __pyx_t_41 * __pyx_v_model_comp_spec_redshifted_view.strides[1]) ))));
+    }
+
+    /* "model_mods.pyx":208
+ *             sum_ = sum_ + model_comp_spec_redshifted_view[v, lam_idx]
+ * 
+ *         model_comp_spec_modified_view[v, total_models-1] = sum_ / num_idx             # <<<<<<<<<<<<<<
  * 
  *     return model_comp_spec_modified
  */
-  __pyx_t_12 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 180, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_12);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_mean); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 180, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-  __pyx_t_19 = __Pyx_PyIndex_AsSsize_t(__pyx_v_idx); if (unlikely((__pyx_t_19 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 180, __pyx_L1_error)
-  __pyx_t_30.data = __pyx_v_model_comp_spec_redshifted_view.data;
-  __pyx_t_30.memview = __pyx_v_model_comp_spec_redshifted_view.memview;
-  __PYX_INC_MEMVIEW(&__pyx_t_30, 0);
-  __pyx_t_30.shape[0] = __pyx_v_model_comp_spec_redshifted_view.shape[0];
-__pyx_t_30.strides[0] = __pyx_v_model_comp_spec_redshifted_view.strides[0];
-    __pyx_t_30.suboffsets[0] = -1;
-
-{
-    Py_ssize_t __pyx_tmp_idx = __pyx_t_19;
-    Py_ssize_t __pyx_tmp_shape = __pyx_v_model_comp_spec_redshifted_view.shape[1];
-    Py_ssize_t __pyx_tmp_stride = __pyx_v_model_comp_spec_redshifted_view.strides[1];
-    if (1 && (__pyx_tmp_idx < 0))
-        __pyx_tmp_idx += __pyx_tmp_shape;
-    if (1 && (__pyx_tmp_idx < 0 || __pyx_tmp_idx >= __pyx_tmp_shape)) {
-        PyErr_SetString(PyExc_IndexError, "Index out of bounds (axis 1)");
-        __PYX_ERR(0, 180, __pyx_L1_error)
+    if (unlikely(__pyx_v_num_idx == 0)) {
+      PyErr_SetString(PyExc_ZeroDivisionError, "float division");
+      __PYX_ERR(0, 208, __pyx_L1_error)
     }
-        __pyx_t_30.data += __pyx_tmp_idx * __pyx_tmp_stride;
-}
-
-__pyx_t_12 = __pyx_memoryview_fromslice(__pyx_t_30, 1, (PyObject *(*)(char *)) __pyx_memview_get_nn___pyx_t_5numpy_float64_t, (int (*)(char *, PyObject *)) __pyx_memview_set_nn___pyx_t_5numpy_float64_t, 0);; if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 180, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_12);
-  __PYX_XDEC_MEMVIEW(&__pyx_t_30, 1);
-  __pyx_t_30.memview = NULL;
-  __pyx_t_30.data = NULL;
-  __pyx_t_11 = PyTuple_New(1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 180, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_11);
-  __Pyx_GIVEREF(__pyx_t_12);
-  PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_12);
-  __pyx_t_12 = 0;
-  __pyx_t_12 = PyDict_New(); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 180, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_12);
-  if (PyDict_SetItem(__pyx_t_12, __pyx_n_s_axis, __pyx_int_1) < 0) __PYX_ERR(0, 180, __pyx_L1_error)
-  __pyx_t_13 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_11, __pyx_t_12); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 180, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_13);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-  __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-  __pyx_t_20 = __pyx_PyFloat_AsDouble(__pyx_t_13); if (unlikely((__pyx_t_20 == ((npy_float64)-1)) && PyErr_Occurred())) __PYX_ERR(0, 180, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-  __pyx_t_30.data = __pyx_v_model_comp_spec_modified_view.data;
-  __pyx_t_30.memview = __pyx_v_model_comp_spec_modified_view.memview;
-  __PYX_INC_MEMVIEW(&__pyx_t_30, 0);
-  __pyx_t_30.shape[0] = __pyx_v_model_comp_spec_modified_view.shape[0];
-__pyx_t_30.strides[0] = __pyx_v_model_comp_spec_modified_view.strides[0];
-    __pyx_t_30.suboffsets[0] = -1;
-
-{
-    Py_ssize_t __pyx_tmp_idx = -1L;
-    Py_ssize_t __pyx_tmp_shape = __pyx_v_model_comp_spec_modified_view.shape[1];
-    Py_ssize_t __pyx_tmp_stride = __pyx_v_model_comp_spec_modified_view.strides[1];
-    if (1 && (__pyx_tmp_idx < 0))
-        __pyx_tmp_idx += __pyx_tmp_shape;
-    if (1 && (__pyx_tmp_idx < 0 || __pyx_tmp_idx >= __pyx_tmp_shape)) {
-        PyErr_SetString(PyExc_IndexError, "Index out of bounds (axis 1)");
-        __PYX_ERR(0, 180, __pyx_L1_error)
+    __pyx_t_42 = __pyx_v_v;
+    __pyx_t_43 = (__pyx_v_total_models - 1);
+    __pyx_t_21 = -1;
+    if (__pyx_t_42 < 0) {
+      __pyx_t_42 += __pyx_v_model_comp_spec_modified_view.shape[0];
+      if (unlikely(__pyx_t_42 < 0)) __pyx_t_21 = 0;
+    } else if (unlikely(__pyx_t_42 >= __pyx_v_model_comp_spec_modified_view.shape[0])) __pyx_t_21 = 0;
+    if (__pyx_t_43 < 0) {
+      __pyx_t_43 += __pyx_v_model_comp_spec_modified_view.shape[1];
+      if (unlikely(__pyx_t_43 < 0)) __pyx_t_21 = 1;
+    } else if (unlikely(__pyx_t_43 >= __pyx_v_model_comp_spec_modified_view.shape[1])) __pyx_t_21 = 1;
+    if (unlikely(__pyx_t_21 != -1)) {
+      __Pyx_RaiseBufferIndexError(__pyx_t_21);
+      __PYX_ERR(0, 208, __pyx_L1_error)
     }
-        __pyx_t_30.data += __pyx_tmp_idx * __pyx_tmp_stride;
-}
-
-{
-      __pyx_t_5numpy_float64_t __pyx_temp_scalar = __pyx_t_20;
-      {
-          Py_ssize_t __pyx_temp_extent_0 = __pyx_t_30.shape[0];
-          Py_ssize_t __pyx_temp_stride_0 = __pyx_t_30.strides[0];
-          char *__pyx_temp_pointer_0;
-          Py_ssize_t __pyx_temp_idx_0;
-          __pyx_temp_pointer_0 = __pyx_t_30.data;
-          for (__pyx_temp_idx_0 = 0; __pyx_temp_idx_0 < __pyx_temp_extent_0; __pyx_temp_idx_0++) {
-            *((__pyx_t_5numpy_float64_t *) __pyx_temp_pointer_0) = __pyx_temp_scalar;
-            __pyx_temp_pointer_0 += __pyx_temp_stride_0;
-          }
-      }
+    *((__pyx_t_5numpy_float64_t *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_model_comp_spec_modified_view.data + __pyx_t_42 * __pyx_v_model_comp_spec_modified_view.strides[0]) ) + __pyx_t_43 * __pyx_v_model_comp_spec_modified_view.strides[1]) )) = (__pyx_v_sum_ / ((float)__pyx_v_num_idx));
   }
-  __PYX_XDEC_MEMVIEW(&__pyx_t_30, 1);
-  __pyx_t_30.memview = NULL;
-  __pyx_t_30.data = NULL;
 
-  /* "model_mods.pyx":182
- *     model_comp_spec_modified_view[:, -1] = np.mean(model_comp_spec_redshifted_view[:, idx], axis=1)
+  /* "model_mods.pyx":210
+ *         model_comp_spec_modified_view[v, total_models-1] = sum_ / num_idx
  * 
  *     return model_comp_spec_modified             # <<<<<<<<<<<<<<
  */
@@ -4819,8 +4925,6 @@ __pyx_t_30.strides[0] = __pyx_v_model_comp_spec_modified_view.strides[0];
   __Pyx_XDECREF(__pyx_t_11);
   __Pyx_XDECREF(__pyx_t_12);
   __Pyx_XDECREF(__pyx_t_13);
-  __PYX_XDEC_MEMVIEW(&__pyx_t_25, 1);
-  __PYX_XDEC_MEMVIEW(&__pyx_t_30, 1);
   { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
     __Pyx_PyThreadState_declare
     __Pyx_PyThreadState_assign
@@ -20937,8 +21041,10 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_itemsize, __pyx_k_itemsize, sizeof(__pyx_k_itemsize), 0, 0, 1, 1},
   {&__pyx_kp_s_itemsize_0_for_cython_array, __pyx_k_itemsize_0_for_cython_array, sizeof(__pyx_k_itemsize_0_for_cython_array), 0, 0, 1, 0},
   {&__pyx_n_s_ix, __pyx_k_ix, sizeof(__pyx_k_ix), 0, 0, 1, 1},
+  {&__pyx_n_s_j, __pyx_k_j, sizeof(__pyx_k_j), 0, 0, 1, 1},
   {&__pyx_n_s_joblib, __pyx_k_joblib, sizeof(__pyx_k_joblib), 0, 0, 1, 1},
   {&__pyx_n_s_k, __pyx_k_k, sizeof(__pyx_k_k), 0, 0, 1, 1},
+  {&__pyx_n_s_lam_idx, __pyx_k_lam_idx, sizeof(__pyx_k_lam_idx), 0, 0, 1, 1},
   {&__pyx_n_s_lam_step, __pyx_k_lam_step, sizeof(__pyx_k_lam_step), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_mean, __pyx_k_mean, sizeof(__pyx_k_mean), 0, 0, 1, 1},
@@ -20965,6 +21071,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_new, __pyx_k_new, sizeof(__pyx_k_new), 0, 0, 1, 1},
   {&__pyx_kp_s_no_default___reduce___due_to_non, __pyx_k_no_default___reduce___due_to_non, sizeof(__pyx_k_no_default___reduce___due_to_non), 0, 0, 1, 0},
   {&__pyx_n_s_np, __pyx_k_np, sizeof(__pyx_k_np), 0, 0, 1, 1},
+  {&__pyx_n_s_num_idx, __pyx_k_num_idx, sizeof(__pyx_k_num_idx), 0, 0, 1, 1},
   {&__pyx_n_s_numpy, __pyx_k_numpy, sizeof(__pyx_k_numpy), 0, 0, 1, 1},
   {&__pyx_kp_s_numpy_core_multiarray_failed_to, __pyx_k_numpy_core_multiarray_failed_to, sizeof(__pyx_k_numpy_core_multiarray_failed_to), 0, 0, 1, 0},
   {&__pyx_kp_s_numpy_core_umath_failed_to_impor, __pyx_k_numpy_core_umath_failed_to_impor, sizeof(__pyx_k_numpy_core_umath_failed_to_impor), 0, 0, 1, 0},
@@ -21005,13 +21112,16 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_strided_and_indirect, __pyx_k_strided_and_indirect, sizeof(__pyx_k_strided_and_indirect), 0, 0, 1, 0},
   {&__pyx_kp_s_stringsource, __pyx_k_stringsource, sizeof(__pyx_k_stringsource), 0, 0, 1, 0},
   {&__pyx_n_s_struct, __pyx_k_struct, sizeof(__pyx_k_struct), 0, 0, 1, 1},
+  {&__pyx_n_s_sum, __pyx_k_sum, sizeof(__pyx_k_sum), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_n_s_total_models, __pyx_k_total_models, sizeof(__pyx_k_total_models), 0, 0, 1, 1},
+  {&__pyx_n_s_u, __pyx_k_u, sizeof(__pyx_k_u), 0, 0, 1, 1},
   {&__pyx_kp_s_unable_to_allocate_array_data, __pyx_k_unable_to_allocate_array_data, sizeof(__pyx_k_unable_to_allocate_array_data), 0, 0, 1, 0},
   {&__pyx_kp_s_unable_to_allocate_shape_and_str, __pyx_k_unable_to_allocate_shape_and_str, sizeof(__pyx_k_unable_to_allocate_shape_and_str), 0, 0, 1, 0},
   {&__pyx_kp_u_unknown_dtype_code_in_numpy_pxd, __pyx_k_unknown_dtype_code_in_numpy_pxd, sizeof(__pyx_k_unknown_dtype_code_in_numpy_pxd), 0, 1, 0, 0},
   {&__pyx_n_s_unpack, __pyx_k_unpack, sizeof(__pyx_k_unpack), 0, 0, 1, 1},
   {&__pyx_n_s_update, __pyx_k_update, sizeof(__pyx_k_update), 0, 0, 1, 1},
+  {&__pyx_n_s_v, __pyx_k_v, sizeof(__pyx_k_v), 0, 0, 1, 1},
   {&__pyx_n_s_where, __pyx_k_where, sizeof(__pyx_k_where), 0, 0, 1, 1},
   {&__pyx_n_s_xrange, __pyx_k_xrange, sizeof(__pyx_k_xrange), 0, 0, 1, 1},
   {&__pyx_n_s_z, __pyx_k_z, sizeof(__pyx_k_z), 0, 0, 1, 1},
@@ -21396,10 +21506,10 @@ static int __Pyx_InitCachedConstants(void) {
  *     np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
  *     np.ndarray[DTYPE_t, ndim=1] resampling_lam_grid, int resampling_lam_grid_length):
  */
-  __pyx_tuple__35 = PyTuple_Pack(17, __pyx_n_s_model_comp_spec_lsfconv, __pyx_n_s_z, __pyx_n_s_total_models, __pyx_n_s_model_lam_grid, __pyx_n_s_resampling_lam_grid, __pyx_n_s_resampling_lam_grid_length, __pyx_n_s_redshift_factor, __pyx_n_s_i, __pyx_n_s_lam_step, __pyx_n_s_idx, __pyx_n_s_model_lam_grid_z, __pyx_n_s_model_comp_spec_redshifted, __pyx_n_s_model_comp_spec_modified, __pyx_n_s_model_comp_spec_redshifted_view, __pyx_n_s_model_lam_grid_z_view, __pyx_n_s_resampling_lam_grid_view, __pyx_n_s_model_comp_spec_modified_view); if (unlikely(!__pyx_tuple__35)) __PYX_ERR(0, 117, __pyx_L1_error)
+  __pyx_tuple__35 = PyTuple_Pack(26, __pyx_n_s_model_comp_spec_lsfconv, __pyx_n_s_z, __pyx_n_s_total_models, __pyx_n_s_model_lam_grid, __pyx_n_s_resampling_lam_grid, __pyx_n_s_resampling_lam_grid_length, __pyx_n_s_redshift_factor, __pyx_n_s_i, __pyx_n_s_j, __pyx_n_s_k, __pyx_n_s_lam_step, __pyx_n_s_sum, __pyx_n_s_lam_idx, __pyx_n_s_num_idx, __pyx_n_s_idx, __pyx_n_s_model_lam_grid_z, __pyx_n_s_model_comp_spec_redshifted, __pyx_n_s_model_comp_spec_modified, __pyx_n_s_model_comp_spec_redshifted_view, __pyx_n_s_model_lam_grid_z_view, __pyx_n_s_resampling_lam_grid_view, __pyx_n_s_model_comp_spec_modified_view, __pyx_n_s_p, __pyx_n_s_q, __pyx_n_s_u, __pyx_n_s_v); if (unlikely(!__pyx_tuple__35)) __PYX_ERR(0, 117, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__35);
   __Pyx_GIVEREF(__pyx_tuple__35);
-  __pyx_codeobj__36 = (PyObject*)__Pyx_PyCode_New(6, 0, 17, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__35, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_model_mods_pyx, __pyx_n_s_redshift_and_resample_fast, 117, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__36)) __PYX_ERR(0, 117, __pyx_L1_error)
+  __pyx_codeobj__36 = (PyObject*)__Pyx_PyCode_New(6, 0, 26, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__35, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_model_mods_pyx, __pyx_n_s_redshift_and_resample_fast, 117, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__36)) __PYX_ERR(0, 117, __pyx_L1_error)
 
   /* "View.MemoryView":284
  *         return self.name
@@ -24462,18 +24572,6 @@ __pyx_capsule_create(void *p, CYTHON_UNUSED const char *sig)
         return _PyLong_FromByteArray(bytes, sizeof(long),
                                      little, !is_unsigned);
     }
-}
-
-/* MemviewDtypeToObject */
-        static CYTHON_INLINE PyObject *__pyx_memview_get_nn___pyx_t_5numpy_float64_t(const char *itemp) {
-    return (PyObject *) PyFloat_FromDouble(*(__pyx_t_5numpy_float64_t *) itemp);
-}
-static CYTHON_INLINE int __pyx_memview_set_nn___pyx_t_5numpy_float64_t(const char *itemp, PyObject *obj) {
-    __pyx_t_5numpy_float64_t value = __pyx_PyFloat_AsDouble(obj);
-    if ((value == ((npy_float64)-1)) && PyErr_Occurred())
-        return 0;
-    *(__pyx_t_5numpy_float64_t *) itemp = value;
-    return 1;
 }
 
 /* Declarations */

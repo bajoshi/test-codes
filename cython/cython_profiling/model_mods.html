@@ -1781,7 +1781,8 @@ static PyObject *__pyx_pf_10model_mods_2do_resamp(CYTHON_UNUSED PyObject *__pyx_
 <pre class="cython line score-154" onclick='toggleDiv(this)'>+<span class="">117</span>: <span class="k">def</span> <span class="nf">redshift_and_resample_fast</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="n">DTYPE_t</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mf">2</span><span class="p">]</span> <span class="n">model_comp_spec_lsfconv</span><span class="p">,</span> <span class="nb">float</span> <span class="n">z</span><span class="p">,</span> <span class="nb">int</span> <span class="n">total_models</span><span class="p">,</span> \</pre>
 <pre class='cython code score-154 '>/* Python wrapper */
 static PyObject *__pyx_pw_10model_mods_5redshift_and_resample_fast(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_10model_mods_5redshift_and_resample_fast = {"redshift_and_resample_fast", (PyCFunction)__pyx_pw_10model_mods_5redshift_and_resample_fast, METH_VARARGS|METH_KEYWORDS, 0};
+static char __pyx_doc_10model_mods_4redshift_and_resample_fast[] = "\n    Checks to do:\n    1.  The definitions here say that these arrays are 2 dimensional,\n        however, they say nothing of the shape. Would it go faster if\n        I was able to define and shape to force it?\n    2.  Can the for loop below that does the resampling be parallelized\n        to go faster?\n    ";
+static PyMethodDef __pyx_mdef_10model_mods_5redshift_and_resample_fast = {"redshift_and_resample_fast", (PyCFunction)__pyx_pw_10model_mods_5redshift_and_resample_fast, METH_VARARGS|METH_KEYWORDS, __pyx_doc_10model_mods_4redshift_and_resample_fast};
 static PyObject *__pyx_pw_10model_mods_5redshift_and_resample_fast(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_model_comp_spec_lsfconv = 0;
   float __pyx_v_z;
@@ -1895,7 +1896,12 @@ static PyObject *__pyx_pw_10model_mods_5redshift_and_resample_fast(PyObject *__p
 static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_model_comp_spec_lsfconv, float __pyx_v_z, int __pyx_v_total_models, PyArrayObject *__pyx_v_model_lam_grid, PyArrayObject *__pyx_v_resampling_lam_grid, int __pyx_v_resampling_lam_grid_length) {
   float __pyx_v_redshift_factor;
   int __pyx_v_i;
+  int __pyx_v_j;
+  int __pyx_v_k;
   float __pyx_v_lam_step;
+  float __pyx_v_sum_;
+  int __pyx_v_lam_idx;
+  int __pyx_v_num_idx;
   PyObject *__pyx_v_idx = 0;
   PyArrayObject *__pyx_v_model_lam_grid_z = 0;
   PyArrayObject *__pyx_v_model_comp_spec_redshifted = 0;
@@ -1904,6 +1910,10 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
   CYTHON_UNUSED __Pyx_memviewslice __pyx_v_model_lam_grid_z_view = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_resampling_lam_grid_view = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_model_comp_spec_modified_view = { 0, 0, { 0 }, { 0 }, { 0 } };
+  int __pyx_v_p;
+  int __pyx_v_q;
+  CYTHON_UNUSED int __pyx_v_u;
+  int __pyx_v_v;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_model_comp_spec_lsfconv;
   __Pyx_Buffer __pyx_pybuffer_model_comp_spec_lsfconv;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_model_comp_spec_modified;
@@ -1968,8 +1978,6 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_11);
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_12);
   <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_t_13);
-  __PYX_XDEC_MEMVIEW(&amp;__pyx_t_25, 1);
-  __PYX_XDEC_MEMVIEW(&amp;__pyx_t_30, 1);
   { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
     __Pyx_PyThreadState_declare
     __Pyx_PyThreadState_assign
@@ -2005,7 +2013,7 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
   return __pyx_r;
 }
 /* … */
-  __pyx_tuple__35 = <span class='py_c_api'>PyTuple_Pack</span>(17, __pyx_n_s_model_comp_spec_lsfconv, __pyx_n_s_z, __pyx_n_s_total_models, __pyx_n_s_model_lam_grid, __pyx_n_s_resampling_lam_grid, __pyx_n_s_resampling_lam_grid_length, __pyx_n_s_redshift_factor, __pyx_n_s_i, __pyx_n_s_lam_step, __pyx_n_s_idx, __pyx_n_s_model_lam_grid_z, __pyx_n_s_model_comp_spec_redshifted, __pyx_n_s_model_comp_spec_modified, __pyx_n_s_model_comp_spec_redshifted_view, __pyx_n_s_model_lam_grid_z_view, __pyx_n_s_resampling_lam_grid_view, __pyx_n_s_model_comp_spec_modified_view);<span class='error_goto'> if (unlikely(!__pyx_tuple__35)) __PYX_ERR(0, 117, __pyx_L1_error)</span>
+  __pyx_tuple__35 = <span class='py_c_api'>PyTuple_Pack</span>(26, __pyx_n_s_model_comp_spec_lsfconv, __pyx_n_s_z, __pyx_n_s_total_models, __pyx_n_s_model_lam_grid, __pyx_n_s_resampling_lam_grid, __pyx_n_s_resampling_lam_grid_length, __pyx_n_s_redshift_factor, __pyx_n_s_i, __pyx_n_s_j, __pyx_n_s_k, __pyx_n_s_lam_step, __pyx_n_s_sum, __pyx_n_s_lam_idx, __pyx_n_s_num_idx, __pyx_n_s_idx, __pyx_n_s_model_lam_grid_z, __pyx_n_s_model_comp_spec_redshifted, __pyx_n_s_model_comp_spec_modified, __pyx_n_s_model_comp_spec_redshifted_view, __pyx_n_s_model_lam_grid_z_view, __pyx_n_s_resampling_lam_grid_view, __pyx_n_s_model_comp_spec_modified_view, __pyx_n_s_p, __pyx_n_s_q, __pyx_n_s_u, __pyx_n_s_v);<span class='error_goto'> if (unlikely(!__pyx_tuple__35)) __PYX_ERR(0, 117, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_tuple__35);
   <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_tuple__35);
 /* … */
@@ -2013,44 +2021,48 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_d, __pyx_n_s_redshift_and_resample_fast, __pyx_t_2) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 117, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_codeobj__36 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(6, 0, 17, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__35, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_model_mods_pyx, __pyx_n_s_redshift_and_resample_fast, 117, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__36)) __PYX_ERR(0, 117, __pyx_L1_error)</span>
+  __pyx_codeobj__36 = (PyObject*)<span class='pyx_c_api'>__Pyx_PyCode_New</span>(6, 0, 26, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__35, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_model_mods_pyx, __pyx_n_s_redshift_and_resample_fast, 117, __pyx_empty_bytes);<span class='error_goto'> if (unlikely(!__pyx_codeobj__36)) __PYX_ERR(0, 117, __pyx_L1_error)</span>
 </pre><pre class="cython line score-0">&#xA0;<span class="">118</span>:     <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="n">DTYPE_t</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mf">1</span><span class="p">]</span> <span class="n">model_lam_grid</span><span class="p">,</span> \</pre>
 <pre class="cython line score-0">&#xA0;<span class="">119</span>:     <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="n">DTYPE_t</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mf">1</span><span class="p">]</span> <span class="n">resampling_lam_grid</span><span class="p">,</span> <span class="nb">int</span> <span class="n">resampling_lam_grid_length</span><span class="p">):</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">120</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">121</span>:     <span class="k">cdef</span> <span class="kt">float</span> <span class="nf">redshift_factor</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">122</span>:     <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">i</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">123</span>:     <span class="k">cdef</span> <span class="kt">float</span> <span class="nf">lam_step</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">124</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">125</span>:     <span class="sd">&quot;&quot;&quot;</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">126</span>: <span class="sd">    Checks to do:</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">127</span>: <span class="sd">    1.  The definitions here say that these arrays are 2 dimensional,</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">128</span>: <span class="sd">        however, they say nothing of the shape. Would it go faster if</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">129</span>: <span class="sd">        I was able to define and shape to force it?</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">130</span>: <span class="sd">    2.  Can the for loop below that does the resampling be parallelized</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">131</span>: <span class="sd">        to go faster?</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">132</span>: <span class="sd">    &quot;&quot;&quot;</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">133</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">134</span>:     <span class="c">#cdef np.ndarray[long, ndim=1] idx  # Since the indices are all integers</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">135</span>:     <span class="k">cdef</span> <span class="kt">list</span> <span class="nf">idx</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">136</span>:     <span class="k">cdef</span> <span class="kt">np</span>.<span class="kt">ndarray</span>[<span class="nf">DTYPE_t</span><span class="p">,</span> <span class="nf">ndim</span><span class="o">=</span><span class="mf">1</span><span class="p">]</span> <span class="n">model_lam_grid_z</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">137</span>:     <span class="k">cdef</span> <span class="kt">np</span>.<span class="kt">ndarray</span>[<span class="nf">DTYPE_t</span><span class="p">,</span> <span class="nf">ndim</span><span class="o">=</span><span class="mf">2</span><span class="p">]</span> <span class="n">model_comp_spec_redshifted</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">138</span>:     <span class="k">cdef</span> <span class="kt">np</span>.<span class="kt">ndarray</span>[<span class="nf">DTYPE_t</span><span class="p">,</span> <span class="nf">ndim</span><span class="o">=</span><span class="mf">2</span><span class="p">]</span> <span class="n">model_comp_spec_modified</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">139</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">140</span>:     <span class="c"># --------------- Redshift model --------------- #</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">141</span>:     <span class="sd">&quot;&quot;&quot;</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">142</span>: <span class="sd">    Seems like I cannot do these operations in place </span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">143</span>: <span class="sd">    to make them go faster because I&#39;ve defined the </span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">144</span>: <span class="sd">    types already above?? Not quite sure... yet.</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">145</span>: <span class="sd">    &quot;&quot;&quot;</span></pre>
-<pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">146</span>:     <span class="n">redshift_factor</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">z</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">120</span>:     <span class="sd">&quot;&quot;&quot;</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">121</span>: <span class="sd">    Checks to do:</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">122</span>: <span class="sd">    1.  The definitions here say that these arrays are 2 dimensional,</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">123</span>: <span class="sd">        however, they say nothing of the shape. Would it go faster if</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">124</span>: <span class="sd">        I was able to define and shape to force it?</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">125</span>: <span class="sd">    2.  Can the for loop below that does the resampling be parallelized</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">126</span>: <span class="sd">        to go faster?</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">127</span>: <span class="sd">    &quot;&quot;&quot;</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">128</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">129</span>:     <span class="k">cdef</span> <span class="kt">float</span> <span class="nf">redshift_factor</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">130</span>:     <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">i</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">131</span>:     <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">j</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">132</span>:     <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">k</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">133</span>:     <span class="k">cdef</span> <span class="kt">float</span> <span class="nf">lam_step</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">134</span>:     <span class="k">cdef</span> <span class="kt">float</span> <span class="nf">sum_</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">135</span>:     <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">lam_idx</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">136</span>:     <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">num_idx</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">137</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">138</span>:     <span class="c">#cdef np.ndarray[long, ndim=1] idx  # Since the indices are all integers</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">139</span>:     <span class="k">cdef</span> <span class="kt">list</span> <span class="nf">idx</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">140</span>:     <span class="k">cdef</span> <span class="kt">np</span>.<span class="kt">ndarray</span>[<span class="nf">DTYPE_t</span><span class="p">,</span> <span class="nf">ndim</span><span class="o">=</span><span class="mf">1</span><span class="p">]</span> <span class="n">model_lam_grid_z</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">141</span>:     <span class="k">cdef</span> <span class="kt">np</span>.<span class="kt">ndarray</span>[<span class="nf">DTYPE_t</span><span class="p">,</span> <span class="nf">ndim</span><span class="o">=</span><span class="mf">2</span><span class="p">]</span> <span class="n">model_comp_spec_redshifted</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">142</span>:     <span class="k">cdef</span> <span class="kt">np</span>.<span class="kt">ndarray</span>[<span class="nf">DTYPE_t</span><span class="p">,</span> <span class="nf">ndim</span><span class="o">=</span><span class="mf">2</span><span class="p">]</span> <span class="n">model_comp_spec_modified</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">143</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">144</span>:     <span class="c"># --------------- Redshift model --------------- #</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">145</span>:     <span class="sd">&quot;&quot;&quot;</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">146</span>: <span class="sd">    Seems like I cannot do these operations in place </span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">147</span>: <span class="sd">    to make them go faster because I&#39;ve defined the </span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">148</span>: <span class="sd">    types already above?? Not quite sure... yet.</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">149</span>: <span class="sd">    &quot;&quot;&quot;</span></pre>
+<pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">150</span>:     <span class="n">redshift_factor</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">z</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_redshift_factor = (1.0 + __pyx_v_z);
-</pre><pre class="cython line score-31" onclick='toggleDiv(this)'>+<span class="">147</span>:     <span class="n">model_lam_grid_z</span> <span class="o">=</span> <span class="n">model_lam_grid</span> <span class="o">*</span> <span class="n">redshift_factor</span></pre>
-<pre class='cython code score-31 '>  __pyx_t_1 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_redshift_factor);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 147, __pyx_L1_error)</span>
+</pre><pre class="cython line score-31" onclick='toggleDiv(this)'>+<span class="">151</span>:     <span class="n">model_lam_grid_z</span> <span class="o">=</span> <span class="n">model_lam_grid</span> <span class="o">*</span> <span class="n">redshift_factor</span></pre>
+<pre class='cython code score-31 '>  __pyx_t_1 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_redshift_factor);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 151, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
-  __pyx_t_2 = <span class='py_c_api'>PyNumber_Multiply</span>(((PyObject *)__pyx_v_model_lam_grid), __pyx_t_1);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 147, __pyx_L1_error)</span>
+  __pyx_t_2 = <span class='py_c_api'>PyNumber_Multiply</span>(((PyObject *)__pyx_v_model_lam_grid), __pyx_t_1);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 151, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
-  if (!(likely(((__pyx_t_2) == Py_None) || likely(<span class='pyx_c_api'>__Pyx_TypeTest</span>(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) <span class='error_goto'>__PYX_ERR(0, 147, __pyx_L1_error)</span>
+  if (!(likely(((__pyx_t_2) == Py_None) || likely(<span class='pyx_c_api'>__Pyx_TypeTest</span>(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) <span class='error_goto'>__PYX_ERR(0, 151, __pyx_L1_error)</span>
   __pyx_t_3 = ((PyArrayObject *)__pyx_t_2);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
@@ -2066,18 +2078,18 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
       }
     }
     __pyx_pybuffernd_model_lam_grid_z.diminfo[0].strides = __pyx_pybuffernd_model_lam_grid_z.rcbuffer-&gt;pybuffer.strides[0]; __pyx_pybuffernd_model_lam_grid_z.diminfo[0].shape = __pyx_pybuffernd_model_lam_grid_z.rcbuffer-&gt;pybuffer.shape[0];
-    if (unlikely(__pyx_t_4 &lt; 0)) <span class='error_goto'>__PYX_ERR(0, 147, __pyx_L1_error)</span>
+    if (unlikely(__pyx_t_4 &lt; 0)) <span class='error_goto'>__PYX_ERR(0, 151, __pyx_L1_error)</span>
   }
   __pyx_t_3 = 0;
   __pyx_v_model_lam_grid_z = ((PyArrayObject *)__pyx_t_2);
   __pyx_t_2 = 0;
-</pre><pre class="cython line score-28" onclick='toggleDiv(this)'>+<span class="">148</span>:     <span class="n">model_comp_spec_redshifted</span> <span class="o">=</span> <span class="n">model_comp_spec_lsfconv</span> <span class="o">/</span> <span class="n">redshift_factor</span></pre>
-<pre class='cython code score-28 '>  __pyx_t_2 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_redshift_factor);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 148, __pyx_L1_error)</span>
+</pre><pre class="cython line score-28" onclick='toggleDiv(this)'>+<span class="">152</span>:     <span class="n">model_comp_spec_redshifted</span> <span class="o">=</span> <span class="n">model_comp_spec_lsfconv</span> <span class="o">/</span> <span class="n">redshift_factor</span></pre>
+<pre class='cython code score-28 '>  __pyx_t_2 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_redshift_factor);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 152, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyNumber_Divide</span>(((PyObject *)__pyx_v_model_comp_spec_lsfconv), __pyx_t_2);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 148, __pyx_L1_error)</span>
+  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyNumber_Divide</span>(((PyObject *)__pyx_v_model_comp_spec_lsfconv), __pyx_t_2);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 152, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(<span class='pyx_c_api'>__Pyx_TypeTest</span>(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) <span class='error_goto'>__PYX_ERR(0, 148, __pyx_L1_error)</span>
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(<span class='pyx_c_api'>__Pyx_TypeTest</span>(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) <span class='error_goto'>__PYX_ERR(0, 152, __pyx_L1_error)</span>
   __pyx_t_8 = ((PyArrayObject *)__pyx_t_1);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
@@ -2093,46 +2105,45 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
       }
     }
     __pyx_pybuffernd_model_comp_spec_redshifted.diminfo[0].strides = __pyx_pybuffernd_model_comp_spec_redshifted.rcbuffer-&gt;pybuffer.strides[0]; __pyx_pybuffernd_model_comp_spec_redshifted.diminfo[0].shape = __pyx_pybuffernd_model_comp_spec_redshifted.rcbuffer-&gt;pybuffer.shape[0]; __pyx_pybuffernd_model_comp_spec_redshifted.diminfo[1].strides = __pyx_pybuffernd_model_comp_spec_redshifted.rcbuffer-&gt;pybuffer.strides[1]; __pyx_pybuffernd_model_comp_spec_redshifted.diminfo[1].shape = __pyx_pybuffernd_model_comp_spec_redshifted.rcbuffer-&gt;pybuffer.shape[1];
-    if (unlikely(__pyx_t_4 &lt; 0)) <span class='error_goto'>__PYX_ERR(0, 148, __pyx_L1_error)</span>
+    if (unlikely(__pyx_t_4 &lt; 0)) <span class='error_goto'>__PYX_ERR(0, 152, __pyx_L1_error)</span>
   }
   __pyx_t_8 = 0;
   __pyx_v_model_comp_spec_redshifted = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
-</pre><pre class="cython line score-0">&#xA0;<span class="">149</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">150</span>:     <span class="c"># Seems like you can&#39;t pass the above ndarrays directly since they are buffer arrays</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">151</span>:     <span class="c"># You have to take memoryviews on them and then pass those.</span></pre>
-<pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">152</span>:     <span class="k">cdef</span> <span class="kt">np</span>.<span class="kt">float64_t</span> [<span class="p">:,</span> <span class="p">:]</span> <span class="n">model_comp_spec_redshifted_view</span> <span class="o">=</span> <span class="n">model_comp_spec_redshifted</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">153</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">154</span>:     <span class="c"># Views for faster access</span></pre>
+<pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">155</span>:     <span class="k">cdef</span> <span class="kt">np</span>.<span class="kt">float64_t</span> [<span class="p">:,</span> <span class="p">:]</span> <span class="n">model_comp_spec_redshifted_view</span> <span class="o">=</span> <span class="n">model_comp_spec_redshifted</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_dsds_nn___pyx_t_5numpy_float64_t(((PyObject *)__pyx_v_model_comp_spec_redshifted));
-  if (unlikely(!__pyx_t_9.memview)) <span class='error_goto'>__PYX_ERR(0, 152, __pyx_L1_error)</span>
+  if (unlikely(!__pyx_t_9.memview)) <span class='error_goto'>__PYX_ERR(0, 155, __pyx_L1_error)</span>
   __pyx_v_model_comp_spec_redshifted_view = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
-</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">153</span>:     <span class="k">cdef</span> <span class="kt">np</span>.<span class="kt">float64_t</span> [<span class="p">:]</span> <span class="n">model_lam_grid_z_view</span> <span class="o">=</span> <span class="n">model_lam_grid_z</span></pre>
+</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">156</span>:     <span class="k">cdef</span> <span class="kt">np</span>.<span class="kt">float64_t</span> [<span class="p">:]</span> <span class="n">model_lam_grid_z_view</span> <span class="o">=</span> <span class="n">model_lam_grid_z</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_float64_t(((PyObject *)__pyx_v_model_lam_grid_z));
-  if (unlikely(!__pyx_t_10.memview)) <span class='error_goto'>__PYX_ERR(0, 153, __pyx_L1_error)</span>
+  if (unlikely(!__pyx_t_10.memview)) <span class='error_goto'>__PYX_ERR(0, 156, __pyx_L1_error)</span>
   __pyx_v_model_lam_grid_z_view = __pyx_t_10;
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
-</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">154</span>:     <span class="k">cdef</span> <span class="kt">np</span>.<span class="kt">float64_t</span> [<span class="p">:]</span> <span class="n">resampling_lam_grid_view</span> <span class="o">=</span> <span class="n">resampling_lam_grid</span></pre>
+</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">157</span>:     <span class="k">cdef</span> <span class="kt">np</span>.<span class="kt">float64_t</span> [<span class="p">:]</span> <span class="n">resampling_lam_grid_view</span> <span class="o">=</span> <span class="n">resampling_lam_grid</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_float64_t(((PyObject *)__pyx_v_resampling_lam_grid));
-  if (unlikely(!__pyx_t_10.memview)) <span class='error_goto'>__PYX_ERR(0, 154, __pyx_L1_error)</span>
+  if (unlikely(!__pyx_t_10.memview)) <span class='error_goto'>__PYX_ERR(0, 157, __pyx_L1_error)</span>
   __pyx_v_resampling_lam_grid_view = __pyx_t_10;
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
-</pre><pre class="cython line score-0">&#xA0;<span class="">155</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">156</span>:     <span class="c"># --------------- Do resampling --------------- #</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">157</span>:     <span class="c"># Define array to save modified models</span></pre>
-<pre class="cython line score-63" onclick='toggleDiv(this)'>+<span class="">158</span>:     <span class="n">model_comp_spec_modified</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">total_models</span><span class="p">,</span> <span class="n">resampling_lam_grid_length</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span></pre>
-<pre class='cython code score-63 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_n_s_np);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 158, __pyx_L1_error)</span>
+</pre><pre class="cython line score-0">&#xA0;<span class="">158</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">159</span>:     <span class="c"># --------------- Do resampling --------------- #</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">160</span>:     <span class="c"># Define array to save modified models</span></pre>
+<pre class="cython line score-63" onclick='toggleDiv(this)'>+<span class="">161</span>:     <span class="n">model_comp_spec_modified</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">total_models</span><span class="p">,</span> <span class="n">resampling_lam_grid_length</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span></pre>
+<pre class='cython code score-63 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_n_s_np);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 161, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
-  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_t_1, __pyx_n_s_zeros);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 158, __pyx_L1_error)</span>
+  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_t_1, __pyx_n_s_zeros);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 161, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyInt_From_int</span>(__pyx_v_total_models);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 158, __pyx_L1_error)</span>
+  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyInt_From_int</span>(__pyx_v_total_models);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 161, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
-  __pyx_t_11 = <span class='pyx_c_api'>__Pyx_PyInt_From_int</span>(__pyx_v_resampling_lam_grid_length);<span class='error_goto'> if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 158, __pyx_L1_error)</span>
+  __pyx_t_11 = <span class='pyx_c_api'>__Pyx_PyInt_From_int</span>(__pyx_v_resampling_lam_grid_length);<span class='error_goto'> if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 161, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_11);
-  __pyx_t_12 = <span class='py_c_api'>PyTuple_New</span>(2);<span class='error_goto'> if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 158, __pyx_L1_error)</span>
+  __pyx_t_12 = <span class='py_c_api'>PyTuple_New</span>(2);<span class='error_goto'> if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 161, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_12);
   <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_t_1);
   <span class='py_macro_api'>PyTuple_SET_ITEM</span>(__pyx_t_12, 0, __pyx_t_1);
@@ -2140,26 +2151,26 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
   <span class='py_macro_api'>PyTuple_SET_ITEM</span>(__pyx_t_12, 1, __pyx_t_11);
   __pyx_t_1 = 0;
   __pyx_t_11 = 0;
-  __pyx_t_11 = <span class='py_c_api'>PyTuple_New</span>(1);<span class='error_goto'> if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 158, __pyx_L1_error)</span>
+  __pyx_t_11 = <span class='py_c_api'>PyTuple_New</span>(1);<span class='error_goto'> if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 161, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_11);
   <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_t_12);
   <span class='py_macro_api'>PyTuple_SET_ITEM</span>(__pyx_t_11, 0, __pyx_t_12);
   __pyx_t_12 = 0;
-  __pyx_t_12 = <span class='py_c_api'>PyDict_New</span>();<span class='error_goto'> if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 158, __pyx_L1_error)</span>
+  __pyx_t_12 = <span class='py_c_api'>PyDict_New</span>();<span class='error_goto'> if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 161, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_12);
-  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_n_s_np);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 158, __pyx_L1_error)</span>
+  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_n_s_np);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 161, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
-  __pyx_t_13 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_t_1, __pyx_n_s_float64);<span class='error_goto'> if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 158, __pyx_L1_error)</span>
+  __pyx_t_13 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_t_1, __pyx_n_s_float64);<span class='error_goto'> if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 161, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_13);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
-  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_12, __pyx_n_s_dtype, __pyx_t_13) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 158, __pyx_L1_error)</span>
+  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_12, __pyx_n_s_dtype, __pyx_t_13) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 161, __pyx_L1_error)</span>
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_13); __pyx_t_13 = 0;
-  __pyx_t_13 = <span class='pyx_c_api'>__Pyx_PyObject_Call</span>(__pyx_t_2, __pyx_t_11, __pyx_t_12);<span class='error_goto'> if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 158, __pyx_L1_error)</span>
+  __pyx_t_13 = <span class='pyx_c_api'>__Pyx_PyObject_Call</span>(__pyx_t_2, __pyx_t_11, __pyx_t_12);<span class='error_goto'> if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 161, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_13);
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_11); __pyx_t_11 = 0;
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_12); __pyx_t_12 = 0;
-  if (!(likely(((__pyx_t_13) == Py_None) || likely(<span class='pyx_c_api'>__Pyx_TypeTest</span>(__pyx_t_13, __pyx_ptype_5numpy_ndarray))))) <span class='error_goto'>__PYX_ERR(0, 158, __pyx_L1_error)</span>
+  if (!(likely(((__pyx_t_13) == Py_None) || likely(<span class='pyx_c_api'>__Pyx_TypeTest</span>(__pyx_t_13, __pyx_ptype_5numpy_ndarray))))) <span class='error_goto'>__PYX_ERR(0, 161, __pyx_L1_error)</span>
   __pyx_t_14 = ((PyArrayObject *)__pyx_t_13);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
@@ -2175,20 +2186,20 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
       }
     }
     __pyx_pybuffernd_model_comp_spec_modified.diminfo[0].strides = __pyx_pybuffernd_model_comp_spec_modified.rcbuffer-&gt;pybuffer.strides[0]; __pyx_pybuffernd_model_comp_spec_modified.diminfo[0].shape = __pyx_pybuffernd_model_comp_spec_modified.rcbuffer-&gt;pybuffer.shape[0]; __pyx_pybuffernd_model_comp_spec_modified.diminfo[1].strides = __pyx_pybuffernd_model_comp_spec_modified.rcbuffer-&gt;pybuffer.strides[1]; __pyx_pybuffernd_model_comp_spec_modified.diminfo[1].shape = __pyx_pybuffernd_model_comp_spec_modified.rcbuffer-&gt;pybuffer.shape[1];
-    if (unlikely(__pyx_t_4 &lt; 0)) <span class='error_goto'>__PYX_ERR(0, 158, __pyx_L1_error)</span>
+    if (unlikely(__pyx_t_4 &lt; 0)) <span class='error_goto'>__PYX_ERR(0, 161, __pyx_L1_error)</span>
   }
   __pyx_t_14 = 0;
   __pyx_v_model_comp_spec_modified = ((PyArrayObject *)__pyx_t_13);
   __pyx_t_13 = 0;
-</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">159</span>:     <span class="k">cdef</span> <span class="kt">np</span>.<span class="kt">float64_t</span> [<span class="p">:,</span> <span class="p">:]</span> <span class="n">model_comp_spec_modified_view</span> <span class="o">=</span> <span class="n">model_comp_spec_modified</span></pre>
+</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">162</span>:     <span class="k">cdef</span> <span class="kt">np</span>.<span class="kt">float64_t</span> [<span class="p">:,</span> <span class="p">:]</span> <span class="n">model_comp_spec_modified_view</span> <span class="o">=</span> <span class="n">model_comp_spec_modified</span></pre>
 <pre class='cython code score-0 '>  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_dsds_nn___pyx_t_5numpy_float64_t(((PyObject *)__pyx_v_model_comp_spec_modified));
-  if (unlikely(!__pyx_t_9.memview)) <span class='error_goto'>__PYX_ERR(0, 159, __pyx_L1_error)</span>
+  if (unlikely(!__pyx_t_9.memview)) <span class='error_goto'>__PYX_ERR(0, 162, __pyx_L1_error)</span>
   __pyx_v_model_comp_spec_modified_view = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
-</pre><pre class="cython line score-0">&#xA0;<span class="">160</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">161</span>:     <span class="c">### Zeroth element</span></pre>
-<pre class="cython line score-4" onclick='toggleDiv(this)'>+<span class="">162</span>:     <span class="n">lam_step</span> <span class="o">=</span> <span class="n">resampling_lam_grid_view</span><span class="p">[</span><span class="mf">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">resampling_lam_grid_view</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">163</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">164</span>:     <span class="c">### Zeroth element</span></pre>
+<pre class="cython line score-4" onclick='toggleDiv(this)'>+<span class="">165</span>:     <span class="n">lam_step</span> <span class="o">=</span> <span class="n">resampling_lam_grid_view</span><span class="p">[</span><span class="mf">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">resampling_lam_grid_view</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span></pre>
 <pre class='cython code score-4 '>  __pyx_t_15 = 1;
   __pyx_t_4 = -1;
   if (__pyx_t_15 &lt; 0) {
@@ -2197,7 +2208,7 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
   } else if (unlikely(__pyx_t_15 &gt;= __pyx_v_resampling_lam_grid_view.shape[0])) __pyx_t_4 = 0;
   if (unlikely(__pyx_t_4 != -1)) {
     <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_4);
-    <span class='error_goto'>__PYX_ERR(0, 162, __pyx_L1_error)</span>
+    <span class='error_goto'>__PYX_ERR(0, 165, __pyx_L1_error)</span>
   }
   __pyx_t_16 = 0;
   __pyx_t_4 = -1;
@@ -2207,11 +2218,11 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
   } else if (unlikely(__pyx_t_16 &gt;= __pyx_v_resampling_lam_grid_view.shape[0])) __pyx_t_4 = 0;
   if (unlikely(__pyx_t_4 != -1)) {
     <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_4);
-    <span class='error_goto'>__PYX_ERR(0, 162, __pyx_L1_error)</span>
+    <span class='error_goto'>__PYX_ERR(0, 165, __pyx_L1_error)</span>
   }
   __pyx_v_lam_step = ((*((__pyx_t_5numpy_float64_t *) ( /* dim=0 */ (__pyx_v_resampling_lam_grid_view.data + __pyx_t_15 * __pyx_v_resampling_lam_grid_view.strides[0]) ))) - (*((__pyx_t_5numpy_float64_t *) ( /* dim=0 */ (__pyx_v_resampling_lam_grid_view.data + __pyx_t_16 * __pyx_v_resampling_lam_grid_view.strides[0]) ))));
-</pre><pre class="cython line score-0">&#xA0;<span class="">163</span>:     <span class="c">#idx = np.where((model_lam_grid_z &gt;= resampling_lam_grid[0] - lam_step) &amp; (model_lam_grid_z &lt; resampling_lam_grid[0] + lam_step))[0]</span></pre>
-<pre class="cython line score-4" onclick='toggleDiv(this)'>+<span class="">164</span>:     <span class="n">idx</span> <span class="o">=</span> <span class="n">cy_where_searchrange</span><span class="p">(</span><span class="n">model_lam_grid_z</span><span class="p">,</span> <span class="n">resampling_lam_grid</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">lam_step</span><span class="p">,</span> <span class="n">resampling_lam_grid</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">lam_step</span><span class="p">)</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">166</span>:     <span class="c">#idx = np.where((model_lam_grid_z &gt;= resampling_lam_grid[0] - lam_step) &amp; (model_lam_grid_z &lt; resampling_lam_grid[0] + lam_step))[0]</span></pre>
+<pre class="cython line score-4" onclick='toggleDiv(this)'>+<span class="">167</span>:     <span class="n">idx</span> <span class="o">=</span> <span class="n">cy_where_searchrange</span><span class="p">(</span><span class="n">model_lam_grid_z</span><span class="p">,</span> <span class="n">resampling_lam_grid</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">lam_step</span><span class="p">,</span> <span class="n">resampling_lam_grid</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">lam_step</span><span class="p">)</span></pre>
 <pre class='cython code score-4 '>  __pyx_t_17 = 0;
   __pyx_t_4 = -1;
   if (__pyx_t_17 &lt; 0) {
@@ -2220,7 +2231,7 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
   } else if (unlikely(__pyx_t_17 &gt;= __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape)) __pyx_t_4 = 0;
   if (unlikely(__pyx_t_4 != -1)) {
     <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_4);
-    <span class='error_goto'>__PYX_ERR(0, 164, __pyx_L1_error)</span>
+    <span class='error_goto'>__PYX_ERR(0, 167, __pyx_L1_error)</span>
   }
   __pyx_t_18 = 0;
   __pyx_t_4 = -1;
@@ -2230,352 +2241,308 @@ static PyObject *__pyx_pf_10model_mods_4redshift_and_resample_fast(CYTHON_UNUSED
   } else if (unlikely(__pyx_t_18 &gt;= __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape)) __pyx_t_4 = 0;
   if (unlikely(__pyx_t_4 != -1)) {
     <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_4);
-    <span class='error_goto'>__PYX_ERR(0, 164, __pyx_L1_error)</span>
+    <span class='error_goto'>__PYX_ERR(0, 167, __pyx_L1_error)</span>
   }
-  __pyx_t_13 = __pyx_f_10model_mods_cy_where_searchrange(((PyArrayObject *)__pyx_v_model_lam_grid_z), ((*__Pyx_BufPtrStrided1d(__pyx_t_10model_mods_DTYPE_t *, __pyx_pybuffernd_resampling_lam_grid.rcbuffer-&gt;pybuffer.buf, __pyx_t_17, __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides)) - __pyx_v_lam_step), ((*__Pyx_BufPtrStrided1d(__pyx_t_10model_mods_DTYPE_t *, __pyx_pybuffernd_resampling_lam_grid.rcbuffer-&gt;pybuffer.buf, __pyx_t_18, __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides)) + __pyx_v_lam_step));<span class='error_goto'> if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 164, __pyx_L1_error)</span>
+  __pyx_t_13 = __pyx_f_10model_mods_cy_where_searchrange(((PyArrayObject *)__pyx_v_model_lam_grid_z), ((*__Pyx_BufPtrStrided1d(__pyx_t_10model_mods_DTYPE_t *, __pyx_pybuffernd_resampling_lam_grid.rcbuffer-&gt;pybuffer.buf, __pyx_t_17, __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides)) - __pyx_v_lam_step), ((*__Pyx_BufPtrStrided1d(__pyx_t_10model_mods_DTYPE_t *, __pyx_pybuffernd_resampling_lam_grid.rcbuffer-&gt;pybuffer.buf, __pyx_t_18, __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides)) + __pyx_v_lam_step));<span class='error_goto'> if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 167, __pyx_L1_error)</span>
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_13);
   __pyx_v_idx = ((PyObject*)__pyx_t_13);
   __pyx_t_13 = 0;
-</pre><pre class="cython line score-54" onclick='toggleDiv(this)'>+<span class="">165</span>:     <span class="n">model_comp_spec_modified_view</span><span class="p">[:,</span> <span class="mf">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">model_comp_spec_redshifted_view</span><span class="p">[:,</span> <span class="n">idx</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mf">1</span><span class="p">)</span></pre>
-<pre class='cython code score-54 '>  __pyx_t_13 = <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_n_s_np);<span class='error_goto'> if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 165, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_13);
-  __pyx_t_12 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_t_13, __pyx_n_s_mean);<span class='error_goto'> if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 165, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_12);
-  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_13); __pyx_t_13 = 0;
-  __pyx_t_19 = <span class='pyx_c_api'>__Pyx_PyIndex_AsSsize_t</span>(__pyx_v_idx); if (unlikely((__pyx_t_19 == (Py_ssize_t)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 165, __pyx_L1_error)</span>
-  __pyx_t_10.data = __pyx_v_model_comp_spec_redshifted_view.data;
-  __pyx_t_10.memview = __pyx_v_model_comp_spec_redshifted_view.memview;
-  __PYX_INC_MEMVIEW(&amp;__pyx_t_10, 0);
-  __pyx_t_10.shape[0] = __pyx_v_model_comp_spec_redshifted_view.shape[0];
-__pyx_t_10.strides[0] = __pyx_v_model_comp_spec_redshifted_view.strides[0];
-    __pyx_t_10.suboffsets[0] = -1;
-
-{
-    Py_ssize_t __pyx_tmp_idx = __pyx_t_19;
-    Py_ssize_t __pyx_tmp_shape = __pyx_v_model_comp_spec_redshifted_view.shape[1];
-    Py_ssize_t __pyx_tmp_stride = __pyx_v_model_comp_spec_redshifted_view.strides[1];
-    if (1 &amp;&amp; (__pyx_tmp_idx &lt; 0))
-        __pyx_tmp_idx += __pyx_tmp_shape;
-    if (1 &amp;&amp; (__pyx_tmp_idx &lt; 0 || __pyx_tmp_idx &gt;= __pyx_tmp_shape)) {
-        <span class='py_c_api'>PyErr_SetString</span>(PyExc_IndexError, "Index out of bounds (axis 1)");
-        <span class='error_goto'>__PYX_ERR(0, 165, __pyx_L1_error)</span>
-    }
-        __pyx_t_10.data += __pyx_tmp_idx * __pyx_tmp_stride;
-}
-
-__pyx_t_13 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __pyx_memview_get_nn___pyx_t_5numpy_float64_t, (int (*)(char *, PyObject *)) __pyx_memview_set_nn___pyx_t_5numpy_float64_t, 0);;<span class='error_goto'> if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 165, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_13);
-  __PYX_XDEC_MEMVIEW(&amp;__pyx_t_10, 1);
-  __pyx_t_10.memview = NULL;
-  __pyx_t_10.data = NULL;
-  __pyx_t_11 = <span class='py_c_api'>PyTuple_New</span>(1);<span class='error_goto'> if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 165, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_11);
-  <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_t_13);
-  <span class='py_macro_api'>PyTuple_SET_ITEM</span>(__pyx_t_11, 0, __pyx_t_13);
-  __pyx_t_13 = 0;
-  __pyx_t_13 = <span class='py_c_api'>PyDict_New</span>();<span class='error_goto'> if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 165, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_13);
-  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_13, __pyx_n_s_axis, __pyx_int_1) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 165, __pyx_L1_error)</span>
-  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_Call</span>(__pyx_t_12, __pyx_t_11, __pyx_t_13);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 165, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_12); __pyx_t_12 = 0;
-  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_11); __pyx_t_11 = 0;
-  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_13); __pyx_t_13 = 0;
-  __pyx_t_20 = __pyx_<span class='py_c_api'>PyFloat_AsDouble</span>(__pyx_t_2); if (unlikely((__pyx_t_20 == ((npy_float64)-1)) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 165, __pyx_L1_error)</span>
-  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_10.data = __pyx_v_model_comp_spec_modified_view.data;
-  __pyx_t_10.memview = __pyx_v_model_comp_spec_modified_view.memview;
-  __PYX_INC_MEMVIEW(&amp;__pyx_t_10, 0);
-  __pyx_t_10.shape[0] = __pyx_v_model_comp_spec_modified_view.shape[0];
-__pyx_t_10.strides[0] = __pyx_v_model_comp_spec_modified_view.strides[0];
-    __pyx_t_10.suboffsets[0] = -1;
-
-{
-    Py_ssize_t __pyx_tmp_idx = 0;
-    Py_ssize_t __pyx_tmp_shape = __pyx_v_model_comp_spec_modified_view.shape[1];
-    Py_ssize_t __pyx_tmp_stride = __pyx_v_model_comp_spec_modified_view.strides[1];
-    if (1 &amp;&amp; (__pyx_tmp_idx &lt; 0))
-        __pyx_tmp_idx += __pyx_tmp_shape;
-    if (1 &amp;&amp; (__pyx_tmp_idx &lt; 0 || __pyx_tmp_idx &gt;= __pyx_tmp_shape)) {
-        <span class='py_c_api'>PyErr_SetString</span>(PyExc_IndexError, "Index out of bounds (axis 1)");
-        <span class='error_goto'>__PYX_ERR(0, 165, __pyx_L1_error)</span>
-    }
-        __pyx_t_10.data += __pyx_tmp_idx * __pyx_tmp_stride;
-}
-
-{
-      __pyx_t_5numpy_float64_t __pyx_temp_scalar = __pyx_t_20;
-      {
-          Py_ssize_t __pyx_temp_extent_0 = __pyx_t_10.shape[0];
-          Py_ssize_t __pyx_temp_stride_0 = __pyx_t_10.strides[0];
-          char *__pyx_temp_pointer_0;
-          Py_ssize_t __pyx_temp_idx_0;
-          __pyx_temp_pointer_0 = __pyx_t_10.data;
-          for (__pyx_temp_idx_0 = 0; __pyx_temp_idx_0 &lt; __pyx_temp_extent_0; __pyx_temp_idx_0++) {
-            *((__pyx_t_5numpy_float64_t *) __pyx_temp_pointer_0) = __pyx_temp_scalar;
-            __pyx_temp_pointer_0 += __pyx_temp_stride_0;
-          }
-      }
+</pre><pre class="cython line score-6" onclick='toggleDiv(this)'>+<span class="">168</span>:     <span class="n">num_idx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span></pre>
+<pre class='cython code score-6 '>  if (unlikely(__pyx_v_idx == Py_None)) {
+    <span class='py_c_api'>PyErr_SetString</span>(PyExc_TypeError, "object of type 'NoneType' has no len()");
+    <span class='error_goto'>__PYX_ERR(0, 168, __pyx_L1_error)</span>
   }
-  __PYX_XDEC_MEMVIEW(&amp;__pyx_t_10, 1);
-  __pyx_t_10.memview = NULL;
-  __pyx_t_10.data = NULL;
-</pre><pre class="cython line score-0">&#xA0;<span class="">166</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">167</span>:     <span class="c">### all elements in between</span></pre>
-<pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">168</span>:     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span> <span class="n">resampling_lam_grid_length</span> <span class="o">-</span> <span class="mf">1</span><span class="p">):</span></pre>
-<pre class='cython code score-0 '>  __pyx_t_21 = (__pyx_v_resampling_lam_grid_length - 1);
-  for (__pyx_t_4 = 1; __pyx_t_4 &lt; __pyx_t_21; __pyx_t_4+=1) {
+  __pyx_t_19 = <span class='py_macro_api'>PyList_GET_SIZE</span>(__pyx_v_idx);<span class='error_goto'> if (unlikely(__pyx_t_19 == -1)) __PYX_ERR(0, 168, __pyx_L1_error)</span>
+  __pyx_v_num_idx = __pyx_t_19;
+</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">169</span>:     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">total_models</span><span class="p">):</span></pre>
+<pre class='cython code score-0 '>  __pyx_t_4 = __pyx_v_total_models;
+  for (__pyx_t_20 = 0; __pyx_t_20 &lt; __pyx_t_4; __pyx_t_20+=1) {
+    __pyx_v_j = __pyx_t_20;
+</pre><pre class="cython line score-0">&#xA0;<span class="">170</span>: </pre>
+<pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">171</span>:         <span class="n">sum_</span> <span class="o">=</span> <span class="mf">0</span></pre>
+<pre class='cython code score-0 '>    __pyx_v_sum_ = 0.0;
+</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">172</span>:         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_idx</span><span class="p">):</span></pre>
+<pre class='cython code score-0 '>    __pyx_t_21 = __pyx_v_num_idx;
+    for (__pyx_t_22 = 0; __pyx_t_22 &lt; __pyx_t_21; __pyx_t_22+=1) {
+      __pyx_v_k = __pyx_t_22;
+</pre><pre class="cython line score-15" onclick='toggleDiv(this)'>+<span class="">173</span>:             <span class="n">lam_idx</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span></pre>
+<pre class='cython code score-15 '>      if (unlikely(__pyx_v_idx == Py_None)) {
+        <span class='py_c_api'>PyErr_SetString</span>(PyExc_TypeError, "'NoneType' object is not subscriptable");
+        <span class='error_goto'>__PYX_ERR(0, 173, __pyx_L1_error)</span>
+      }
+      __pyx_t_13 = <span class='pyx_c_api'>__Pyx_GetItemInt_List</span>(__pyx_v_idx, __pyx_v_k, int, 1, __Pyx_PyInt_From_int, 1, 1, 1);<span class='error_goto'> if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 173, __pyx_L1_error)</span>
+      <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_13);
+      __pyx_t_23 = <span class='pyx_c_api'>__Pyx_PyInt_As_int</span>(__pyx_t_13); if (unlikely((__pyx_t_23 == (int)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 173, __pyx_L1_error)</span>
+      <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_13); __pyx_t_13 = 0;
+      __pyx_v_lam_idx = __pyx_t_23;
+</pre><pre class="cython line score-2" onclick='toggleDiv(this)'>+<span class="">174</span>:             <span class="n">sum_</span> <span class="o">=</span> <span class="n">sum_</span> <span class="o">+</span> <span class="n">model_comp_spec_redshifted_view</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">lam_idx</span><span class="p">]</span></pre>
+<pre class='cython code score-2 '>      __pyx_t_24 = __pyx_v_j;
+      __pyx_t_25 = __pyx_v_lam_idx;
+      __pyx_t_23 = -1;
+      if (__pyx_t_24 &lt; 0) {
+        __pyx_t_24 += __pyx_v_model_comp_spec_redshifted_view.shape[0];
+        if (unlikely(__pyx_t_24 &lt; 0)) __pyx_t_23 = 0;
+      } else if (unlikely(__pyx_t_24 &gt;= __pyx_v_model_comp_spec_redshifted_view.shape[0])) __pyx_t_23 = 0;
+      if (__pyx_t_25 &lt; 0) {
+        __pyx_t_25 += __pyx_v_model_comp_spec_redshifted_view.shape[1];
+        if (unlikely(__pyx_t_25 &lt; 0)) __pyx_t_23 = 1;
+      } else if (unlikely(__pyx_t_25 &gt;= __pyx_v_model_comp_spec_redshifted_view.shape[1])) __pyx_t_23 = 1;
+      if (unlikely(__pyx_t_23 != -1)) {
+        <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_23);
+        <span class='error_goto'>__PYX_ERR(0, 174, __pyx_L1_error)</span>
+      }
+      __pyx_v_sum_ = (__pyx_v_sum_ + (*((__pyx_t_5numpy_float64_t *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_model_comp_spec_redshifted_view.data + __pyx_t_24 * __pyx_v_model_comp_spec_redshifted_view.strides[0]) ) + __pyx_t_25 * __pyx_v_model_comp_spec_redshifted_view.strides[1]) ))));
+    }
+</pre><pre class="cython line score-0">&#xA0;<span class="">175</span>: </pre>
+<pre class="cython line score-7" onclick='toggleDiv(this)'>+<span class="">176</span>:         <span class="n">model_comp_spec_modified_view</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="mf">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">sum_</span> <span class="o">/</span> <span class="n">num_idx</span></pre>
+<pre class='cython code score-7 '>    if (unlikely(__pyx_v_num_idx == 0)) {
+      <span class='py_c_api'>PyErr_SetString</span>(PyExc_ZeroDivisionError, "float division");
+      <span class='error_goto'>__PYX_ERR(0, 176, __pyx_L1_error)</span>
+    }
+    __pyx_t_26 = __pyx_v_j;
+    __pyx_t_27 = 0;
+    __pyx_t_21 = -1;
+    if (__pyx_t_26 &lt; 0) {
+      __pyx_t_26 += __pyx_v_model_comp_spec_modified_view.shape[0];
+      if (unlikely(__pyx_t_26 &lt; 0)) __pyx_t_21 = 0;
+    } else if (unlikely(__pyx_t_26 &gt;= __pyx_v_model_comp_spec_modified_view.shape[0])) __pyx_t_21 = 0;
+    if (__pyx_t_27 &lt; 0) {
+      __pyx_t_27 += __pyx_v_model_comp_spec_modified_view.shape[1];
+      if (unlikely(__pyx_t_27 &lt; 0)) __pyx_t_21 = 1;
+    } else if (unlikely(__pyx_t_27 &gt;= __pyx_v_model_comp_spec_modified_view.shape[1])) __pyx_t_21 = 1;
+    if (unlikely(__pyx_t_21 != -1)) {
+      <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_21);
+      <span class='error_goto'>__PYX_ERR(0, 176, __pyx_L1_error)</span>
+    }
+    *((__pyx_t_5numpy_float64_t *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_model_comp_spec_modified_view.data + __pyx_t_26 * __pyx_v_model_comp_spec_modified_view.strides[0]) ) + __pyx_t_27 * __pyx_v_model_comp_spec_modified_view.strides[1]) )) = (__pyx_v_sum_ / ((float)__pyx_v_num_idx));
+  }
+</pre><pre class="cython line score-0">&#xA0;<span class="">177</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">178</span>:     <span class="c">### all elements in between</span></pre>
+<pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">179</span>:     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span> <span class="n">resampling_lam_grid_length</span> <span class="o">-</span> <span class="mf">1</span><span class="p">):</span></pre>
+<pre class='cython code score-0 '>  __pyx_t_28 = (__pyx_v_resampling_lam_grid_length - 1);
+  for (__pyx_t_4 = 1; __pyx_t_4 &lt; __pyx_t_28; __pyx_t_4+=1) {
     __pyx_v_i = __pyx_t_4;
-</pre><pre class="cython line score-0">&#xA0;<span class="">169</span>:         <span class="c">#idx = np.where((model_lam_grid_z &gt;= resampling_lam_grid[i-1]) &amp; (model_lam_grid_z &lt; resampling_lam_grid[i+1]))[0]</span></pre>
-<pre class="cython line score-5" onclick='toggleDiv(this)'>+<span class="">170</span>:         <span class="n">idx</span> <span class="o">=</span> <span class="n">cy_where_searchrange</span><span class="p">(</span><span class="n">model_lam_grid_z</span><span class="p">,</span> <span class="n">resampling_lam_grid</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mf">1</span><span class="p">],</span> <span class="n">resampling_lam_grid</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mf">1</span><span class="p">])</span></pre>
-<pre class='cython code score-5 '>    __pyx_t_22 = (__pyx_v_i - 1);
-    __pyx_t_23 = -1;
-    if (__pyx_t_22 &lt; 0) {
-      __pyx_t_22 += __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape;
-      if (unlikely(__pyx_t_22 &lt; 0)) __pyx_t_23 = 0;
-    } else if (unlikely(__pyx_t_22 &gt;= __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape)) __pyx_t_23 = 0;
-    if (unlikely(__pyx_t_23 != -1)) {
-      <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_23);
-      <span class='error_goto'>__PYX_ERR(0, 170, __pyx_L1_error)</span>
+</pre><pre class="cython line score-0">&#xA0;<span class="">180</span>:         <span class="c">#idx = np.where((model_lam_grid_z &gt;= resampling_lam_grid[i-1]) &amp; (model_lam_grid_z &lt; resampling_lam_grid[i+1]))[0]</span></pre>
+<pre class="cython line score-5" onclick='toggleDiv(this)'>+<span class="">181</span>:         <span class="n">idx</span> <span class="o">=</span> <span class="n">cy_where_searchrange</span><span class="p">(</span><span class="n">model_lam_grid_z</span><span class="p">,</span> <span class="n">resampling_lam_grid</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mf">1</span><span class="p">],</span> <span class="n">resampling_lam_grid</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mf">1</span><span class="p">])</span></pre>
+<pre class='cython code score-5 '>    __pyx_t_29 = (__pyx_v_i - 1);
+    __pyx_t_20 = -1;
+    if (__pyx_t_29 &lt; 0) {
+      __pyx_t_29 += __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape;
+      if (unlikely(__pyx_t_29 &lt; 0)) __pyx_t_20 = 0;
+    } else if (unlikely(__pyx_t_29 &gt;= __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape)) __pyx_t_20 = 0;
+    if (unlikely(__pyx_t_20 != -1)) {
+      <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_20);
+      <span class='error_goto'>__PYX_ERR(0, 181, __pyx_L1_error)</span>
     }
-    __pyx_t_24 = (__pyx_v_i + 1);
-    __pyx_t_23 = -1;
-    if (__pyx_t_24 &lt; 0) {
-      __pyx_t_24 += __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape;
-      if (unlikely(__pyx_t_24 &lt; 0)) __pyx_t_23 = 0;
-    } else if (unlikely(__pyx_t_24 &gt;= __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape)) __pyx_t_23 = 0;
-    if (unlikely(__pyx_t_23 != -1)) {
-      <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_23);
-      <span class='error_goto'>__PYX_ERR(0, 170, __pyx_L1_error)</span>
+    __pyx_t_30 = (__pyx_v_i + 1);
+    __pyx_t_20 = -1;
+    if (__pyx_t_30 &lt; 0) {
+      __pyx_t_30 += __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape;
+      if (unlikely(__pyx_t_30 &lt; 0)) __pyx_t_20 = 0;
+    } else if (unlikely(__pyx_t_30 &gt;= __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape)) __pyx_t_20 = 0;
+    if (unlikely(__pyx_t_20 != -1)) {
+      <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_20);
+      <span class='error_goto'>__PYX_ERR(0, 181, __pyx_L1_error)</span>
     }
-    __pyx_t_2 = __pyx_f_10model_mods_cy_where_searchrange(((PyArrayObject *)__pyx_v_model_lam_grid_z), (*__Pyx_BufPtrStrided1d(__pyx_t_10model_mods_DTYPE_t *, __pyx_pybuffernd_resampling_lam_grid.rcbuffer-&gt;pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides)), (*__Pyx_BufPtrStrided1d(__pyx_t_10model_mods_DTYPE_t *, __pyx_pybuffernd_resampling_lam_grid.rcbuffer-&gt;pybuffer.buf, __pyx_t_24, __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides)));<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 170, __pyx_L1_error)</span>
-    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-    <span class='pyx_macro_api'>__Pyx_DECREF_SET</span>(__pyx_v_idx, ((PyObject*)__pyx_t_2));
-    __pyx_t_2 = 0;
-</pre><pre class="cython line score-54" onclick='toggleDiv(this)'>+<span class="">171</span>:         <span class="n">model_comp_spec_modified_view</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">model_comp_spec_redshifted_view</span><span class="p">[:,</span> <span class="n">idx</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mf">1</span><span class="p">)</span></pre>
-<pre class='cython code score-54 '>    __pyx_t_2 = <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_n_s_np);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 171, __pyx_L1_error)</span>
-    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-    __pyx_t_13 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_t_2, __pyx_n_s_mean);<span class='error_goto'> if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 171, __pyx_L1_error)</span>
+    __pyx_t_13 = __pyx_f_10model_mods_cy_where_searchrange(((PyArrayObject *)__pyx_v_model_lam_grid_z), (*__Pyx_BufPtrStrided1d(__pyx_t_10model_mods_DTYPE_t *, __pyx_pybuffernd_resampling_lam_grid.rcbuffer-&gt;pybuffer.buf, __pyx_t_29, __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides)), (*__Pyx_BufPtrStrided1d(__pyx_t_10model_mods_DTYPE_t *, __pyx_pybuffernd_resampling_lam_grid.rcbuffer-&gt;pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides)));<span class='error_goto'> if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 181, __pyx_L1_error)</span>
     <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_13);
-    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_19 = <span class='pyx_c_api'>__Pyx_PyIndex_AsSsize_t</span>(__pyx_v_idx); if (unlikely((__pyx_t_19 == (Py_ssize_t)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 171, __pyx_L1_error)</span>
-    __pyx_t_25.data = __pyx_v_model_comp_spec_redshifted_view.data;
-    __pyx_t_25.memview = __pyx_v_model_comp_spec_redshifted_view.memview;
-    __PYX_INC_MEMVIEW(&amp;__pyx_t_25, 0);
-    __pyx_t_25.shape[0] = __pyx_v_model_comp_spec_redshifted_view.shape[0];
-__pyx_t_25.strides[0] = __pyx_v_model_comp_spec_redshifted_view.strides[0];
-    __pyx_t_25.suboffsets[0] = -1;
-
-{
-    Py_ssize_t __pyx_tmp_idx = __pyx_t_19;
-    Py_ssize_t __pyx_tmp_shape = __pyx_v_model_comp_spec_redshifted_view.shape[1];
-    Py_ssize_t __pyx_tmp_stride = __pyx_v_model_comp_spec_redshifted_view.strides[1];
-    if (1 &amp;&amp; (__pyx_tmp_idx &lt; 0))
-        __pyx_tmp_idx += __pyx_tmp_shape;
-    if (1 &amp;&amp; (__pyx_tmp_idx &lt; 0 || __pyx_tmp_idx &gt;= __pyx_tmp_shape)) {
-        <span class='py_c_api'>PyErr_SetString</span>(PyExc_IndexError, "Index out of bounds (axis 1)");
-        <span class='error_goto'>__PYX_ERR(0, 171, __pyx_L1_error)</span>
+    <span class='pyx_macro_api'>__Pyx_DECREF_SET</span>(__pyx_v_idx, ((PyObject*)__pyx_t_13));
+    __pyx_t_13 = 0;
+</pre><pre class="cython line score-0">&#xA0;<span class="">182</span>:         <span class="c">#model_comp_spec_modified_view[:, i] = np.mean(model_comp_spec_redshifted_view[:, idx], axis=1)</span></pre>
+<pre class="cython line score-6" onclick='toggleDiv(this)'>+<span class="">183</span>:         <span class="n">num_idx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span></pre>
+<pre class='cython code score-6 '>    if (unlikely(__pyx_v_idx == Py_None)) {
+      <span class='py_c_api'>PyErr_SetString</span>(PyExc_TypeError, "object of type 'NoneType' has no len()");
+      <span class='error_goto'>__PYX_ERR(0, 183, __pyx_L1_error)</span>
     }
-        __pyx_t_25.data += __pyx_tmp_idx * __pyx_tmp_stride;
-}
-
-__pyx_t_2 = __pyx_memoryview_fromslice(__pyx_t_25, 1, (PyObject *(*)(char *)) __pyx_memview_get_nn___pyx_t_5numpy_float64_t, (int (*)(char *, PyObject *)) __pyx_memview_set_nn___pyx_t_5numpy_float64_t, 0);;<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 171, __pyx_L1_error)</span>
-    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-    __PYX_XDEC_MEMVIEW(&amp;__pyx_t_25, 1);
-    __pyx_t_25.memview = NULL;
-    __pyx_t_25.data = NULL;
-    __pyx_t_11 = <span class='py_c_api'>PyTuple_New</span>(1);<span class='error_goto'> if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 171, __pyx_L1_error)</span>
-    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_11);
-    <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_t_2);
-    <span class='py_macro_api'>PyTuple_SET_ITEM</span>(__pyx_t_11, 0, __pyx_t_2);
-    __pyx_t_2 = 0;
-    __pyx_t_2 = <span class='py_c_api'>PyDict_New</span>();<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 171, __pyx_L1_error)</span>
-    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-    if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_2, __pyx_n_s_axis, __pyx_int_1) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 171, __pyx_L1_error)</span>
-    __pyx_t_12 = <span class='pyx_c_api'>__Pyx_PyObject_Call</span>(__pyx_t_13, __pyx_t_11, __pyx_t_2);<span class='error_goto'> if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 171, __pyx_L1_error)</span>
-    <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_12);
-    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_13); __pyx_t_13 = 0;
-    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_11); __pyx_t_11 = 0;
-    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_20 = __pyx_<span class='py_c_api'>PyFloat_AsDouble</span>(__pyx_t_12); if (unlikely((__pyx_t_20 == ((npy_float64)-1)) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 171, __pyx_L1_error)</span>
-    <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_12); __pyx_t_12 = 0;
-    __pyx_t_25.data = __pyx_v_model_comp_spec_modified_view.data;
-    __pyx_t_25.memview = __pyx_v_model_comp_spec_modified_view.memview;
-    __PYX_INC_MEMVIEW(&amp;__pyx_t_25, 0);
-    __pyx_t_25.shape[0] = __pyx_v_model_comp_spec_modified_view.shape[0];
-__pyx_t_25.strides[0] = __pyx_v_model_comp_spec_modified_view.strides[0];
-    __pyx_t_25.suboffsets[0] = -1;
-
-{
-    Py_ssize_t __pyx_tmp_idx = __pyx_v_i;
-    Py_ssize_t __pyx_tmp_shape = __pyx_v_model_comp_spec_modified_view.shape[1];
-    Py_ssize_t __pyx_tmp_stride = __pyx_v_model_comp_spec_modified_view.strides[1];
-    if (1 &amp;&amp; (__pyx_tmp_idx &lt; 0))
-        __pyx_tmp_idx += __pyx_tmp_shape;
-    if (1 &amp;&amp; (__pyx_tmp_idx &lt; 0 || __pyx_tmp_idx &gt;= __pyx_tmp_shape)) {
-        <span class='py_c_api'>PyErr_SetString</span>(PyExc_IndexError, "Index out of bounds (axis 1)");
-        <span class='error_goto'>__PYX_ERR(0, 171, __pyx_L1_error)</span>
-    }
-        __pyx_t_25.data += __pyx_tmp_idx * __pyx_tmp_stride;
-}
-
-{
-        __pyx_t_5numpy_float64_t __pyx_temp_scalar = __pyx_t_20;
-        {
-            Py_ssize_t __pyx_temp_extent_0 = __pyx_t_25.shape[0];
-            Py_ssize_t __pyx_temp_stride_0 = __pyx_t_25.strides[0];
-            char *__pyx_temp_pointer_0;
-            Py_ssize_t __pyx_temp_idx_0;
-            __pyx_temp_pointer_0 = __pyx_t_25.data;
-            for (__pyx_temp_idx_0 = 0; __pyx_temp_idx_0 &lt; __pyx_temp_extent_0; __pyx_temp_idx_0++) {
-              *((__pyx_t_5numpy_float64_t *) __pyx_temp_pointer_0) = __pyx_temp_scalar;
-              __pyx_temp_pointer_0 += __pyx_temp_stride_0;
-            }
+    __pyx_t_19 = <span class='py_macro_api'>PyList_GET_SIZE</span>(__pyx_v_idx);<span class='error_goto'> if (unlikely(__pyx_t_19 == -1)) __PYX_ERR(0, 183, __pyx_L1_error)</span>
+    __pyx_v_num_idx = __pyx_t_19;
+</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">184</span>:         <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">total_models</span><span class="p">):</span></pre>
+<pre class='cython code score-0 '>    __pyx_t_20 = __pyx_v_total_models;
+    for (__pyx_t_21 = 0; __pyx_t_21 &lt; __pyx_t_20; __pyx_t_21+=1) {
+      __pyx_v_p = __pyx_t_21;
+</pre><pre class="cython line score-0">&#xA0;<span class="">185</span>: </pre>
+<pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">186</span>:             <span class="n">sum_</span> <span class="o">=</span> <span class="mf">0</span></pre>
+<pre class='cython code score-0 '>      __pyx_v_sum_ = 0.0;
+</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">187</span>:             <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_idx</span><span class="p">):</span></pre>
+<pre class='cython code score-0 '>      __pyx_t_22 = __pyx_v_num_idx;
+      for (__pyx_t_23 = 0; __pyx_t_23 &lt; __pyx_t_22; __pyx_t_23+=1) {
+        __pyx_v_q = __pyx_t_23;
+</pre><pre class="cython line score-15" onclick='toggleDiv(this)'>+<span class="">188</span>:                 <span class="n">lam_idx</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[</span><span class="n">q</span><span class="p">]</span></pre>
+<pre class='cython code score-15 '>        if (unlikely(__pyx_v_idx == Py_None)) {
+          <span class='py_c_api'>PyErr_SetString</span>(PyExc_TypeError, "'NoneType' object is not subscriptable");
+          <span class='error_goto'>__PYX_ERR(0, 188, __pyx_L1_error)</span>
         }
-    }
-    __PYX_XDEC_MEMVIEW(&amp;__pyx_t_25, 1);
-    __pyx_t_25.memview = NULL;
-    __pyx_t_25.data = NULL;
-  }
-</pre><pre class="cython line score-0">&#xA0;<span class="">172</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">173</span>:     <span class="c">#model_comp_spec_mod_list = Parallel(n_jobs=3)(delayed(do_resamp)(model_comp_spec_redshifted_view, model_lam_grid_z_view, resampling_lam_grid_view, i) for i in range(1, resampling_lam_grid_length - 1))</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">174</span>:     <span class="c">#model_comp_spec_modified[:, 1:-1] = np.asarray(model_comp_spec_mod_list)</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">175</span>: </pre>
-<pre class="cython line score-0">&#xA0;<span class="">176</span>:     <span class="c">### Last element</span></pre>
-<pre class="cython line score-4" onclick='toggleDiv(this)'>+<span class="">177</span>:     <span class="n">lam_step</span> <span class="o">=</span> <span class="n">resampling_lam_grid_view</span><span class="p">[</span><span class="o">-</span><span class="mf">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">resampling_lam_grid_view</span><span class="p">[</span><span class="o">-</span><span class="mf">2</span><span class="p">]</span></pre>
-<pre class='cython code score-4 '>  __pyx_t_26 = -1L;
-  __pyx_t_4 = -1;
-  if (__pyx_t_26 &lt; 0) {
-    __pyx_t_26 += __pyx_v_resampling_lam_grid_view.shape[0];
-    if (unlikely(__pyx_t_26 &lt; 0)) __pyx_t_4 = 0;
-  } else if (unlikely(__pyx_t_26 &gt;= __pyx_v_resampling_lam_grid_view.shape[0])) __pyx_t_4 = 0;
-  if (unlikely(__pyx_t_4 != -1)) {
-    <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_4);
-    <span class='error_goto'>__PYX_ERR(0, 177, __pyx_L1_error)</span>
-  }
-  __pyx_t_27 = -2L;
-  __pyx_t_4 = -1;
-  if (__pyx_t_27 &lt; 0) {
-    __pyx_t_27 += __pyx_v_resampling_lam_grid_view.shape[0];
-    if (unlikely(__pyx_t_27 &lt; 0)) __pyx_t_4 = 0;
-  } else if (unlikely(__pyx_t_27 &gt;= __pyx_v_resampling_lam_grid_view.shape[0])) __pyx_t_4 = 0;
-  if (unlikely(__pyx_t_4 != -1)) {
-    <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_4);
-    <span class='error_goto'>__PYX_ERR(0, 177, __pyx_L1_error)</span>
-  }
-  __pyx_v_lam_step = ((*((__pyx_t_5numpy_float64_t *) ( /* dim=0 */ (__pyx_v_resampling_lam_grid_view.data + __pyx_t_26 * __pyx_v_resampling_lam_grid_view.strides[0]) ))) - (*((__pyx_t_5numpy_float64_t *) ( /* dim=0 */ (__pyx_v_resampling_lam_grid_view.data + __pyx_t_27 * __pyx_v_resampling_lam_grid_view.strides[0]) ))));
-</pre><pre class="cython line score-0">&#xA0;<span class="">178</span>:     <span class="c">#idx = np.where((model_lam_grid_z &gt;= resampling_lam_grid[-1] - lam_step) &amp; (model_lam_grid_z &lt; resampling_lam_grid[-1] + lam_step))[0]</span></pre>
-<pre class="cython line score-5" onclick='toggleDiv(this)'>+<span class="">179</span>:     <span class="n">idx</span> <span class="o">=</span> <span class="n">cy_where_searchrange</span><span class="p">(</span><span class="n">model_lam_grid_z</span><span class="p">,</span> <span class="n">resampling_lam_grid</span><span class="p">[</span><span class="o">-</span><span class="mf">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">lam_step</span><span class="p">,</span> <span class="n">resampling_lam_grid</span><span class="p">[</span><span class="o">-</span><span class="mf">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">lam_step</span><span class="p">)</span></pre>
-<pre class='cython code score-5 '>  __pyx_t_28 = -1L;
-  __pyx_t_4 = -1;
-  if (__pyx_t_28 &lt; 0) {
-    __pyx_t_28 += __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape;
-    if (unlikely(__pyx_t_28 &lt; 0)) __pyx_t_4 = 0;
-  } else if (unlikely(__pyx_t_28 &gt;= __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape)) __pyx_t_4 = 0;
-  if (unlikely(__pyx_t_4 != -1)) {
-    <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_4);
-    <span class='error_goto'>__PYX_ERR(0, 179, __pyx_L1_error)</span>
-  }
-  __pyx_t_29 = -1L;
-  __pyx_t_4 = -1;
-  if (__pyx_t_29 &lt; 0) {
-    __pyx_t_29 += __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape;
-    if (unlikely(__pyx_t_29 &lt; 0)) __pyx_t_4 = 0;
-  } else if (unlikely(__pyx_t_29 &gt;= __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape)) __pyx_t_4 = 0;
-  if (unlikely(__pyx_t_4 != -1)) {
-    <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_4);
-    <span class='error_goto'>__PYX_ERR(0, 179, __pyx_L1_error)</span>
-  }
-  __pyx_t_12 = __pyx_f_10model_mods_cy_where_searchrange(((PyArrayObject *)__pyx_v_model_lam_grid_z), ((*__Pyx_BufPtrStrided1d(__pyx_t_10model_mods_DTYPE_t *, __pyx_pybuffernd_resampling_lam_grid.rcbuffer-&gt;pybuffer.buf, __pyx_t_28, __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides)) - __pyx_v_lam_step), ((*__Pyx_BufPtrStrided1d(__pyx_t_10model_mods_DTYPE_t *, __pyx_pybuffernd_resampling_lam_grid.rcbuffer-&gt;pybuffer.buf, __pyx_t_29, __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides)) + __pyx_v_lam_step));<span class='error_goto'> if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 179, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_12);
-  <span class='pyx_macro_api'>__Pyx_DECREF_SET</span>(__pyx_v_idx, ((PyObject*)__pyx_t_12));
-  __pyx_t_12 = 0;
-</pre><pre class="cython line score-54" onclick='toggleDiv(this)'>+<span class="">180</span>:     <span class="n">model_comp_spec_modified_view</span><span class="p">[:,</span> <span class="o">-</span><span class="mf">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">model_comp_spec_redshifted_view</span><span class="p">[:,</span> <span class="n">idx</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mf">1</span><span class="p">)</span></pre>
-<pre class='cython code score-54 '>  __pyx_t_12 = <span class='pyx_c_api'>__Pyx_GetModuleGlobalName</span>(__pyx_n_s_np);<span class='error_goto'> if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 180, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_12);
-  __pyx_t_2 = <span class='pyx_c_api'>__Pyx_PyObject_GetAttrStr</span>(__pyx_t_12, __pyx_n_s_mean);<span class='error_goto'> if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 180, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
-  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_12); __pyx_t_12 = 0;
-  __pyx_t_19 = <span class='pyx_c_api'>__Pyx_PyIndex_AsSsize_t</span>(__pyx_v_idx); if (unlikely((__pyx_t_19 == (Py_ssize_t)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 180, __pyx_L1_error)</span>
-  __pyx_t_30.data = __pyx_v_model_comp_spec_redshifted_view.data;
-  __pyx_t_30.memview = __pyx_v_model_comp_spec_redshifted_view.memview;
-  __PYX_INC_MEMVIEW(&amp;__pyx_t_30, 0);
-  __pyx_t_30.shape[0] = __pyx_v_model_comp_spec_redshifted_view.shape[0];
-__pyx_t_30.strides[0] = __pyx_v_model_comp_spec_redshifted_view.strides[0];
-    __pyx_t_30.suboffsets[0] = -1;
-
-{
-    Py_ssize_t __pyx_tmp_idx = __pyx_t_19;
-    Py_ssize_t __pyx_tmp_shape = __pyx_v_model_comp_spec_redshifted_view.shape[1];
-    Py_ssize_t __pyx_tmp_stride = __pyx_v_model_comp_spec_redshifted_view.strides[1];
-    if (1 &amp;&amp; (__pyx_tmp_idx &lt; 0))
-        __pyx_tmp_idx += __pyx_tmp_shape;
-    if (1 &amp;&amp; (__pyx_tmp_idx &lt; 0 || __pyx_tmp_idx &gt;= __pyx_tmp_shape)) {
-        <span class='py_c_api'>PyErr_SetString</span>(PyExc_IndexError, "Index out of bounds (axis 1)");
-        <span class='error_goto'>__PYX_ERR(0, 180, __pyx_L1_error)</span>
-    }
-        __pyx_t_30.data += __pyx_tmp_idx * __pyx_tmp_stride;
-}
-
-__pyx_t_12 = __pyx_memoryview_fromslice(__pyx_t_30, 1, (PyObject *(*)(char *)) __pyx_memview_get_nn___pyx_t_5numpy_float64_t, (int (*)(char *, PyObject *)) __pyx_memview_set_nn___pyx_t_5numpy_float64_t, 0);;<span class='error_goto'> if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 180, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_12);
-  __PYX_XDEC_MEMVIEW(&amp;__pyx_t_30, 1);
-  __pyx_t_30.memview = NULL;
-  __pyx_t_30.data = NULL;
-  __pyx_t_11 = <span class='py_c_api'>PyTuple_New</span>(1);<span class='error_goto'> if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 180, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_11);
-  <span class='refnanny'>__Pyx_GIVEREF</span>(__pyx_t_12);
-  <span class='py_macro_api'>PyTuple_SET_ITEM</span>(__pyx_t_11, 0, __pyx_t_12);
-  __pyx_t_12 = 0;
-  __pyx_t_12 = <span class='py_c_api'>PyDict_New</span>();<span class='error_goto'> if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 180, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_12);
-  if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_12, __pyx_n_s_axis, __pyx_int_1) &lt; 0) <span class='error_goto'>__PYX_ERR(0, 180, __pyx_L1_error)</span>
-  __pyx_t_13 = <span class='pyx_c_api'>__Pyx_PyObject_Call</span>(__pyx_t_2, __pyx_t_11, __pyx_t_12);<span class='error_goto'> if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 180, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_13);
-  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_2); __pyx_t_2 = 0;
-  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_11); __pyx_t_11 = 0;
-  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_12); __pyx_t_12 = 0;
-  __pyx_t_20 = __pyx_<span class='py_c_api'>PyFloat_AsDouble</span>(__pyx_t_13); if (unlikely((__pyx_t_20 == ((npy_float64)-1)) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 180, __pyx_L1_error)</span>
-  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_13); __pyx_t_13 = 0;
-  __pyx_t_30.data = __pyx_v_model_comp_spec_modified_view.data;
-  __pyx_t_30.memview = __pyx_v_model_comp_spec_modified_view.memview;
-  __PYX_INC_MEMVIEW(&amp;__pyx_t_30, 0);
-  __pyx_t_30.shape[0] = __pyx_v_model_comp_spec_modified_view.shape[0];
-__pyx_t_30.strides[0] = __pyx_v_model_comp_spec_modified_view.strides[0];
-    __pyx_t_30.suboffsets[0] = -1;
-
-{
-    Py_ssize_t __pyx_tmp_idx = -1L;
-    Py_ssize_t __pyx_tmp_shape = __pyx_v_model_comp_spec_modified_view.shape[1];
-    Py_ssize_t __pyx_tmp_stride = __pyx_v_model_comp_spec_modified_view.strides[1];
-    if (1 &amp;&amp; (__pyx_tmp_idx &lt; 0))
-        __pyx_tmp_idx += __pyx_tmp_shape;
-    if (1 &amp;&amp; (__pyx_tmp_idx &lt; 0 || __pyx_tmp_idx &gt;= __pyx_tmp_shape)) {
-        <span class='py_c_api'>PyErr_SetString</span>(PyExc_IndexError, "Index out of bounds (axis 1)");
-        <span class='error_goto'>__PYX_ERR(0, 180, __pyx_L1_error)</span>
-    }
-        __pyx_t_30.data += __pyx_tmp_idx * __pyx_tmp_stride;
-}
-
-{
-      __pyx_t_5numpy_float64_t __pyx_temp_scalar = __pyx_t_20;
-      {
-          Py_ssize_t __pyx_temp_extent_0 = __pyx_t_30.shape[0];
-          Py_ssize_t __pyx_temp_stride_0 = __pyx_t_30.strides[0];
-          char *__pyx_temp_pointer_0;
-          Py_ssize_t __pyx_temp_idx_0;
-          __pyx_temp_pointer_0 = __pyx_t_30.data;
-          for (__pyx_temp_idx_0 = 0; __pyx_temp_idx_0 &lt; __pyx_temp_extent_0; __pyx_temp_idx_0++) {
-            *((__pyx_t_5numpy_float64_t *) __pyx_temp_pointer_0) = __pyx_temp_scalar;
-            __pyx_temp_pointer_0 += __pyx_temp_stride_0;
-          }
+        __pyx_t_13 = <span class='pyx_c_api'>__Pyx_GetItemInt_List</span>(__pyx_v_idx, __pyx_v_q, int, 1, __Pyx_PyInt_From_int, 1, 1, 1);<span class='error_goto'> if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 188, __pyx_L1_error)</span>
+        <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_13);
+        __pyx_t_31 = <span class='pyx_c_api'>__Pyx_PyInt_As_int</span>(__pyx_t_13); if (unlikely((__pyx_t_31 == (int)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 188, __pyx_L1_error)</span>
+        <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_13); __pyx_t_13 = 0;
+        __pyx_v_lam_idx = __pyx_t_31;
+</pre><pre class="cython line score-2" onclick='toggleDiv(this)'>+<span class="">189</span>:                 <span class="n">sum_</span> <span class="o">=</span> <span class="n">sum_</span> <span class="o">+</span> <span class="n">model_comp_spec_redshifted_view</span><span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="n">lam_idx</span><span class="p">]</span></pre>
+<pre class='cython code score-2 '>        __pyx_t_32 = __pyx_v_p;
+        __pyx_t_33 = __pyx_v_lam_idx;
+        __pyx_t_31 = -1;
+        if (__pyx_t_32 &lt; 0) {
+          __pyx_t_32 += __pyx_v_model_comp_spec_redshifted_view.shape[0];
+          if (unlikely(__pyx_t_32 &lt; 0)) __pyx_t_31 = 0;
+        } else if (unlikely(__pyx_t_32 &gt;= __pyx_v_model_comp_spec_redshifted_view.shape[0])) __pyx_t_31 = 0;
+        if (__pyx_t_33 &lt; 0) {
+          __pyx_t_33 += __pyx_v_model_comp_spec_redshifted_view.shape[1];
+          if (unlikely(__pyx_t_33 &lt; 0)) __pyx_t_31 = 1;
+        } else if (unlikely(__pyx_t_33 &gt;= __pyx_v_model_comp_spec_redshifted_view.shape[1])) __pyx_t_31 = 1;
+        if (unlikely(__pyx_t_31 != -1)) {
+          <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_31);
+          <span class='error_goto'>__PYX_ERR(0, 189, __pyx_L1_error)</span>
+        }
+        __pyx_v_sum_ = (__pyx_v_sum_ + (*((__pyx_t_5numpy_float64_t *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_model_comp_spec_redshifted_view.data + __pyx_t_32 * __pyx_v_model_comp_spec_redshifted_view.strides[0]) ) + __pyx_t_33 * __pyx_v_model_comp_spec_redshifted_view.strides[1]) ))));
       }
+</pre><pre class="cython line score-0">&#xA0;<span class="">190</span>: </pre>
+<pre class="cython line score-7" onclick='toggleDiv(this)'>+<span class="">191</span>:             <span class="n">model_comp_spec_modified_view</span><span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sum_</span> <span class="o">/</span> <span class="n">num_idx</span></pre>
+<pre class='cython code score-7 '>      if (unlikely(__pyx_v_num_idx == 0)) {
+        <span class='py_c_api'>PyErr_SetString</span>(PyExc_ZeroDivisionError, "float division");
+        <span class='error_goto'>__PYX_ERR(0, 191, __pyx_L1_error)</span>
+      }
+      __pyx_t_34 = __pyx_v_p;
+      __pyx_t_35 = __pyx_v_i;
+      __pyx_t_22 = -1;
+      if (__pyx_t_34 &lt; 0) {
+        __pyx_t_34 += __pyx_v_model_comp_spec_modified_view.shape[0];
+        if (unlikely(__pyx_t_34 &lt; 0)) __pyx_t_22 = 0;
+      } else if (unlikely(__pyx_t_34 &gt;= __pyx_v_model_comp_spec_modified_view.shape[0])) __pyx_t_22 = 0;
+      if (__pyx_t_35 &lt; 0) {
+        __pyx_t_35 += __pyx_v_model_comp_spec_modified_view.shape[1];
+        if (unlikely(__pyx_t_35 &lt; 0)) __pyx_t_22 = 1;
+      } else if (unlikely(__pyx_t_35 &gt;= __pyx_v_model_comp_spec_modified_view.shape[1])) __pyx_t_22 = 1;
+      if (unlikely(__pyx_t_22 != -1)) {
+        <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_22);
+        <span class='error_goto'>__PYX_ERR(0, 191, __pyx_L1_error)</span>
+      }
+      *((__pyx_t_5numpy_float64_t *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_model_comp_spec_modified_view.data + __pyx_t_34 * __pyx_v_model_comp_spec_modified_view.strides[0]) ) + __pyx_t_35 * __pyx_v_model_comp_spec_modified_view.strides[1]) )) = (__pyx_v_sum_ / ((float)__pyx_v_num_idx));
+    }
   }
-  __PYX_XDEC_MEMVIEW(&amp;__pyx_t_30, 1);
-  __pyx_t_30.memview = NULL;
-  __pyx_t_30.data = NULL;
-</pre><pre class="cython line score-0">&#xA0;<span class="">181</span>: </pre>
-<pre class="cython line score-2" onclick='toggleDiv(this)'>+<span class="">182</span>:     <span class="k">return</span> <span class="n">model_comp_spec_modified</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">192</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">193</span>:     <span class="c">#model_comp_spec_mod_list = Parallel(n_jobs=3)(delayed(do_resamp)(model_comp_spec_redshifted_view, model_lam_grid_z_view, resampling_lam_grid_view, i) for i in range(1, resampling_lam_grid_length - 1))</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">194</span>:     <span class="c">#model_comp_spec_modified[:, 1:-1] = np.asarray(model_comp_spec_mod_list)</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">195</span>: </pre>
+<pre class="cython line score-0">&#xA0;<span class="">196</span>:     <span class="c">### Last element</span></pre>
+<pre class="cython line score-4" onclick='toggleDiv(this)'>+<span class="">197</span>:     <span class="n">lam_step</span> <span class="o">=</span> <span class="n">resampling_lam_grid_view</span><span class="p">[</span><span class="o">-</span><span class="mf">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">resampling_lam_grid_view</span><span class="p">[</span><span class="o">-</span><span class="mf">2</span><span class="p">]</span></pre>
+<pre class='cython code score-4 '>  __pyx_t_36 = -1L;
+  __pyx_t_4 = -1;
+  if (__pyx_t_36 &lt; 0) {
+    __pyx_t_36 += __pyx_v_resampling_lam_grid_view.shape[0];
+    if (unlikely(__pyx_t_36 &lt; 0)) __pyx_t_4 = 0;
+  } else if (unlikely(__pyx_t_36 &gt;= __pyx_v_resampling_lam_grid_view.shape[0])) __pyx_t_4 = 0;
+  if (unlikely(__pyx_t_4 != -1)) {
+    <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_4);
+    <span class='error_goto'>__PYX_ERR(0, 197, __pyx_L1_error)</span>
+  }
+  __pyx_t_37 = -2L;
+  __pyx_t_4 = -1;
+  if (__pyx_t_37 &lt; 0) {
+    __pyx_t_37 += __pyx_v_resampling_lam_grid_view.shape[0];
+    if (unlikely(__pyx_t_37 &lt; 0)) __pyx_t_4 = 0;
+  } else if (unlikely(__pyx_t_37 &gt;= __pyx_v_resampling_lam_grid_view.shape[0])) __pyx_t_4 = 0;
+  if (unlikely(__pyx_t_4 != -1)) {
+    <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_4);
+    <span class='error_goto'>__PYX_ERR(0, 197, __pyx_L1_error)</span>
+  }
+  __pyx_v_lam_step = ((*((__pyx_t_5numpy_float64_t *) ( /* dim=0 */ (__pyx_v_resampling_lam_grid_view.data + __pyx_t_36 * __pyx_v_resampling_lam_grid_view.strides[0]) ))) - (*((__pyx_t_5numpy_float64_t *) ( /* dim=0 */ (__pyx_v_resampling_lam_grid_view.data + __pyx_t_37 * __pyx_v_resampling_lam_grid_view.strides[0]) ))));
+</pre><pre class="cython line score-0">&#xA0;<span class="">198</span>:     <span class="c">#idx = np.where((model_lam_grid_z &gt;= resampling_lam_grid[-1] - lam_step) &amp; (model_lam_grid_z &lt; resampling_lam_grid[-1] + lam_step))[0]</span></pre>
+<pre class="cython line score-5" onclick='toggleDiv(this)'>+<span class="">199</span>:     <span class="n">idx</span> <span class="o">=</span> <span class="n">cy_where_searchrange</span><span class="p">(</span><span class="n">model_lam_grid_z</span><span class="p">,</span> <span class="n">resampling_lam_grid</span><span class="p">[</span><span class="o">-</span><span class="mf">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">lam_step</span><span class="p">,</span> <span class="n">resampling_lam_grid</span><span class="p">[</span><span class="o">-</span><span class="mf">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">lam_step</span><span class="p">)</span></pre>
+<pre class='cython code score-5 '>  __pyx_t_38 = -1L;
+  __pyx_t_4 = -1;
+  if (__pyx_t_38 &lt; 0) {
+    __pyx_t_38 += __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape;
+    if (unlikely(__pyx_t_38 &lt; 0)) __pyx_t_4 = 0;
+  } else if (unlikely(__pyx_t_38 &gt;= __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape)) __pyx_t_4 = 0;
+  if (unlikely(__pyx_t_4 != -1)) {
+    <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_4);
+    <span class='error_goto'>__PYX_ERR(0, 199, __pyx_L1_error)</span>
+  }
+  __pyx_t_39 = -1L;
+  __pyx_t_4 = -1;
+  if (__pyx_t_39 &lt; 0) {
+    __pyx_t_39 += __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape;
+    if (unlikely(__pyx_t_39 &lt; 0)) __pyx_t_4 = 0;
+  } else if (unlikely(__pyx_t_39 &gt;= __pyx_pybuffernd_resampling_lam_grid.diminfo[0].shape)) __pyx_t_4 = 0;
+  if (unlikely(__pyx_t_4 != -1)) {
+    <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_4);
+    <span class='error_goto'>__PYX_ERR(0, 199, __pyx_L1_error)</span>
+  }
+  __pyx_t_13 = __pyx_f_10model_mods_cy_where_searchrange(((PyArrayObject *)__pyx_v_model_lam_grid_z), ((*__Pyx_BufPtrStrided1d(__pyx_t_10model_mods_DTYPE_t *, __pyx_pybuffernd_resampling_lam_grid.rcbuffer-&gt;pybuffer.buf, __pyx_t_38, __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides)) - __pyx_v_lam_step), ((*__Pyx_BufPtrStrided1d(__pyx_t_10model_mods_DTYPE_t *, __pyx_pybuffernd_resampling_lam_grid.rcbuffer-&gt;pybuffer.buf, __pyx_t_39, __pyx_pybuffernd_resampling_lam_grid.diminfo[0].strides)) + __pyx_v_lam_step));<span class='error_goto'> if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 199, __pyx_L1_error)</span>
+  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_13);
+  <span class='pyx_macro_api'>__Pyx_DECREF_SET</span>(__pyx_v_idx, ((PyObject*)__pyx_t_13));
+  __pyx_t_13 = 0;
+</pre><pre class="cython line score-6" onclick='toggleDiv(this)'>+<span class="">200</span>:     <span class="n">num_idx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span></pre>
+<pre class='cython code score-6 '>  if (unlikely(__pyx_v_idx == Py_None)) {
+    <span class='py_c_api'>PyErr_SetString</span>(PyExc_TypeError, "object of type 'NoneType' has no len()");
+    <span class='error_goto'>__PYX_ERR(0, 200, __pyx_L1_error)</span>
+  }
+  __pyx_t_19 = <span class='py_macro_api'>PyList_GET_SIZE</span>(__pyx_v_idx);<span class='error_goto'> if (unlikely(__pyx_t_19 == -1)) __PYX_ERR(0, 200, __pyx_L1_error)</span>
+  __pyx_v_num_idx = __pyx_t_19;
+</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">201</span>:     <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">total_models</span><span class="p">):</span></pre>
+<pre class='cython code score-0 '>  __pyx_t_4 = __pyx_v_total_models;
+  for (__pyx_t_20 = 0; __pyx_t_20 &lt; __pyx_t_4; __pyx_t_20+=1) {
+    __pyx_v_u = __pyx_t_20;
+</pre><pre class="cython line score-0">&#xA0;<span class="">202</span>: </pre>
+<pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">203</span>:         <span class="n">sum_</span> <span class="o">=</span> <span class="mf">0</span></pre>
+<pre class='cython code score-0 '>    __pyx_v_sum_ = 0.0;
+</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">204</span>:         <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_idx</span><span class="p">):</span></pre>
+<pre class='cython code score-0 '>    __pyx_t_21 = __pyx_v_num_idx;
+    for (__pyx_t_22 = 0; __pyx_t_22 &lt; __pyx_t_21; __pyx_t_22+=1) {
+      __pyx_v_v = __pyx_t_22;
+</pre><pre class="cython line score-15" onclick='toggleDiv(this)'>+<span class="">205</span>:             <span class="n">lam_idx</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[</span><span class="n">v</span><span class="p">]</span></pre>
+<pre class='cython code score-15 '>      if (unlikely(__pyx_v_idx == Py_None)) {
+        <span class='py_c_api'>PyErr_SetString</span>(PyExc_TypeError, "'NoneType' object is not subscriptable");
+        <span class='error_goto'>__PYX_ERR(0, 205, __pyx_L1_error)</span>
+      }
+      __pyx_t_13 = <span class='pyx_c_api'>__Pyx_GetItemInt_List</span>(__pyx_v_idx, __pyx_v_v, int, 1, __Pyx_PyInt_From_int, 1, 1, 1);<span class='error_goto'> if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 205, __pyx_L1_error)</span>
+      <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_13);
+      __pyx_t_23 = <span class='pyx_c_api'>__Pyx_PyInt_As_int</span>(__pyx_t_13); if (unlikely((__pyx_t_23 == (int)-1) &amp;&amp; <span class='py_c_api'>PyErr_Occurred</span>())) <span class='error_goto'>__PYX_ERR(0, 205, __pyx_L1_error)</span>
+      <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_13); __pyx_t_13 = 0;
+      __pyx_v_lam_idx = __pyx_t_23;
+</pre><pre class="cython line score-2" onclick='toggleDiv(this)'>+<span class="">206</span>:             <span class="n">sum_</span> <span class="o">=</span> <span class="n">sum_</span> <span class="o">+</span> <span class="n">model_comp_spec_redshifted_view</span><span class="p">[</span><span class="n">v</span><span class="p">,</span> <span class="n">lam_idx</span><span class="p">]</span></pre>
+<pre class='cython code score-2 '>      __pyx_t_40 = __pyx_v_v;
+      __pyx_t_41 = __pyx_v_lam_idx;
+      __pyx_t_23 = -1;
+      if (__pyx_t_40 &lt; 0) {
+        __pyx_t_40 += __pyx_v_model_comp_spec_redshifted_view.shape[0];
+        if (unlikely(__pyx_t_40 &lt; 0)) __pyx_t_23 = 0;
+      } else if (unlikely(__pyx_t_40 &gt;= __pyx_v_model_comp_spec_redshifted_view.shape[0])) __pyx_t_23 = 0;
+      if (__pyx_t_41 &lt; 0) {
+        __pyx_t_41 += __pyx_v_model_comp_spec_redshifted_view.shape[1];
+        if (unlikely(__pyx_t_41 &lt; 0)) __pyx_t_23 = 1;
+      } else if (unlikely(__pyx_t_41 &gt;= __pyx_v_model_comp_spec_redshifted_view.shape[1])) __pyx_t_23 = 1;
+      if (unlikely(__pyx_t_23 != -1)) {
+        <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_23);
+        <span class='error_goto'>__PYX_ERR(0, 206, __pyx_L1_error)</span>
+      }
+      __pyx_v_sum_ = (__pyx_v_sum_ + (*((__pyx_t_5numpy_float64_t *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_model_comp_spec_redshifted_view.data + __pyx_t_40 * __pyx_v_model_comp_spec_redshifted_view.strides[0]) ) + __pyx_t_41 * __pyx_v_model_comp_spec_redshifted_view.strides[1]) ))));
+    }
+</pre><pre class="cython line score-0">&#xA0;<span class="">207</span>: </pre>
+<pre class="cython line score-7" onclick='toggleDiv(this)'>+<span class="">208</span>:         <span class="n">model_comp_spec_modified_view</span><span class="p">[</span><span class="n">v</span><span class="p">,</span> <span class="n">total_models</span><span class="o">-</span><span class="mf">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">sum_</span> <span class="o">/</span> <span class="n">num_idx</span></pre>
+<pre class='cython code score-7 '>    if (unlikely(__pyx_v_num_idx == 0)) {
+      <span class='py_c_api'>PyErr_SetString</span>(PyExc_ZeroDivisionError, "float division");
+      <span class='error_goto'>__PYX_ERR(0, 208, __pyx_L1_error)</span>
+    }
+    __pyx_t_42 = __pyx_v_v;
+    __pyx_t_43 = (__pyx_v_total_models - 1);
+    __pyx_t_21 = -1;
+    if (__pyx_t_42 &lt; 0) {
+      __pyx_t_42 += __pyx_v_model_comp_spec_modified_view.shape[0];
+      if (unlikely(__pyx_t_42 &lt; 0)) __pyx_t_21 = 0;
+    } else if (unlikely(__pyx_t_42 &gt;= __pyx_v_model_comp_spec_modified_view.shape[0])) __pyx_t_21 = 0;
+    if (__pyx_t_43 &lt; 0) {
+      __pyx_t_43 += __pyx_v_model_comp_spec_modified_view.shape[1];
+      if (unlikely(__pyx_t_43 &lt; 0)) __pyx_t_21 = 1;
+    } else if (unlikely(__pyx_t_43 &gt;= __pyx_v_model_comp_spec_modified_view.shape[1])) __pyx_t_21 = 1;
+    if (unlikely(__pyx_t_21 != -1)) {
+      <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_21);
+      <span class='error_goto'>__PYX_ERR(0, 208, __pyx_L1_error)</span>
+    }
+    *((__pyx_t_5numpy_float64_t *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_model_comp_spec_modified_view.data + __pyx_t_42 * __pyx_v_model_comp_spec_modified_view.strides[0]) ) + __pyx_t_43 * __pyx_v_model_comp_spec_modified_view.strides[1]) )) = (__pyx_v_sum_ / ((float)__pyx_v_num_idx));
+  }
+</pre><pre class="cython line score-0">&#xA0;<span class="">209</span>: </pre>
+<pre class="cython line score-2" onclick='toggleDiv(this)'>+<span class="">210</span>:     <span class="k">return</span> <span class="n">model_comp_spec_modified</span></pre>
 <pre class='cython code score-2 '>  <span class='pyx_macro_api'>__Pyx_XDECREF</span>(__pyx_r);
   <span class='pyx_macro_api'>__Pyx_INCREF</span>(((PyObject *)__pyx_v_model_comp_spec_modified));
   __pyx_r = ((PyObject *)__pyx_v_model_comp_spec_modified);
