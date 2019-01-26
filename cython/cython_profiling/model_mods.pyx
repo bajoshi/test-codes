@@ -1,4 +1,3 @@
-#cython: profile=True, nonecheck=False
 from __future__ import division
 # Tunring on cdivision seems to make no difference to the speed as of now
 
@@ -95,14 +94,12 @@ def do_resamp(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_z, np.ndarray[DTYPE_t,
     return np.mean(model_comp_spec_z[:, ix], axis=1)
 
 @cython.profile(False)
-def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfconv, float z, int total_models, \
+def redshift_and_resample_fast(double[:, :] model_comp_spec_lsfconv, float z, int total_models, \
     np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
     np.ndarray[DTYPE_t, ndim=1] resampling_lam_grid, int resampling_lam_grid_length):
 
-    cdef float redshift_factor
+    cdef double redshift_factor
     cdef int i
-    cdef int k
-    cdef int q
     cdef float lam_step
 
     """
@@ -138,23 +135,24 @@ def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfco
     # --------------- Do resampling --------------- #
     # Define array to save modified models
     model_comp_spec_modified = np.zeros((total_models, resampling_lam_grid_length), dtype=np.float64)
+    cdef np.float64_t [:, :] model_comp_spec_modified_view = model_comp_spec_modified
 
     ### Zeroth element
-    lam_step = resampling_lam_grid[1] - resampling_lam_grid[0]
+    lam_step = resampling_lam_grid_view[1] - resampling_lam_grid_view[0]
     idx = np.where((model_lam_grid_z >= resampling_lam_grid[0] - lam_step) & (model_lam_grid_z < resampling_lam_grid[0] + lam_step))[0]
-    model_comp_spec_modified[:, 0] = np.mean(model_comp_spec_redshifted[:, idx], axis=1)
+    model_comp_spec_modified_view[:, 0] = np.mean(model_comp_spec_redshifted_view[:, idx], axis=1)
 
     ### all elements in between
     for i in range(1, resampling_lam_grid_length - 1):
         idx = np.where((model_lam_grid_z >= resampling_lam_grid[i-1]) & (model_lam_grid_z < resampling_lam_grid[i+1]))[0]
-        model_comp_spec_modified[:, i] = np.mean(model_comp_spec_redshifted[:, idx], axis=1)
+        model_comp_spec_modified_view[:, i] = np.mean(model_comp_spec_redshifted_view[:, idx], axis=1)
 
     #model_comp_spec_mod_list = Parallel(n_jobs=3)(delayed(do_resamp)(model_comp_spec_redshifted_view, model_lam_grid_z_view, resampling_lam_grid_view, i) for i in range(1, resampling_lam_grid_length - 1))
     #model_comp_spec_modified[:, 1:-1] = np.asarray(model_comp_spec_mod_list)
 
     ### Last element
-    lam_step = resampling_lam_grid[-1] - resampling_lam_grid[-2]
+    lam_step = resampling_lam_grid_view[-1] - resampling_lam_grid_view[-2]
     idx = np.where((model_lam_grid_z >= resampling_lam_grid[-1] - lam_step) & (model_lam_grid_z < resampling_lam_grid[-1] + lam_step))[0]
-    model_comp_spec_modified[:, -1] = np.mean(model_comp_spec_redshifted[:, idx], axis=1)
+    model_comp_spec_modified_view[:, -1] = np.mean(model_comp_spec_redshifted_view[:, idx], axis=1)
 
     return model_comp_spec_modified
