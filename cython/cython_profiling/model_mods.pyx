@@ -160,7 +160,8 @@ def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfco
 
     ### Zeroth element
     lam_step = resampling_lam_grid_view[1] - resampling_lam_grid_view[0]
-    idx = np.where((model_lam_grid_z >= resampling_lam_grid[0] - lam_step) & (model_lam_grid_z < resampling_lam_grid[0] + lam_step))[0]
+    #idx = np.where((model_lam_grid_z >= resampling_lam_grid[0] - lam_step) & (model_lam_grid_z < resampling_lam_grid[0] + lam_step))[0]
+    idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid[0] - lam_step, resampling_lam_grid[0] + lam_step)
     model_comp_spec_modified_view[:, 0] = np.mean(model_comp_spec_redshifted_view[:, idx], axis=1)
 
     ### all elements in between
@@ -174,7 +175,8 @@ def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfco
 
     ### Last element
     lam_step = resampling_lam_grid_view[-1] - resampling_lam_grid_view[-2]
-    idx = np.where((model_lam_grid_z >= resampling_lam_grid[-1] - lam_step) & (model_lam_grid_z < resampling_lam_grid[-1] + lam_step))[0]
+    #idx = np.where((model_lam_grid_z >= resampling_lam_grid[-1] - lam_step) & (model_lam_grid_z < resampling_lam_grid[-1] + lam_step))[0]
+    idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid[-1] - lam_step, resampling_lam_grid[-1] + lam_step)
     model_comp_spec_modified_view[:, -1] = np.mean(model_comp_spec_redshifted_view[:, idx], axis=1)
 
     return model_comp_spec_modified
