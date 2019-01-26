@@ -12,7 +12,6 @@ cimport cython
 DTYPE = np.float64
 ctypedef np.float64_t DTYPE_t
 
-@cython.profile(False)
 cdef float simple_mean(np.ndarray[DTYPE_t, ndim=1] a):
     cdef float s = 0 
     cdef int j
@@ -21,7 +20,6 @@ cdef float simple_mean(np.ndarray[DTYPE_t, ndim=1] a):
         s += a[j]
     return s / arr_elem
 
-@cython.profile(False)
 def redshift_and_resample(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfconv, float z, int total_models, \
     np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
     np.ndarray[DTYPE_t, ndim=1] resampling_lam_grid, int resampling_lam_grid_length):
@@ -84,7 +82,6 @@ def redshift_and_resample(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfconv, f
 
     return model_comp_spec_modified
 
-@cython.profile(False)
 def do_resamp(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_z, np.ndarray[DTYPE_t, ndim=1] model_grid_z, \
     np.ndarray[DTYPE_t, ndim=1] resamp_grid, int p):
 
@@ -93,12 +90,35 @@ def do_resamp(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_z, np.ndarray[DTYPE_t,
     ix = np.where((model_grid_z >= resamp_grid[p-1]) & (model_grid_z < resamp_grid[p+1]))[0]
     return np.mean(model_comp_spec_z[:, ix], axis=1)
 
-@cython.profile(False)
-def redshift_and_resample_fast(double[:, :] model_comp_spec_lsfconv, float z, int total_models, \
+cdef list cy_where_searchrange(np.ndarray[DTYPE_t, ndim=1] a, float low_val, float high_val):
+    """
+    This simple where function will work only on 1D arrays.
+    An analogous function can be constructed for multi-D arrays
+    but it is not needed here.
+
+    The structure of this function is optimized to be used
+    in this program.
+    """
+
+    cdef DTYPE_t [:] a_view = a
+    cdef int asize = a_view.shape[0]
+    cdef int i
+    cdef list where_indices = []
+
+    for i in range(asize):
+        if (a_view[i] >= low_val):
+            if (a_view[i] < high_val):
+                # maybe write this as two if statements rather than one. 
+                # Its kinda pythonic at the moment which cython might not like
+                where_indices.append(i)
+
+    return where_indices
+
+def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfconv, float z, int total_models, \
     np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
     np.ndarray[DTYPE_t, ndim=1] resampling_lam_grid, int resampling_lam_grid_length):
 
-    cdef double redshift_factor
+    cdef float redshift_factor
     cdef int i
     cdef float lam_step
 
@@ -111,7 +131,8 @@ def redshift_and_resample_fast(double[:, :] model_comp_spec_lsfconv, float z, in
         to go faster?
     """
 
-    cdef np.ndarray[long, ndim=1] idx  # Since the indices are all integers
+    #cdef np.ndarray[long, ndim=1] idx  # Since the indices are all integers
+    cdef list idx
     cdef np.ndarray[DTYPE_t, ndim=1] model_lam_grid_z
     cdef np.ndarray[DTYPE_t, ndim=2] model_comp_spec_redshifted
     cdef np.ndarray[DTYPE_t, ndim=2] model_comp_spec_modified
@@ -144,7 +165,8 @@ def redshift_and_resample_fast(double[:, :] model_comp_spec_lsfconv, float z, in
 
     ### all elements in between
     for i in range(1, resampling_lam_grid_length - 1):
-        idx = np.where((model_lam_grid_z >= resampling_lam_grid[i-1]) & (model_lam_grid_z < resampling_lam_grid[i+1]))[0]
+        #idx = np.where((model_lam_grid_z >= resampling_lam_grid[i-1]) & (model_lam_grid_z < resampling_lam_grid[i+1]))[0]
+        idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid[i-1], resampling_lam_grid[i+1])
         model_comp_spec_modified_view[:, i] = np.mean(model_comp_spec_redshifted_view[:, idx], axis=1)
 
     #model_comp_spec_mod_list = Parallel(n_jobs=3)(delayed(do_resamp)(model_comp_spec_redshifted_view, model_lam_grid_z_view, resampling_lam_grid_view, i) for i in range(1, resampling_lam_grid_length - 1))
