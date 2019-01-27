@@ -15,6 +15,6 @@ Extension("model_mods", ["model_mods.pyx"],
 ]
 
 setup(
-    ext_modules=cythonize(extensions),
+    ext_modules=cythonize(extensions, annotate=True),
     include_dirs=[numpy.get_include()]
 )

@@ -98,6 +98,8 @@ def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfco
     cdef int ymax = model_comp_spec_lsfconv_view.shape[1]
 
     cdef int w
+    cdef int x
+    cdef int y
     for w in range(lamsize):
         model_lam_grid_z_view[w] = model_lam_grid_view[w] * redshift_factor
 
@@ -109,7 +111,7 @@ def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfco
     ### Zeroth element
     lam_step = resampling_lam_grid_view[1] - resampling_lam_grid_view[0]
     #idx = np.where((model_lam_grid_z >= resampling_lam_grid[0] - lam_step) & (model_lam_grid_z < resampling_lam_grid[0] + lam_step))[0]
-    idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid[0] - lam_step, resampling_lam_grid[0] + lam_step)
+    idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid_view[0] - lam_step, resampling_lam_grid_view[0] + lam_step)
     num_idx = len(idx)
     for j in range(total_models):
 
@@ -123,7 +125,7 @@ def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfco
     ### all elements in between
     for i in range(1, resampling_lam_grid_length - 1):
         #idx = np.where((model_lam_grid_z >= resampling_lam_grid[i-1]) & (model_lam_grid_z < resampling_lam_grid[i+1]))[0]
-        idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid[i-1], resampling_lam_grid[i+1])
+        idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid_view[i-1], resampling_lam_grid_view[i+1])
         #model_comp_spec_modified_view[:, i] = np.mean(model_comp_spec_redshifted_view[:, idx], axis=1)
         num_idx = len(idx)
         for p in range(total_models):
@@ -141,7 +143,7 @@ def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfco
     ### Last element
     lam_step = resampling_lam_grid_view[-1] - resampling_lam_grid_view[-2]
     #idx = np.where((model_lam_grid_z >= resampling_lam_grid[-1] - lam_step) & (model_lam_grid_z < resampling_lam_grid[-1] + lam_step))[0]
-    idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid[-1] - lam_step, resampling_lam_grid[-1] + lam_step)
+    idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid_view[-1] - lam_step, resampling_lam_grid_view[-1] + lam_step)
     num_idx = len(idx)
     for u in range(total_models):
 
