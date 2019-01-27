@@ -20,76 +20,6 @@ cdef float simple_mean(np.ndarray[DTYPE_t, ndim=1] a):
         s += a[j]
     return s / arr_elem
 
-def redshift_and_resample(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfconv, float z, int total_models, \
-    np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
-    np.ndarray[DTYPE_t, ndim=1] resampling_lam_grid, int resampling_lam_grid_length):
-
-    cdef float redshift_factor
-    cdef int i
-    cdef int k
-    cdef int q
-    cdef list indices
-    cdef float lam_step
-    cdef list model_comp_spec_modified_list
-
-    cdef np.ndarray[DTYPE_t, ndim=2] model_comp_spec_modified
-    cdef np.ndarray[DTYPE_t, ndim=1] model_lam_grid_z
-    cdef np.ndarray[DTYPE_t, ndim=2] model_comp_spec_redshifted
-
-    # --------------- Redshift model --------------- #
-    """
-    Seems like I cannot do these operations in place 
-    to make them go faster because I've defined the 
-    types already above?? Not quite sure... yet.
-    """
-    redshift_factor = 1.0 + z
-    model_lam_grid_z = model_lam_grid * redshift_factor
-    model_comp_spec_redshifted = model_comp_spec_lsfconv / redshift_factor
-
-    # --------------- Do resampling --------------- #
-    # Define array to save modified models
-    model_comp_spec_modified = np.zeros((total_models, resampling_lam_grid_length), dtype=np.float64)
-
-    # --------------- Get indices for resampling --------------- #
-    # These indices are going to be different each time depending on the redshfit.
-    # i.e. Since it uses the redshifted model_lam_grid_z to get indices.
-    indices = []
-    ### Zeroth element
-    lam_step = resampling_lam_grid[1] - resampling_lam_grid[0]
-    indices.append(np.where((model_lam_grid_z >= resampling_lam_grid[0] - lam_step) & (model_lam_grid_z < resampling_lam_grid[0] + lam_step))[0])
-
-    ### all elements in between
-    for i in range(1, resampling_lam_grid_length - 1):
-        indices.append(np.where((model_lam_grid_z >= resampling_lam_grid[i-1]) & (model_lam_grid_z < resampling_lam_grid[i+1]))[0])
-
-    ### Last element
-    lam_step = resampling_lam_grid[-1] - resampling_lam_grid[-2]
-    indices.append(np.where((model_lam_grid_z >= resampling_lam_grid[-1] - lam_step) & (model_lam_grid_z < resampling_lam_grid[-1] + lam_step))[0])
-
-    # ---------- Run for loop to resample ---------- #
-    """
-    for k in range(total_models):
-
-        model_comp_spec_modified[k] = [simple_mean(model_comp_spec_redshifted[k][indices[q]]) for q in range(resampling_lam_grid_length)]
-        # Using simple_mean here instead of np.mean gives a BIG improvement (~3x)
-        # np.mean probably does all kinds of checks before it computes the actual
-        # mean. It also probably works with different datatypes. Since we know that in
-        # our case we will always use floats we can easily use this simple_mean function.
-    """
-
-    model_comp_spec_modified_list = [np.mean(model_comp_spec_redshifted[:, indices[q]], axis=1) for q in range(resampling_lam_grid_length)]
-    model_comp_spec_modified = np.asarray(model_comp_spec_modified_list).T
-
-    return model_comp_spec_modified
-
-def do_resamp(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_z, np.ndarray[DTYPE_t, ndim=1] model_grid_z, \
-    np.ndarray[DTYPE_t, ndim=1] resamp_grid, int p):
-
-    cdef np.ndarray[long, ndim=1] ix
-
-    ix = np.where((model_grid_z >= resamp_grid[p-1]) & (model_grid_z < resamp_grid[p+1]))[0]
-    return np.mean(model_comp_spec_z[:, ix], axis=1)
-
 cdef list cy_where_searchrange(np.ndarray[DTYPE_t, ndim=1] a, float low_val, float high_val):
     """
     This simple where function will work only on 1D arrays.
@@ -126,6 +56,7 @@ def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfco
         to go faster?
     """
 
+    # Type definitions
     cdef float redshift_factor
     cdef int i
     cdef int j
@@ -135,11 +66,22 @@ def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfco
     cdef int lam_idx
     cdef int num_idx
 
+    cdef int model_lam_grid_len = len(model_lam_grid)
+
     #cdef np.ndarray[long, ndim=1] idx  # Since the indices are all integers
     cdef list idx
-    cdef np.ndarray[DTYPE_t, ndim=1] model_lam_grid_z
-    cdef np.ndarray[DTYPE_t, ndim=2] model_comp_spec_redshifted
-    cdef np.ndarray[DTYPE_t, ndim=2] model_comp_spec_modified
+    cdef np.ndarray[DTYPE_t, ndim=1] model_lam_grid_z = np.zeros(model_lam_grid_len, dtype=np.float64)
+    cdef np.ndarray[DTYPE_t, ndim=2] model_comp_spec_redshifted = np.zeros((total_models, model_lam_grid_len), dtype=np.float64)
+    cdef np.ndarray[DTYPE_t, ndim=2] model_comp_spec_modified = np.zeros((total_models, resampling_lam_grid_length), dtype=np.float64)
+
+    # Views for faster access
+    cdef np.float64_t [:] resampling_lam_grid_view = resampling_lam_grid
+    cdef np.float64_t [:] model_lam_grid_view = model_lam_grid
+    cdef np.float64_t [:, :] model_comp_spec_lsfconv_view = model_comp_spec_lsfconv
+
+    cdef np.float64_t [:] model_lam_grid_z_view = model_lam_grid_z
+    cdef np.float64_t [:, :] model_comp_spec_redshifted_view = model_comp_spec_redshifted
+    cdef np.float64_t [:, :] model_comp_spec_modified_view = model_comp_spec_modified
 
     # --------------- Redshift model --------------- #
     """
@@ -147,20 +89,23 @@ def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfco
     to make them go faster because I've defined the 
     types already above?? Not quite sure... yet.
     """
+    # Doing it with explicit for loops to make it go faster(?)
     redshift_factor = 1.0 + z
-    model_lam_grid_z = model_lam_grid * redshift_factor
-    model_comp_spec_redshifted = model_comp_spec_lsfconv / redshift_factor
 
-    # Views for faster access
-    cdef np.float64_t [:, :] model_comp_spec_redshifted_view = model_comp_spec_redshifted
-    cdef np.float64_t [:] model_lam_grid_z_view = model_lam_grid_z
-    cdef np.float64_t [:] resampling_lam_grid_view = resampling_lam_grid
+    cdef int lamsize = model_lam_grid_view.shape[0]
+    
+    cdef int xmax = model_comp_spec_lsfconv_view.shape[0]
+    cdef int ymax = model_comp_spec_lsfconv_view.shape[1]
+
+    cdef int w
+    for w in range(lamsize):
+        model_lam_grid_z_view[w] = model_lam_grid_view[w] * redshift_factor
+
+    for x in range(xmax):
+        for y in range(ymax):
+            model_comp_spec_redshifted_view[x, y] = model_comp_spec_lsfconv_view[x, y] / redshift_factor
 
     # --------------- Do resampling --------------- #
-    # Define array to save modified models
-    model_comp_spec_modified = np.zeros((total_models, resampling_lam_grid_length), dtype=np.float64)
-    cdef np.float64_t [:, :] model_comp_spec_modified_view = model_comp_spec_modified
-
     ### Zeroth element
     lam_step = resampling_lam_grid_view[1] - resampling_lam_grid_view[0]
     #idx = np.where((model_lam_grid_z >= resampling_lam_grid[0] - lam_step) & (model_lam_grid_z < resampling_lam_grid[0] + lam_step))[0]
@@ -203,8 +148,8 @@ def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfco
         sum_ = 0
         for v in range(num_idx):
             lam_idx = idx[v]
-            sum_ = sum_ + model_comp_spec_redshifted_view[v, lam_idx]
+            sum_ = sum_ + model_comp_spec_redshifted_view[u, lam_idx]
 
-        model_comp_spec_modified_view[v, total_models-1] = sum_ / num_idx
+        model_comp_spec_modified_view[u, resampling_lam_grid_length-1] = sum_ / num_idx
 
     return model_comp_spec_modified
