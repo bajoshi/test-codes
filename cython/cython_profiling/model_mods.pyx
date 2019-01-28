@@ -4,8 +4,8 @@ from __future__ import division
 import numpy as np
 cimport numpy as np
 from numpy cimport ndarray
-from scipy.interpolate import griddata
-from joblib import Parallel, delayed
+#from scipy.interpolate import griddata
+#from joblib import Parallel, delayed
 
 cimport cython
 
@@ -38,10 +38,10 @@ cdef list cy_where_searchrange(np.ndarray[DTYPE_t, ndim=1] a, float low_val, flo
     for i in range(asize):
         if (a_view[i] >= low_val):
             if (a_view[i] < high_val):
-                # maybe write this as two if statements rather than one. 
-                # Its kinda pythonic at the moment which cython might not like
                 where_indices.append(i)
 
+    # Since I had to use a numpy array and initialize it with one zero in it
+    # I'm skipping the first zero and returning the rest.
     return where_indices
 
 def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfconv, float z, int total_models, \
@@ -57,19 +57,9 @@ def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfco
     """
 
     # Type definitions
-    cdef float redshift_factor
-    cdef int i
-    cdef int j
-    cdef int k
-    cdef float lam_step
-    cdef float sum_
-    cdef int lam_idx
-    cdef int num_idx
-
     cdef int model_lam_grid_len = len(model_lam_grid)
 
     #cdef np.ndarray[long, ndim=1] idx  # Since the indices are all integers
-    cdef list idx
     cdef np.ndarray[DTYPE_t, ndim=1] model_lam_grid_z = np.zeros(model_lam_grid_len, dtype=np.float64)
     cdef np.ndarray[DTYPE_t, ndim=2] model_comp_spec_redshifted = np.zeros((total_models, model_lam_grid_len), dtype=np.float64)
     cdef np.ndarray[DTYPE_t, ndim=2] model_comp_spec_modified = np.zeros((total_models, resampling_lam_grid_length), dtype=np.float64)
@@ -84,55 +74,69 @@ def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfco
     cdef np.float64_t [:, :] model_comp_spec_modified_view = model_comp_spec_modified
 
     # --------------- Redshift model --------------- #
-    """
-    Seems like I cannot do these operations in place 
-    to make them go faster because I've defined the 
-    types already above?? Not quite sure... yet.
-    """
-    # Doing it with explicit for loops to make it go faster(?)
+    # Doing it with explicit for loops to make it go faster
+    cdef float redshift_factor
     redshift_factor = 1.0 + z
 
     cdef int lamsize = model_lam_grid_view.shape[0]
-    
     cdef int xmax = model_comp_spec_lsfconv_view.shape[0]
     cdef int ymax = model_comp_spec_lsfconv_view.shape[1]
 
     cdef int w
     cdef int x
     cdef int y
+
+    # Redshift wavelength
     for w in range(lamsize):
         model_lam_grid_z_view[w] = model_lam_grid_view[w] * redshift_factor
 
+    # Redshift fluxes
     for x in range(xmax):
         for y in range(ymax):
             model_comp_spec_redshifted_view[x, y] = model_comp_spec_lsfconv_view[x, y] / redshift_factor
 
     # --------------- Do resampling --------------- #
+    # type memory view for indices 
+    # Does not work for Python lists. You'll get:
+    # TypeError: 'list' does not have the buffer interface
+    # So commenting this out until I can figure out a way to use either C or a numpy array.
+    #cdef int [:] idx_view
+    cdef list idx_view
+
+    # type for loop variables
+    cdef unsigned int i, j, k, p, q, u, v
+
+    # Type other variables in the resamp loops below
+    cdef float lam_step
+    cdef float sum_
+    cdef int lam_idx
+    cdef int num_idx
+
     ### Zeroth element
     lam_step = resampling_lam_grid_view[1] - resampling_lam_grid_view[0]
-    #idx = np.where((model_lam_grid_z >= resampling_lam_grid[0] - lam_step) & (model_lam_grid_z < resampling_lam_grid[0] + lam_step))[0]
-    idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid_view[0] - lam_step, resampling_lam_grid_view[0] + lam_step)
-    num_idx = len(idx)
+    #idx_view = np.where((model_lam_grid_z >= resampling_lam_grid[0] - lam_step) & (model_lam_grid_z < resampling_lam_grid[0] + lam_step))[0]
+    idx_view = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid_view[0] - lam_step, resampling_lam_grid_view[0] + lam_step)
+    num_idx = len(idx_view)
     for j in range(total_models):
 
         sum_ = 0
         for k in range(num_idx):
-            lam_idx = idx[k]
+            lam_idx = idx_view[k]
             sum_ = sum_ + model_comp_spec_redshifted_view[j, lam_idx]
 
         model_comp_spec_modified_view[j, 0] = sum_ / num_idx
 
     ### all elements in between
     for i in range(1, resampling_lam_grid_length - 1):
-        #idx = np.where((model_lam_grid_z >= resampling_lam_grid[i-1]) & (model_lam_grid_z < resampling_lam_grid[i+1]))[0]
-        idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid_view[i-1], resampling_lam_grid_view[i+1])
-        #model_comp_spec_modified_view[:, i] = np.mean(model_comp_spec_redshifted_view[:, idx], axis=1)
-        num_idx = len(idx)
+        #idx_view = np.where((model_lam_grid_z >= resampling_lam_grid[i-1]) & (model_lam_grid_z < resampling_lam_grid[i+1]))[0]
+        idx_view = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid_view[i-1], resampling_lam_grid_view[i+1])
+        #model_comp_spec_modified_view[:, i] = np.mean(model_comp_spec_redshifted_view[:, idx_view], axis=1)
+        num_idx = len(idx_view)
         for p in range(total_models):
 
             sum_ = 0
             for q in range(num_idx):
-                lam_idx = idx[q]
+                lam_idx = idx_view[q]
                 sum_ = sum_ + model_comp_spec_redshifted_view[p, lam_idx]
 
             model_comp_spec_modified_view[p, i] = sum_ / num_idx
@@ -142,16 +146,81 @@ def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfco
 
     ### Last element
     lam_step = resampling_lam_grid_view[-1] - resampling_lam_grid_view[-2]
-    #idx = np.where((model_lam_grid_z >= resampling_lam_grid[-1] - lam_step) & (model_lam_grid_z < resampling_lam_grid[-1] + lam_step))[0]
-    idx = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid_view[-1] - lam_step, resampling_lam_grid_view[-1] + lam_step)
-    num_idx = len(idx)
+    #idx_view = np.where((model_lam_grid_z >= resampling_lam_grid[-1] - lam_step) & (model_lam_grid_z < resampling_lam_grid[-1] + lam_step))[0]
+    idx_view = cy_where_searchrange(model_lam_grid_z, resampling_lam_grid_view[-1] - lam_step, resampling_lam_grid_view[-1] + lam_step)
+    num_idx = len(idx_view)
     for u in range(total_models):
 
         sum_ = 0
         for v in range(num_idx):
-            lam_idx = idx[v]
+            lam_idx = idx_view[v]
             sum_ = sum_ + model_comp_spec_redshifted_view[u, lam_idx]
 
         model_comp_spec_modified_view[u, resampling_lam_grid_length-1] = sum_ / num_idx
 
     return model_comp_spec_modified
+
+def cy_get_chi2(np.ndarray[DTYPE_t, ndim=1] grism_flam_obs, np.ndarray[DTYPE_t, ndim=1] grism_ferr_obs, np.ndarray[DTYPE_t, ndim=1] grism_lam_obs, \
+    np.ndarray[DTYPE_t, ndim=1] phot_flam_obs, np.ndarray[DTYPE_t, ndim=1] phot_ferr_obs, np.ndarray[DTYPE_t, ndim=1] phot_lam_obs, \
+    np.ndarray[DTYPE_t, ndim=2] all_filt_flam_model, np.ndarray[DTYPE_t, ndim=2] model_comp_spec_mod, \
+    np.ndarray[DTYPE_t, ndim=1] model_resampling_lam_grid, int total_models):
+
+    # chop the model to be consistent with the objects lam grid
+    model_lam_grid_indx_low = np.argmin(abs(model_resampling_lam_grid - grism_lam_obs[0]))
+    model_lam_grid_indx_high = np.argmin(abs(model_resampling_lam_grid - grism_lam_obs[-1]))
+    model_spec_in_objlamgrid = model_comp_spec_mod[:, model_lam_grid_indx_low:model_lam_grid_indx_high+1]
+
+    # For both data and model, combine grism+photometry into one spectrum.
+    # The chopping above has to be done before combining the grism+photometry
+    # because todo the insertion correctly the model and grism wavelength
+    # grids have to match.
+
+    # Convert the model array to a python list of lists
+    # This has to be done because np.insert() returns a new changed array
+    # with the new value inserted but I cannot assign it back to the old
+    # array because that changes the shape. This works for the grism arrays
+    # since I'm simply using variable names to point to them but since the
+    # model array is 2D I'm using indexing and that causes the np.insert()
+    # statement to throw an error.
+    model_spec_in_objlamgrid_list = []
+    for j in range(total_models):
+        model_spec_in_objlamgrid_list.append(model_spec_in_objlamgrid[j].tolist())
+
+    count = 0
+    combined_lam_obs = grism_lam_obs
+    combined_flam_obs = grism_flam_obs
+    combined_ferr_obs = grism_ferr_obs
+    for phot_wav in phot_lam_obs:
+
+        if phot_wav < combined_lam_obs[0]:
+            lam_obs_idx_to_insert = 0
+
+        elif phot_wav > combined_lam_obs[-1]:
+            lam_obs_idx_to_insert = len(combined_lam_obs)
+
+        else:
+            lam_obs_idx_to_insert = np.where(combined_lam_obs > phot_wav)[0][0]
+
+        # For grism
+        combined_lam_obs = np.insert(combined_lam_obs, lam_obs_idx_to_insert, phot_wav)
+        combined_flam_obs = np.insert(combined_flam_obs, lam_obs_idx_to_insert, phot_flam_obs[count])
+        combined_ferr_obs = np.insert(combined_ferr_obs, lam_obs_idx_to_insert, phot_ferr_obs[count])
+
+        # For model
+        for i in range(total_models):
+            model_spec_in_objlamgrid_list[i] = np.insert(model_spec_in_objlamgrid_list[i], lam_obs_idx_to_insert, all_filt_flam_model[i, count])
+
+        count += 1
+
+    # Convert back to numpy array
+    del model_spec_in_objlamgrid  # Trying to free up the memory allocated to the object pointed by the older model_spec_in_objlamgrid
+    # Not sure if the del works because I'm using the same name again. Also just not sure of how del exactly works.
+    model_spec_in_objlamgrid = np.asarray(model_spec_in_objlamgrid_list)
+
+    # compute alpha and chi2
+    alpha_ = np.sum(combined_flam_obs * model_spec_in_objlamgrid / (combined_ferr_obs**2), axis=1) / np.sum(model_spec_in_objlamgrid**2 / combined_ferr_obs**2, axis=1)
+    chi2_ = np.sum(((combined_flam_obs - (alpha_ * model_spec_in_objlamgrid.T).T) / combined_ferr_obs)**2, axis=1)
+
+    print "Min chi2 for redshift:", min(chi2_)
+
+    return chi2_, alpha_
