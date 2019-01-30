@@ -66,8 +66,8 @@ def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfco
 
     # Views for faster access
     cdef np.float64_t [:] resampling_lam_grid_view = resampling_lam_grid
-    cdef np.float64_t [:] model_lam_grid_view = model_lam_grid
-    cdef np.float64_t [:, :] model_comp_spec_lsfconv_view = model_comp_spec_lsfconv
+    #cdef np.float64_t [:] model_lam_grid_view = model_lam_grid
+    #cdef np.float64_t [:, :] model_comp_spec_lsfconv_view = model_comp_spec_lsfconv
 
     cdef np.float64_t [:] model_lam_grid_z_view = model_lam_grid_z
     cdef np.float64_t [:, :] model_comp_spec_redshifted_view = model_comp_spec_redshifted
@@ -78,9 +78,9 @@ def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfco
     cdef float redshift_factor
     redshift_factor = 1.0 + z
 
-    cdef int lamsize = model_lam_grid_view.shape[0]
-    cdef int xmax = model_comp_spec_lsfconv_view.shape[0]
-    cdef int ymax = model_comp_spec_lsfconv_view.shape[1]
+    cdef int lamsize = model_lam_grid.shape[0]
+    cdef int xmax = model_comp_spec_lsfconv.shape[0]
+    cdef int ymax = model_comp_spec_lsfconv.shape[1]
 
     cdef int w
     cdef int x
@@ -88,12 +88,12 @@ def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfco
 
     # Redshift wavelength
     for w in range(lamsize):
-        model_lam_grid_z_view[w] = model_lam_grid_view[w] * redshift_factor
+        model_lam_grid_z[w] = model_lam_grid[w] * redshift_factor
 
     # Redshift fluxes
     for x in range(xmax):
         for y in range(ymax):
-            model_comp_spec_redshifted_view[x, y] = model_comp_spec_lsfconv_view[x, y] / redshift_factor
+            model_comp_spec_redshifted[x, y] = model_comp_spec_lsfconv[x, y] / redshift_factor
 
     # --------------- Do resampling --------------- #
     # type memory view for indices 
@@ -221,6 +221,6 @@ def cy_get_chi2(np.ndarray[DTYPE_t, ndim=1] grism_flam_obs, np.ndarray[DTYPE_t, 
     alpha_ = np.sum(combined_flam_obs * model_spec_in_objlamgrid / (combined_ferr_obs**2), axis=1) / np.sum(model_spec_in_objlamgrid**2 / combined_ferr_obs**2, axis=1)
     chi2_ = np.sum(((combined_flam_obs - (alpha_ * model_spec_in_objlamgrid.T).T) / combined_ferr_obs)**2, axis=1)
 
-    print "Min chi2 for redshift:", min(chi2_)
+    #print "Min chi2 for redshift:", min(chi2_)
 
     return chi2_, alpha_
