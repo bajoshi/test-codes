@@ -20,7 +20,7 @@ massive_galaxies_dir = home + '/Desktop/FIGS/massive-galaxies/'
 sys.path.append(massive_galaxies_dir + 'grismz_pipeline/')
 import new_refine_grismz_gridsearch_parallel as ngp
 
-def get_covmat(spec_wav, spec_flux, spec_ferr):
+def get_covmat(spec_wav, spec_flux, spec_ferr, silent=True):
 
     # First define the kernel that will be used to model
     # the off-diagonal elements of the covariance matrix.
@@ -70,20 +70,21 @@ def get_covmat(spec_wav, spec_flux, spec_ferr):
                 covmat[i,j] = theta_0 * np.exp(len_fac * (spec_wav[i] - spec_wav[j])**2)
 
     # PLot 
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
+    if not silent:
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
 
-    ax.set_xlabel('Spectral element index')
-    ax.set_ylabel('Spectral element index')
+        ax.set_xlabel('Spectral element index')
+        ax.set_ylabel('Spectral element index')
 
-    #covmat = np.log10(covmat)
-    # Set everything below a certain lower limit to exactly zero
-    inv_idx = np.where(covmat <= 1e-4 * theta_0)
-    covmat[inv_idx] = np.nan
-    cax = ax.imshow(covmat)
+        #covmat = np.log10(covmat)
+        # Set everything below a certain lower limit to exactly zero
+        inv_idx = np.where(covmat <= 1e-4 * theta_0)
+        covmat[inv_idx] = np.nan
+        cax = ax.imshow(covmat)
     
-    fig.colorbar(cax)
-    plt.show()
+        fig.colorbar(cax)
+        plt.show()
 
     return covmat
 

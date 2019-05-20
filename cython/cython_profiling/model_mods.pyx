@@ -7,6 +7,13 @@ from numpy cimport ndarray
 #from scipy.interpolate import griddata
 #from joblib import Parallel, delayed
 
+import sys
+import os
+
+home = os.getenv('HOME')
+sys.path.append(home + '/Desktop/test-codes/gaussianprocesses/')
+from covmat_test import get_covmat
+
 cimport cython
 
 DTYPE = np.float64
@@ -216,6 +223,9 @@ def cy_get_chi2(np.ndarray[DTYPE_t, ndim=1] grism_flam_obs, np.ndarray[DTYPE_t, 
     del model_spec_in_objlamgrid  # Trying to free up the memory allocated to the object pointed by the older model_spec_in_objlamgrid
     # Not sure if the del works because I'm using the same name again. Also just not sure of how del exactly works.
     model_spec_in_objlamgrid = np.asarray(model_spec_in_objlamgrid_list)
+
+    # Get covariance matrix
+    covmat = get_covmat(combined_lam_obs, combined_flam_obs, combined_ferr_obs, silent=False)
 
     # compute alpha and chi2
     alpha_ = np.sum(combined_flam_obs * model_spec_in_objlamgrid / (combined_ferr_obs**2), axis=1) / np.sum(model_spec_in_objlamgrid**2 / combined_ferr_obs**2, axis=1)
