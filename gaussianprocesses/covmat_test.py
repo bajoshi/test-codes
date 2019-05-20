@@ -2,9 +2,9 @@ from __future__ import division
 
 import numpy as np
 from astropy.io import fits
-import george
-from george.modeling import Model
-from george import kernels
+#import george
+#from george.modeling import Model
+#from george import kernels
 import emcee
 import corner
 
