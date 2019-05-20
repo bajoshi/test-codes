@@ -61,12 +61,11 @@ def get_covmat(spec_wav, spec_flux, spec_ferr):
     len_fac = -1 / (2 * kern_len_fac**2)
     theta_0 = max(spec_ferr)**2
     print "Theta_0 is:", theta_0
-    print "2x Theta_0 is:", 2*theta_0
     for i in range(N):
         for j in range(N):
 
             if i == j:
-                covmat[i,j] = theta_0 + spec_ferr[i]**2
+                covmat[i,j] = spec_ferr[i]**2
             else:
                 covmat[i,j] = theta_0 * np.exp(len_fac * (spec_wav[i] - spec_wav[j])**2)
 
