@@ -148,8 +148,10 @@ def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfco
 
             model_comp_spec_modified_view[p, i] = sum_ / num_idx
 
-    #model_comp_spec_mod_list = Parallel(n_jobs=3)(delayed(do_resamp)(model_comp_spec_redshifted_view, model_lam_grid_z_view, resampling_lam_grid_view, i) for i in range(1, resampling_lam_grid_length - 1))
-    #model_comp_spec_modified[:, 1:-1] = np.asarray(model_comp_spec_mod_list)
+    # model_comp_spec_mod_list = \
+    # Parallel(n_jobs=3)(delayed(do_resamp)(model_comp_spec_redshifted_view, \
+    #     model_lam_grid_z_view, resampling_lam_grid_view, i) for i in range(1, resampling_lam_grid_length - 1))
+    # model_comp_spec_modified[:, 1:-1] = np.asarray(model_comp_spec_mod_list)
 
     ### Last element
     lam_step = resampling_lam_grid_view[-1] - resampling_lam_grid_view[-2]
@@ -169,7 +171,7 @@ def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfco
 
 def cy_get_chi2(np.ndarray[DTYPE_t, ndim=1] grism_flam_obs, np.ndarray[DTYPE_t, ndim=1] grism_ferr_obs, np.ndarray[DTYPE_t, ndim=1] grism_lam_obs, \
     np.ndarray[DTYPE_t, ndim=1] phot_flam_obs, np.ndarray[DTYPE_t, ndim=1] phot_ferr_obs, np.ndarray[DTYPE_t, ndim=1] phot_lam_obs, \
-    np.ndarray[DTYPE_t, ndim=2] all_filt_flam_model, np.ndarray[DTYPE_t, ndim=2] model_comp_spec_mod, \
+    np.ndarray[DTYPE_t, ndim=2] covmat, np.ndarray[DTYPE_t, ndim=2] all_filt_flam_model, np.ndarray[DTYPE_t, ndim=2] model_comp_spec_mod, \
     np.ndarray[DTYPE_t, ndim=1] model_resampling_lam_grid, int total_models):
 
     # chop the model to be consistent with the objects lam grid
@@ -223,9 +225,6 @@ def cy_get_chi2(np.ndarray[DTYPE_t, ndim=1] grism_flam_obs, np.ndarray[DTYPE_t, 
     del model_spec_in_objlamgrid  # Trying to free up the memory allocated to the object pointed by the older model_spec_in_objlamgrid
     # Not sure if the del works because I'm using the same name again. Also just not sure of how del exactly works.
     model_spec_in_objlamgrid = np.asarray(model_spec_in_objlamgrid_list)
-
-    # Get covariance matrix
-    covmat = get_covmat(combined_lam_obs, combined_flam_obs, combined_ferr_obs, silent=False)
 
     # compute alpha and chi2
     alpha_ = np.sum(combined_flam_obs * model_spec_in_objlamgrid / (combined_ferr_obs**2), axis=1) / np.sum(model_spec_in_objlamgrid**2 / combined_ferr_obs**2, axis=1)

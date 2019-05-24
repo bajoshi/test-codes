@@ -54,9 +54,9 @@ def generate_data(params, N, rng=(-5, 5)):
     # Generate the dependent variable array. Flux in case of spectra.
     # The sample method of the gp object draws samples from the distribution
     # used to define the gp object. 
-    y = gp.sample(t)
+    y = gp.sample(t)  # This just gives a straight line
 
-    # 
+    # This adds the gaussian "absorption" to the straight line
     y += Model(**params).get_value(t)
 
     # Generate array for errors and add it to the dependent variable.

@@ -238,6 +238,12 @@ def get_all_redshifts_v2(current_id, current_field, current_ra, current_dec, cur
     phot_errors_arr = phot_errors_arr[phot_fin_idx]
     phot_lam = phot_lam[phot_fin_idx]
 
+    # Get covariance matrix
+    # Has to be ddone after tge step that could 
+    # cut down the photometric data array.
+    #covmat = get_covmat(combined_lam_obs, combined_flam_obs, combined_ferr_obs, silent=False)
+    covmat = np.identity(len(grism_lam_obs) + len(phot_lam))
+
     # ------------- Call fitting function for photo-z ------------- #
     print "Computing photo-z now."
     
@@ -255,7 +261,7 @@ def get_all_redshifts_v2(current_id, current_field, current_ra, current_dec, cur
         lsf_to_use, resampling_lam_grid, len(resampling_lam_grid), all_model_flam, phot_fin_idx, \
         model_lam_grid_withlines, total_models, model_comp_spec_withlines, start, current_id, current_field, current_specz, zp, \
         log_age_arr, metal_arr, nlyc_arr, tau_gyr_arr, tauv_arr, ub_col_arr, bv_col_arr, vj_col_arr, ms_arr, mgal_arr, \
-        use_broadband=True, single_galaxy=False, for_loop_method='parallel')
+        use_broadband=True, single_galaxy=False, for_loop_method='sequential')
     
     # ------------- Call fitting function for grism-z ------------- #
     # Essentially just calls the same function as above but switches off broadband for the fit
@@ -266,7 +272,7 @@ def get_all_redshifts_v2(current_id, current_field, current_ra, current_dec, cur
         lsf_to_use, resampling_lam_grid, len(resampling_lam_grid), all_model_flam, phot_fin_idx, \
         model_lam_grid_withlines, total_models, model_comp_spec_withlines, start, current_id, current_field, current_specz, zp, \
         log_age_arr, metal_arr, nlyc_arr, tau_gyr_arr, tauv_arr, ub_col_arr, bv_col_arr, vj_col_arr, ms_arr, mgal_arr, \
-        use_broadband=False, single_galaxy=False, for_loop_method='parallel')
+        use_broadband=False, single_galaxy=False, for_loop_method='sequential')
 
     return None
 
