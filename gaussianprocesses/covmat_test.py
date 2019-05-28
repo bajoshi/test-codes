@@ -24,7 +24,7 @@ def get_covmat(spec_wav, spec_flux, spec_ferr, silent=True):
 
     # First define the kernel that will be used to model
     # the off-diagonal elements of the covariance matrix.
-    galaxy_len_fac = 35
+    galaxy_len_fac = 20
     # galaxy_len_fac includes the effect in correlation due to the 
     # galaxy morphology, i.e., for larger galaxies, flux data points 
     # need to be farther apart to be uncorrelated.
@@ -65,9 +65,12 @@ def get_covmat(spec_wav, spec_flux, spec_ferr, silent=True):
         for j in range(N):
 
             if i == j:
-                covmat[i,j] = spec_ferr[i]**2
+                covmat[i,j] = 1.0/spec_ferr[i]**2
+                #print "Exponential factor for element", i, j, "is:", 1.0
             else:
-                covmat[i,j] = theta_0 * np.exp(len_fac * (spec_wav[i] - spec_wav[j])**2)
+                #print "Exponential factor for element", i, j, "is:", 
+                #print np.exp(len_fac * (spec_wav[i] - spec_wav[j])**2)
+                covmat[i,j] = (1.0/theta_0) * np.exp(len_fac * (spec_wav[i] - spec_wav[j])**2)
 
     # PLot 
     if not silent:
