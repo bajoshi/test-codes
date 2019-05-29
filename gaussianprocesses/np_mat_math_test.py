@@ -62,7 +62,7 @@ if __name__ == '__main__':
     # Define data and model
     # Using example from george module for gaussian processes
     truth = dict(amp=10.0, location=0.5, log_sigma2=np.log(1.4))
-    N = 20
+    N = 100
     x, dat, daterr = generate_data(truth, N)
 
     # check with a quick plot
@@ -102,7 +102,7 @@ if __name__ == '__main__':
     # For the purposes of comparison I'm simply using 
     # samples drawn from astropy's gaussian model.
     # This is simply a numpy array.
-    gauss_init1 = models.Gaussian1D(amplitude=10.0, mean=0.5, stddev=np.sqrt(1.4))
+    gauss_init1 = models.Gaussian1D(amplitude=2.0, mean=3.45, stddev=0.25)
     model1 = gauss_init1(x)
     gauss_init2 = models.Gaussian1D(amplitude=10.0, mean=0.5, stddev=np.sqrt(5.0))
     model2 = gauss_init2(x)
@@ -111,7 +111,8 @@ if __name__ == '__main__':
     g1 = fit_gauss(gauss_init1, x, dat)
     print "\n", "Results from using Astropy fitting:"
     print g1
-
+    
+    """
     # Now compute alpha explicitly
     alpha_1 = get_alpha(dat, model1, covmat, N)
     alpha_2 = get_alpha(dat, model2, covmat, N)
@@ -131,19 +132,84 @@ if __name__ == '__main__':
     chi2_2 = np.matmul((dat - alpha_2 * model2), np.matmul(covmat, (dat - alpha_2 * model2)))
     print "Chi2 1 from matrix math:", chi2_1
     print "Chi2 2 from matrix math:", chi2_2
+    """
 
     #### DO complete fitting using chi2 #### 
     # Generate model array
+    indiv_param_len = 10
+    total_models = indiv_param_len**3
+    model_set = np.zeros((total_models, N), dtype=np.float64)
+
+    # define parameter arrya and populate models
+    amp_param_arr = np.linspace(1.0, 20.0, indiv_param_len)
+    mean_param_arr = np.linspace(0.1, 5.0, indiv_param_len)
+    stddev_param_arr = np.linspace(0.5, 2.0, indiv_param_len)
+
+    # Print test params
+    if indiv_param_len <= 20:
+        print "Amplitude array tested:", amp_param_arr
+        print "Mean array tested:", mean_param_arr
+        print "Std dev array tested:", stddev_param_arr
+
+    amp_arr = np.zeros(total_models, dtype=np.float64)
+    mean_arr = np.zeros(total_models, dtype=np.float64)
+    stddev_arr = np.zeros(total_models, dtype=np.float64)
+
+    count = 0
+    for i in range(indiv_param_len):
+        for j in range(indiv_param_len):
+            for k in range(indiv_param_len):
+
+                #print "Initializing model:", count+1
+                gauss_init = models.Gaussian1D(amplitude=amp_param_arr[i], mean=mean_param_arr[j], stddev=stddev_param_arr[k])
+                model_set[count] = gauss_init(x)
+                amp_arr[count] = amp_param_arr[i]
+                mean_arr[count] = mean_param_arr[j]
+                stddev_arr[count] = stddev_param_arr[k]
+
+                count += 1
+
+    print "\n", "Model set generated. Working on fitting now."
+
+    # Define chi2 and alpha arrays
+    alpha = np.zeros(total_models)
+    chi2_explicit = np.zeros(total_models)
+    chi2_matmul = np.zeros(total_models)
+
+    #for i in range(total_models):
+    #    print "Fitting model:", i+1
+    #    alpha[i] = get_alpha(dat, model_set[i], covmat, N)
+    #    #chi2_explicit[i] = get_chi2(dat, model_set[i], covmat, alpha[i], N)
+    #    chi2_matmul[i] = np.matmul((dat - alpha[i] * model_set[i]), np.matmul(covmat, (dat - alpha[i] * model_set[i])))
     
+    #print np.allclose(chi2_explicit, chi2_matmul)
 
-    sys.exit(0)
+    # --------------------------------------------- # 
+    # Cpmute alpha and chi2 without covariance matrix
+    """
+    It should get the mean and stddev correct but it 
+    makes sense that it would not get the amplitude 
+    right sometimes. This is because the alpha and 
+    amplitude are somewhat degenerate -- you can 
+    easily shift the gaussian up or down by changing 
+    either parameter.
 
-    # Chi2 and alpha computed without any correlation taken into account
-    alpha_nocorr = np.sum(dat * model / (daterr**2)) / np.sum(model**2 / daterr**2)
-    chi2_nocorr = np.sum(((dat - alpha_nocorr * model) / daterr)**2)
+    It should still be okay to use this method for 
+    SED fitting though because none of the fitted 
+    parameters are so obviously degenerate. There 
+    are some minor degeneracies (like age, 
+    metallicity, and dust) but we can't do much 
+    about that for now.
+    """
+    alpha = np.sum(dat * model_set / (daterr**2), axis=1) / np.sum(model_set**2 / daterr**2, axis=1)
+    chi2_matmul = np.sum(((dat - (alpha * model_set.T).T) / daterr)**2, axis=1)
 
-    print alpha_nocorr
-    print chi2_nocorr
+    min_idx = np.argmin(chi2_matmul)
+    print "\n", "Fitting results from min chi2 (without covariance matrix):"
+    print "Min index:", min_idx
+    print "Amplitude:", amp_arr[min_idx]
+    print "Mean:", mean_arr[min_idx]
+    print "Std deviation:", stddev_arr[min_idx]
 
     sys.exit(0)
 
