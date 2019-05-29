@@ -22,11 +22,7 @@ def get_alpha(dat, model, covmat, arr_size):
         for j in range(arr_size):
 
             num += (dat[i] * model[j] + dat[j] * model[i]) * covmat[i,j]
-            if i == j:
-                kron_delt = 1
-            else:
-                kron_delt = 0
-            den += model[i] * model[j] * covmat[i,j] * (1 + kron_delt)
+            den += 2 * model[i] * model[j] * covmat[i,j]
 
     alpha_ = num / den
 
@@ -134,9 +130,26 @@ if __name__ == '__main__':
     print "Chi2 2 from matrix math:", chi2_2
     """
 
+    # ------------------------------------------------------ #
     #### DO complete fitting using chi2 #### 
+    """
+    It should get the mean and stddev correct but it 
+    makes sense that it would not get the amplitude 
+    right sometimes. This is because the alpha and 
+    amplitude are somewhat degenerate -- you can 
+    easily shift the gaussian up or down by changing 
+    either parameter.
+
+    It should still be okay to use this method for 
+    SED fitting though because none of the fitted 
+    parameters are so obviously degenerate. There 
+    are some minor degeneracies (like age, 
+    metallicity, and dust) but we can't do much 
+    about that for now.
+    """
+
     # Generate model array
-    indiv_param_len = 10
+    indiv_param_len = 50
     total_models = indiv_param_len**3
     model_set = np.zeros((total_models, N), dtype=np.float64)
 
@@ -176,40 +189,31 @@ if __name__ == '__main__':
     chi2_explicit = np.zeros(total_models)
     chi2_matmul = np.zeros(total_models)
 
-    #for i in range(total_models):
-    #    print "Fitting model:", i+1
-    #    alpha[i] = get_alpha(dat, model_set[i], covmat, N)
-    #    #chi2_explicit[i] = get_chi2(dat, model_set[i], covmat, alpha[i], N)
-    #    chi2_matmul[i] = np.matmul((dat - alpha[i] * model_set[i]), np.matmul(covmat, (dat - alpha[i] * model_set[i])))
-    
-    #print np.allclose(chi2_explicit, chi2_matmul)
+    for i in range(total_models):
+        print "Fitting model:", i+1
+        alpha[i] = get_alpha(dat, model_set[i], covmat, N)
+        #chi2_explicit[i] = get_chi2(dat, model_set[i], covmat, alpha[i], N)
+        chi2_matmul[i] = np.matmul((dat - alpha[i] * model_set[i]), np.matmul(covmat, (dat - alpha[i] * model_set[i])))
+
+    #print "Test for closeness of chi2 comptuted explicitly and using matrix math:", np.allclose(chi2_explicit, chi2_matmul)
+    print "\n", "Fitting results from min chi2 (with covariance matrix):"
+    min_idx = np.argmin(chi2_matmul)
+    print "Min index (with covariance matrix):", min_idx
+    print "Amplitude (with covariance matrix):", amp_arr[min_idx]
+    print "Mean (with covariance matrix):", mean_arr[min_idx]
+    print "Std deviation (with covariance matrix):", stddev_arr[min_idx] 
 
     # --------------------------------------------- # 
-    # Cpmute alpha and chi2 without covariance matrix
-    """
-    It should get the mean and stddev correct but it 
-    makes sense that it would not get the amplitude 
-    right sometimes. This is because the alpha and 
-    amplitude are somewhat degenerate -- you can 
-    easily shift the gaussian up or down by changing 
-    either parameter.
-
-    It should still be okay to use this method for 
-    SED fitting though because none of the fitted 
-    parameters are so obviously degenerate. There 
-    are some minor degeneracies (like age, 
-    metallicity, and dust) but we can't do much 
-    about that for now.
-    """
+    # Compute alpha and chi2 without covariance matrix
     alpha = np.sum(dat * model_set / (daterr**2), axis=1) / np.sum(model_set**2 / daterr**2, axis=1)
-    chi2_matmul = np.sum(((dat - (alpha * model_set.T).T) / daterr)**2, axis=1)
+    chi2_nocovmat = np.sum(((dat - (alpha * model_set.T).T) / daterr)**2, axis=1)
 
-    min_idx = np.argmin(chi2_matmul)
+    min_idx = np.argmin(chi2_nocovmat)
     print "\n", "Fitting results from min chi2 (without covariance matrix):"
-    print "Min index:", min_idx
-    print "Amplitude:", amp_arr[min_idx]
-    print "Mean:", mean_arr[min_idx]
-    print "Std deviation:", stddev_arr[min_idx]
+    print "Min index (without covariance matrix):", min_idx
+    print "Amplitude (without covariance matrix):", amp_arr[min_idx]
+    print "Mean (without covariance matrix):", mean_arr[min_idx]
+    print "Std deviation (without covariance matrix):", stddev_arr[min_idx]
 
     sys.exit(0)
 
