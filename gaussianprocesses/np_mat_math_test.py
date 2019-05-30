@@ -5,6 +5,8 @@ from astropy.modeling import models, fitting
 
 import sys
 import os
+import time
+import datetime
 
 import matplotlib.pyplot as plt
 
@@ -54,6 +56,11 @@ if __name__ == '__main__':
     implementing non-zero off-diagonal elements
     in the covariance matrix.
     """
+
+    # Start time
+    start = time.time()
+    dt = datetime.datetime
+    print "Starting at --", dt.now()
 
     # Define data and model
     # Using example from george module for gaussian processes
@@ -149,7 +156,7 @@ if __name__ == '__main__':
     """
 
     # Generate model array
-    indiv_param_len = 50
+    indiv_param_len = 30
     total_models = indiv_param_len**3
     model_set = np.zeros((total_models, N), dtype=np.float64)
 
@@ -183,17 +190,43 @@ if __name__ == '__main__':
                 count += 1
 
     print "\n", "Model set generated. Working on fitting now."
+    print "Total time taken up to now--", str("{:.2f}".format(time.time() - start)), "seconds."
 
+    # --------------------------------------------- #
+    # Test out vectorized formulae for alpha and chi2
+    # This should be a large improvement over explicit for loops.
+    out_prod = np.outer(dat, model_set.T.ravel())
+    out_prod = out_prod.reshape(N, N, total_models)
+
+    num_vec = np.sum(np.sum(out_prod * covmat[:, :, None], axis=0), axis=0)
+    den_vec = np.zeros(total_models)
+    alpha_vec = np.zeros(total_models)
+    chi2_vec = np.zeros(total_models)
+    for i in range(total_models):  # Get rid of this for loop as well, if you can
+        den_vec[i] = np.sum(np.outer(model_set[i], model_set[i]) * covmat, axis=None)
+        alpha_vec[i] = num_vec[i]/den_vec[i]
+        chi2_vec[i] = np.matmul((dat - alpha_vec[i] * model_set[i]), np.matmul(covmat, (dat - alpha_vec[i] * model_set[i])))
+
+    print "Vectorized computations done."
+    print "Total time taken up to now--", str("{:.2f}".format(time.time() - start)), "seconds."
+
+    """
+    # Using covariance matrix method but with explicit for loops # Takes way too long.
     # Define chi2 and alpha arrays
-    alpha = np.zeros(total_models)
+    alpha_cov = np.zeros(total_models)
     chi2_explicit = np.zeros(total_models)
     chi2_matmul = np.zeros(total_models)
 
     for i in range(total_models):
         print "Fitting model:", i+1
-        alpha[i] = get_alpha(dat, model_set[i], covmat, N)
-        #chi2_explicit[i] = get_chi2(dat, model_set[i], covmat, alpha[i], N)
-        chi2_matmul[i] = np.matmul((dat - alpha[i] * model_set[i]), np.matmul(covmat, (dat - alpha[i] * model_set[i])))
+        alpha_cov[i] = get_alpha(dat, model_set[i], covmat, N)
+        #chi2_explicit[i] = get_chi2(dat, model_set[i], covmat, alpha_cov[i], N)
+        chi2_matmul[i] = np.matmul((dat - alpha_cov[i] * model_set[i]), np.matmul(covmat, (dat - alpha_cov[i] * model_set[i])))
+
+    # Now check if the alpha and chi2 vectorized computations match the explicit ones
+    for i in range(len(alpha_cov)):
+        print "Alpha for element", i+1, ":", alpha_cov[i]/alpha_vec[i], "             ",
+        print "Chi2  for element", i+1, ":", chi2_matmul[i]/chi2_vec[i]
 
     #print "Test for closeness of chi2 comptuted explicitly and using matrix math:", np.allclose(chi2_explicit, chi2_matmul)
     print "\n", "Fitting results from min chi2 (with covariance matrix):"
@@ -202,6 +235,15 @@ if __name__ == '__main__':
     print "Amplitude (with covariance matrix):", amp_arr[min_idx]
     print "Mean (with covariance matrix):", mean_arr[min_idx]
     print "Std deviation (with covariance matrix):", stddev_arr[min_idx] 
+    """
+
+    # --------------------------------------------- # 
+    print "\n", "Fitting results from min chi2 (with covariance matrix) using vectorized formulae:"
+    min_idx = np.argmin(chi2_vec)
+    print "Min index (vectorized with covariance matrix):", min_idx
+    print "Amplitude (vectorized with covariance matrix):", amp_arr[min_idx]
+    print "Mean (vectorized with covariance matrix):", mean_arr[min_idx]
+    print "Std deviation (vectorized with covariance matrix):", stddev_arr[min_idx]
 
     # --------------------------------------------- # 
     # Compute alpha and chi2 without covariance matrix
@@ -215,6 +257,7 @@ if __name__ == '__main__':
     print "Mean (without covariance matrix):", mean_arr[min_idx]
     print "Std deviation (without covariance matrix):", stddev_arr[min_idx]
 
+    print "All done. Total time taken --", str("{:.2f}".format(time.time() - start)), "seconds."
     sys.exit(0)
 
 

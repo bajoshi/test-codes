@@ -81,13 +81,17 @@ def get_covmat(spec_wav, spec_flux, spec_ferr, silent=True):
         ax.set_ylabel('Spectral element index')
 
         #covmat = np.log10(covmat)
-        # Set everything below a certain lower limit to exactly zero
+        # Set everything below a certain lower limit to np.nan for plotting
         inv_idx = np.where(covmat <= 1e-4 * theta_0)
         covmat[inv_idx] = np.nan
         cax = ax.imshow(covmat)
     
         fig.colorbar(cax)
         plt.show()
+
+    # Set everything below a certain lower limit to exactly zero
+    inv_idx = np.where(covmat <= 1e-4 * theta_0)
+    covmat[inv_idx] = 0.0
 
     return covmat
 
