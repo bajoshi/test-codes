@@ -7,13 +7,6 @@ from numpy cimport ndarray
 #from scipy.interpolate import griddata
 #from joblib import Parallel, delayed
 
-import sys
-import os
-
-home = os.getenv('HOME')
-sys.path.append(home + '/Desktop/test-codes/gaussianprocesses/')
-from covmat_test import get_covmat
-
 cimport cython
 
 DTYPE = np.float64
@@ -72,24 +65,29 @@ def get_covmat(np.ndarray[DTYPE_t, ndim=1] spec_wav, np.ndarray[DTYPE_t, ndim=1]
     cdef int kern_len_fac = base_fac + galaxy_len_fac
     cdef int N
     cdef DTYPE_t len_fac
+    cdef DTYPE_t max_err
     cdef DTYPE_t theta_0
+    cdef DTYPE_t lam_diff
 
     # Get number of spectral elements
     N = len(spec_wav)
     # define covariance mat
-    cdef np.ndarray[DTYPE_t, ndim=2] covmat = np.identity(N)
+    cdef np.ndarray[DTYPE_t, ndim=2] covmat
+    covmat = np.identity(N)
 
     # Now populate the elements of the matrix
-    len_fac = -1 / (2 * kern_len_fac**2)
-    theta_0 = max(spec_ferr)**2
+    len_fac = -1 / (2 * kern_len_fac*kern_len_fac)
+    max_err = max(spec_ferr)
+    theta_0 = max_err * max_err
 
     for i in range(N):
         for j in range(N):
 
             if i == j:
-                covmat[i,j] = 1.0/spec_ferr[i]**2
+                covmat[i,j] = 1.0 / (spec_ferr[i]*spec_ferr[i])
             else:
-                covmat[i,j] = (1.0/theta_0) * np.exp(len_fac * (spec_wav[i] - spec_wav[j])**2)
+                lam_diff = spec_wav[i] - spec_wav[j]
+                covmat[i,j] = (1.0/theta_0) * np.exp(len_fac * lam_diff * lam_diff)
 
     # Set everything below a certain lower limit to exactly zero
     cdef tuple inv_idx
@@ -120,9 +118,9 @@ def get_alpha_chi2_covmat(int total_models, np.ndarray[DTYPE_t, ndim=1] flam_obs
     out_prod_res = out_prod.reshape(N, N, total_models)
 
     num_vec = np.sum(np.sum(out_prod_res * covmat[:, :, None], axis=0), axis=0)
-    den_vec = np.zeros(total_models)
-    alpha_vec = np.zeros(total_models)
-    chi2_vec = np.zeros(total_models)
+    den_vec = np.zeros(total_models, dtype=DTYPE)
+    alpha_vec = np.zeros(total_models, dtype=DTYPE)
+    chi2_vec = np.zeros(total_models, dtype=DTYPE)
     for i in range(total_models):  # Get rid of this for loop as well, if you can
         den_vec[i] = np.sum(np.outer(model_spec_in_objlamgrid[i], model_spec_in_objlamgrid[i]) * covmat, axis=None)
         alpha_vec[i] = num_vec[i]/den_vec[i]
