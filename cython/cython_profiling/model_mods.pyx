@@ -51,6 +51,86 @@ cdef list cy_where_searchrange(np.ndarray[DTYPE_t, ndim=1] a, float low_val, flo
     # I'm skipping the first zero and returning the rest.
     return where_indices
 
+def get_covmat(np.ndarray[DTYPE_t, ndim=1] spec_wav, np.ndarray[DTYPE_t, ndim=1] spec_flux, \
+    np.ndarray[DTYPE_t, ndim=1] spec_ferr):
+
+    # Type definitions
+    # For loop integers
+    cdef int i
+    cdef int j
+
+    # Other variables
+    cdef int galaxy_len_fac = 20
+    # galaxy_len_fac includes the effect in correlation due to the 
+    # galaxy morphology, i.e., for larger galaxies, flux data points 
+    # need to be farther apart to be uncorrelated.
+    cdef int base_fac = 5
+    # base_fac includes the correlation effect due to the overlap 
+    # between flux observed at adjacent spectral elements.
+    # i.e., this amount of correlation in hte noise will 
+    # exist even for a point source
+    cdef int kern_len_fac = base_fac + galaxy_len_fac
+    cdef int N
+    cdef DTYPE_t len_fac
+    cdef DTYPE_t theta_0
+
+    # Get number of spectral elements
+    N = len(spec_wav)
+    # define covariance mat
+    cdef np.ndarray[DTYPE_t, ndim=2] covmat = np.identity(N)
+
+    # Now populate the elements of the matrix
+    len_fac = -1 / (2 * kern_len_fac**2)
+    theta_0 = max(spec_ferr)**2
+
+    for i in range(N):
+        for j in range(N):
+
+            if i == j:
+                covmat[i,j] = 1.0/spec_ferr[i]**2
+            else:
+                covmat[i,j] = (1.0/theta_0) * np.exp(len_fac * (spec_wav[i] - spec_wav[j])**2)
+
+    # Set everything below a certain lower limit to exactly zero
+    cdef tuple inv_idx
+    inv_idx = np.where(covmat <= 1e-4 * theta_0)
+    covmat[inv_idx] = 0.0
+
+    return covmat
+
+def get_alpha_chi2_covmat(int total_models, np.ndarray[DTYPE_t, ndim=1] flam_obs, \
+    np.ndarray[DTYPE_t, ndim=2] model_spec_in_objlamgrid, np.ndarray[DTYPE_t, ndim=2] covmat):
+
+    # Type definitions
+    cdef int N
+    cdef int i
+
+    # Define other numpy arrays
+    cdef np.ndarray[DTYPE_t, ndim=2] out_prod
+    cdef np.ndarray[DTYPE_t, ndim=3] out_prod_res
+
+    cdef np.ndarray[DTYPE_t, ndim=1] num_vec
+    cdef np.ndarray[DTYPE_t, ndim=1] den_vec
+    cdef np.ndarray[DTYPE_t, ndim=1] alpha_vec
+    cdef np.ndarray[DTYPE_t, ndim=1] chi2_vec
+
+    # Now use the matrix computation to get chi2
+    N = len(flam_obs)
+    out_prod = np.outer(flam_obs, model_spec_in_objlamgrid.T.ravel())
+    out_prod_res = out_prod.reshape(N, N, total_models)
+
+    num_vec = np.sum(np.sum(out_prod_res * covmat[:, :, None], axis=0), axis=0)
+    den_vec = np.zeros(total_models)
+    alpha_vec = np.zeros(total_models)
+    chi2_vec = np.zeros(total_models)
+    for i in range(total_models):  # Get rid of this for loop as well, if you can
+        den_vec[i] = np.sum(np.outer(model_spec_in_objlamgrid[i], model_spec_in_objlamgrid[i]) * covmat, axis=None)
+        alpha_vec[i] = num_vec[i]/den_vec[i]
+        col_vector = flam_obs - alpha_vec[i] * model_spec_in_objlamgrid[i]
+        chi2_vec[i] = np.matmul(col_vector, np.matmul(covmat, col_vector))
+
+    return alpha_vec, chi2_vec
+
 def redshift_and_resample_fast(np.ndarray[DTYPE_t, ndim=2] model_comp_spec_lsfconv, float z, int total_models, \
     np.ndarray[DTYPE_t, ndim=1] model_lam_grid, \
     np.ndarray[DTYPE_t, ndim=1] resampling_lam_grid, int resampling_lam_grid_length):

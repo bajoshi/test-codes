@@ -287,7 +287,7 @@ def main():
     final_sample = np.genfromtxt(massive_galaxies_dir + 'spz_paper_sample.txt', dtype=None, names=True)
 
     # Set object id and field and get its coordinates and zspec from final sample file
-    current_id = 82267
+    current_id = 51003
     current_field = 'GOODS-N'
 
     samp_idx = np.where((final_sample['pearsid'] == current_id) & (final_sample['field'] == current_field))[0]
