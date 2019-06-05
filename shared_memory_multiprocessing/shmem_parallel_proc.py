@@ -71,7 +71,8 @@ def try_small_test():
     current_id = 12345
     current_field = 'GOODS'
 
-    processes = [mp.Process(target=do_work, args=(model_comp_spec_withlines, test_arr_mmap_read, current_id, current_field)) for i in xrange(2)]
+    processes = [mp.Process(target=do_work, args=(model_comp_spec_withlines, \
+        test_arr_mmap_read, current_id, current_field)) for i in xrange(2)]
     for p in processes:
         p.start()
         print "Current process ID:", p.pid
@@ -197,7 +198,8 @@ if __name__ == '__main__':
         irac4_mmap = np.load(figs_data_dir + 'all_model_mags_par_irac4.npy', mmap_mode='r')
 
         # put them in a list since I need to iterate over it
-        all_model_flam = [u_mmap, f435w_mmap, f606w_mmap, f775w_mmap, f850lp_mmap, f125w_mmap, f140w_mmap, f160w_mmap, irac1_mmap, irac2_mmap, irac3_mmap, irac4_mmap]
+        all_model_flam = [u_mmap, f435w_mmap, f606w_mmap, f775w_mmap, \
+        f850lp_mmap, f125w_mmap, f140w_mmap, f160w_mmap, irac1_mmap, irac2_mmap, irac3_mmap, irac4_mmap]
 
         # cnovert to numpy array and save
         all_model_flam = np.array(all_model_flam)
@@ -215,10 +217,12 @@ if __name__ == '__main__':
     'IRAC1_contam', 'IRAC2_contam', 'IRAC3_contam', 'IRAC4_contam']
     goodsn_phot_cat_3dhst = np.genfromtxt(threedhst_datadir + 'goodsn_3dhst.v4.1.cats/Catalog/goodsn_3dhst.v4.1.cat', \
         dtype=None, names=photometry_names, \
-        usecols=(0,3,4, 9,10, 15,16, 27,28, 39,40, 45,46, 48,49, 54,55, 12,13, 63,64, 66,67, 69,70, 72,73, 90,91,92,93), skip_header=3)
+        usecols=(0,3,4, 9,10, 15,16, 27,28, 39,40, 45,46, 48,49, 54,55, 12,13, 63,64, 66,67, 69,70, 72,73, 90,91,92,93), \
+        skip_header=3)
     goodss_phot_cat_3dhst = np.genfromtxt(threedhst_datadir + 'goodss_3dhst.v4.1.cats/Catalog/goodss_3dhst.v4.1.cat', \
         dtype=None, names=photometry_names, \
-        usecols=(0,3,4, 9,10, 18,19, 30,31, 39,40, 48,49, 54,55, 63,64, 15,16, 75,76, 78,79, 81,82, 84,85, 130,131,132,133), skip_header=3)
+        usecols=(0,3,4, 9,10, 18,19, 30,31, 39,40, 48,49, 54,55, 63,64, 15,16, 75,76, 78,79, 81,82, 84,85, 130,131,132,133), \
+        skip_header=3)
 
     # Read in Vega spectrum and get it in the appropriate forms
     vega = np.genfromtxt(massive_galaxies_dir + 'grismz_pipeline/' + 'vega_reference.dat', dtype=None, \
@@ -237,10 +241,13 @@ if __name__ == '__main__':
     galaxy_count = 0
     num_cores = 4
 
-    processes = [mp.Process(target=get_all_redshifts, args=(final_sample['pearsid'][j], final_sample['field'][j], final_sample['ra'][j], final_sample['dec'][j], 
-        final_sample['zspec'][j], goodsn_phot_cat_3dhst, goodss_phot_cat_3dhst, vega_spec_fnu, vega_spec_flam, vega_nu, vega_lam, \
+    processes = [mp.Process(target=get_all_redshifts, args=(final_sample['pearsid'][j], \
+        final_sample['field'][j], final_sample['ra'][j], final_sample['dec'][j], 
+        final_sample['zspec'][j], goodsn_phot_cat_3dhst, goodss_phot_cat_3dhst, \
+        vega_spec_fnu, vega_spec_flam, vega_nu, vega_lam, \
         model_lam_grid_withlines_mmap, model_comp_spec_withlines_mmap, all_model_flam_mmap, total_models, start, \
-        log_age_arr, metal_arr, nlyc_arr, tau_gyr_arr, tauv_arr, ub_col_arr, bv_col_arr, vj_col_arr, ms_arr, mgal_arr)) for j in xrange(num_cores)]
+        log_age_arr, metal_arr, nlyc_arr, tau_gyr_arr, tauv_arr, ub_col_arr, \
+        bv_col_arr, vj_col_arr, ms_arr, mgal_arr)) for j in xrange(num_cores)]
     for p in processes:
         p.start()
         print "Current process ID:", p.pid
@@ -250,11 +257,5 @@ if __name__ == '__main__':
     print "Finished", num_cores, "galaxies on", num_cores, "cores."
     print "Done with shared memory and parallel testing. Exiting."
     print "Total time taken --", str("{:.2f}".format(time.time() - start)), "seconds."
-
-    """
-    zp_minchi2, zp, zp_zerr_low, zp_zerr_up, zp_min_chi2, zp_bestalpha, zp_model_idx, zp_age, zp_tau, zp_av, \
-    zspz_minchi2, zspz, zspz_zerr_low, zspz_zerr_up, zspz_min_chi2, zspz_bestalpha, zspz_model_idx, zspz_age, zspz_tau, zspz_av, \
-    zg_minchi2, zg, zg_zerr_low, zg_zerr_up, zg_min_chi2, zg_bestalpha, zg_model_idx, zg_age, zg_tau, zg_av
-    """
 
     sys.exit(0)
