@@ -11,7 +11,7 @@ echo "It expects the name of the Python script as its first argument."
 # This is a C style for loop for bash. 
 # I like it better than any other way.
 # Tried to use a range like so {start..end} 
-# but that didn't work.
+# but that didn't work, e.g., for i in {0..10..1} didn't work.
 # Note the C style for loop and incrementation
 # doesn't require a $ sign to be placed in front 
 # of i or counter when it is incremented. Also
